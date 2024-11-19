@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/11/19 19:31:20 by aorynbay         ###   ########.fr       */
+/*   Updated: 2024/11/19 20:25:56 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	main(int ac, char **av, char **ev)
 {
 	char	*input;
+	t_token	*tokens;
 
 	(void)ac;
 	(void)av;
@@ -23,7 +24,7 @@ int	main(int ac, char **av, char **ev)
 	while (1)
 	{
 		input = readline("\033[34mminishell$ \033[0m");
-		tokenize_input(input);
+		tokens = tokenize_input(input);
 		if (*input)
 			add_history(input);
 		// printf("you said: %s\n", input);

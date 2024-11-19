@@ -22,7 +22,7 @@ typedef struct s_token {
 
 
 // tokenization
-void	tokenize_input(char *input);
+t_token	*tokenize_input(char *input);
 
 
 #endif
