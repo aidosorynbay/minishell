@@ -20,6 +20,11 @@ typedef struct s_token {
 	struct s_token	*next;
 }	t_token;
 
+typedef enum S_QUOTE_STATUS {
+	Q_NONE,
+	Q_SINGLE,
+	Q_DOUBLE
+} t_quote_status;
 
 // tokenization
 t_token	*tokenize_input(char *input);
