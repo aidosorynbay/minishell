@@ -5,6 +5,7 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "libft.h"
 
 typedef enum e_token_type {
 	TOKEN_WORD,
@@ -14,20 +15,22 @@ typedef enum e_token_type {
 	TOKEN_EOF
 } t_token_type;
 
-typedef struct s_token {
-	t_token_type	type;
-	char			*value;
-	struct s_token	*next;
-}	t_token;
-
 typedef enum S_QUOTE_STATUS {
 	Q_NONE,
 	Q_SINGLE,
 	Q_DOUBLE
 } t_quote_status;
 
+typedef struct s_token {
+	t_token_type	type;
+	char			*value;
+	t_quote_status	status;
+	struct s_token	*next;
+}	t_token;
+
 // tokenization
 t_token	*tokenize_input(char *input);
+void	tokenization(t_token *tokens, char *input);
 
 
 #endif
