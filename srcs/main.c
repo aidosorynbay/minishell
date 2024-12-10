@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/11/26 23:34:38 by aorynbay         ###   ########.fr       */
+/*   Updated: 2024/12/10 18:26:32 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int ac, char **av, char **ev)
 		tokens = tokenize_input(input);
 		if (*input)
 			add_history(input);
-		// printf("%s\n", input);
 		free(input);
+		token_clear(tokens);
 	}
 }

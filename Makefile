@@ -1,16 +1,19 @@
 # Compiler and flags
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -Iinc/ -Ilibft/
+CFLAGS		= -Wall -Wextra -Werror -g3 -Iinc/ -Ilibft/
 
 # Directories
 SRCS_DIR	= srcs
+TOKENS_DIR	= $(SRCS_DIR)/tokens
 INC_DIR		= inc
 OBJS_DIR	= objs
 LIBFT_DIR	= libft
 
 # Files and output
 NAME		= minishell
-SRCS		= $(SRCS_DIR)/main.c $(SRCS_DIR)/tokenization.c
+SRCS		= $(SRCS_DIR)/main.c \
+			  $(TOKENS_DIR)/tokenization.c \
+			  $(TOKENS_DIR)/token_utils.c
 OBJS		= $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 # Libraries
@@ -25,11 +28,9 @@ $(NAME): $(OBJS) $(LIBFT_DIR)/libft.a
 $(LIBFT_DIR)/libft.a:
 	$(MAKE) -C $(LIBFT_DIR)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c | $(OBJS_DIR)
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@) # Ensure the output directory exists
 	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJS_DIR):
-	mkdir -p $(OBJS_DIR)
 
 clean:
 	rm -rf $(OBJS_DIR)
@@ -42,3 +43,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re bonus
+

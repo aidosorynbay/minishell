@@ -30,7 +30,14 @@ typedef struct s_token {
 
 // tokenization
 t_token	*tokenize_input(char *input);
-void	tokenization(t_token *tokens, char *input);
+void	tokenization(t_token **tokens, char *input);
+void	token_add_back(t_token **lst, t_token *new);
+void	create_token(t_token *curr, char *str, int len);
+void	print_tokens(t_token *tokens);
+char	*two_char_op(char *str, int i);
+void	token_clear(t_token *tokens);
+void	single_operator(t_token *curr, int *start, char *copy, int *i, t_token **tokens);
+void	double_operator(t_token *curr, int *start, char *copy, int *i, t_token **tokens);
 
 
 #endif
