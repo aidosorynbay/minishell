@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:53:54 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/10 18:35:40 by aorynbay         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:53:37 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,10 @@ void	token_clear(t_token *tokens)
 	}
 }
 
-void	single_operator(t_token *curr, int *start, char *copy, int *i, t_token **tokens)
+void	single_operator(int *start, char *copy, int *i, t_token **tokens)
 {
+	t_token	*curr;
+
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
 	token_add_back(tokens, curr);
@@ -74,8 +76,10 @@ void	single_operator(t_token *curr, int *start, char *copy, int *i, t_token **to
 	*start = *i;
 }
 
-void	double_operator(t_token *curr, int *start, char *copy, int *i, t_token **tokens)
+void	double_operator(int *start, char *copy, int *i, t_token **tokens)
 {
+	t_token	*curr;
+
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
 	token_add_back(tokens, curr);
