@@ -39,5 +39,6 @@ void	token_clear(t_token *tokens);
 void	single_operator(t_token *curr, int *start, char *copy, int *i, t_token **tokens);
 void	double_operator(t_token *curr, int *start, char *copy, int *i, t_token **tokens);
 
-
+// syntax_check
+void check_syntax(t_token *tokens);
 #endif
