@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:53:54 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/12 15:53:37 by aorynbay         ###   ########.fr       */
+/*   Updated: 2024/12/25 18:24:59 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,13 @@ void	single_operator(int *start, char *copy, int *i, t_token **tokens)
 {
 	t_token	*curr;
 
+	if (copy[*i] == '|' && copy[*i + 1] == '|')
+	{
+		perror("Syntax error.");
+		token_clear(*tokens);
+		free(copy);
+		exit(1);
+	}
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
 	token_add_back(tokens, curr);
