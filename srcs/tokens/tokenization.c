@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/12 15:52:05 by aorynbay         ###   ########.fr       */
+/*   Updated: 2024/12/25 17:11:21 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	tokenization(t_token **tokens, char *copy)
 	while (copy[i])
 	{
 		if ((copy[i] == '|' || (copy[i] == '>' && copy[i + 1] != '>')
-				|| (copy[i] == '<' && copy[i + 1] != '<')) && i != 0) //need i?
+				|| (copy[i] == '<' && copy[i + 1] != '<')) && i != 0) // is i needed?
 			single_operator(&start, copy, &i, tokens);
 		else if ((copy[i] == '>' && copy[i + 1] == '>')
 			|| (copy[i] == '<' && copy[i + 1] == '<'))
