@@ -65,13 +65,13 @@ void	single_operator(int *start, char *copy, int *i, t_token **tokens)
 {
 	t_token	*curr;
 
-	if (copy[*i] == '|' && copy[*i + 1] == '|')
-	{
-		perror("Syntax error.");
-		token_clear(*tokens);
-		free(copy);
-		exit(1);
-	}
+	// if (copy[*i] == '|' && copy[*i + 1] == '|')
+	// {
+	// 	perror("Syntax error.");
+	// 	token_clear(*tokens);
+	// 	free(copy);
+	// 	exit(1);
+	// }
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
 	token_add_back(tokens, curr);
