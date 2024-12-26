@@ -31,10 +31,18 @@ void	tokenization(t_token **tokens, char *copy)
 	{
 		if ((copy[i] == '|' || (copy[i] == '>' && copy[i + 1] != '>')
 				|| (copy[i] == '<' && copy[i + 1] != '<')) && i != 0) //need i?
+		{
 			single_operator(&start, copy, &i, tokens);
+			// printf("startsingle: %d\n", start);
+			// printf("copysingle: %d\n", copy[i]);
+		}
 		else if ((copy[i] == '>' && copy[i + 1] == '>')
 			|| (copy[i] == '<' && copy[i + 1] == '<'))
+		{
 			double_operator(&start, copy, &i, tokens);
+			// printf("startdouble: %d\n", start);
+			// printf("copydouble: %d\n", copy[i]);
+		}
 		else
 			i++;
 	}
@@ -42,7 +50,9 @@ void	tokenization(t_token **tokens, char *copy)
 	{
 		curr = malloc(sizeof(t_token));
 		create_token(curr, &copy[start], i - start);
+		// printf("start: %d\n", start);
 		token_add_back(tokens, curr);
+		// printf("copy: %d\n", copy[i]);
 	}
 }
 
@@ -68,8 +78,8 @@ t_token	*tokenize_input(char *input)
 	tokens = NULL;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy);
-	// check_syntax(tokens);
+	check_syntax(tokens);
+	return (tokens);
 	free(copy);
 	print_tokens(tokens);
-	return (tokens);
 }

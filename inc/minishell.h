@@ -26,6 +26,7 @@ typedef struct s_token {
 	char			*value;
 	t_quote_status	status;
 	struct s_token	*next;
+	struct s_token	*prev;
 }	t_token;
 
 // tokenization

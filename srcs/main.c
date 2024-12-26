@@ -24,7 +24,7 @@ int	main(int ac, char **av, char **ev)
 	{
 		input = readline("\033[34mminishell$ \033[0m");
 		tokens = tokenize_input(input);
-		check_syntax(tokens);
+		// check_syntax(tokens);
 		if (*input)
 			add_history(input);
 		free(input);
