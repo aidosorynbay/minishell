@@ -69,7 +69,7 @@ t_token	*tokenize_input(char *input)
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy);
 	check_syntax(tokens);
+	return (tokens);
 	free(copy);
 	print_tokens(tokens);
-	return (tokens);
 }
