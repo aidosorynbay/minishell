@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/12 15:52:05 by aorynbay         ###   ########.fr       */
+/*   Updated: 2024/12/25 17:16:41 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		printf("|%s|\n", tokens->value);
+		printf("{%s}\n", tokens->value);
 		tokens = tokens->next;
 		i++;
 	}
