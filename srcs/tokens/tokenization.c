@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/25 17:16:41 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/06 10:43:22 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,27 @@ void	create_token(t_token *curr, char *str, int len)
 
 void	tokenization(t_token **tokens, char *copy)
 {
-	int		i;
-	int		start;
-	t_token	*curr;
+	int				i;
+	int				start;
+	t_quote_status	quote;
 
 	i = 0;
 	start = 0;
-	curr = NULL;
+	quote = Q_NONE;
 	while (copy[i])
 	{
-		if ((copy[i] == '|' || (copy[i] == '>' && copy[i + 1] != '>')
-				|| (copy[i] == '<' && copy[i + 1] != '<')) && i != 0) // is i needed?
-			single_operator(&start, copy, &i, tokens);
-		else if ((copy[i] == '>' && copy[i + 1] == '>')
-			|| (copy[i] == '<' && copy[i + 1] == '<'))
-			double_operator(&start, copy, &i, tokens);
-		else
-			i++;
+		assign_quote(copy, &i, &quote);
+		if (copy[i] == ' ' && quote == Q_NONE)
+		{
+			if (start < i)
+				create_and_add_token(tokens, copy, start, i);
+			start = i + 1;
+		}
+		operator_delimiter(&start, copy, &i, tokens);
 	}
 	if (start < i)
-	{
-		curr = malloc(sizeof(t_token));
-		create_token(curr, &copy[start], i - start);
-		token_add_back(tokens, curr);
-	}
+		create_and_add_token(tokens, copy, start, i);
+	quote_error(quote);
 }
 
 void	print_tokens(t_token *tokens)
