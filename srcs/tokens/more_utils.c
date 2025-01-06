@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 09:56:11 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/06 10:42:42 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/06 14:39:27 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,4 @@ void	create_and_add_token(t_token **tokens, char *copy, int start, int end)
 	create_token(curr, &copy[start], end - start);
 	curr->status = Q_NONE;
 	token_add_back(tokens, curr);
-}
-
-void	operator_delimiter(int *start, char *copy, int *i, t_token **tokens)
-{
-	if ((copy[*i] == '|' || (copy[*i] == '>' && copy[*i + 1] != '>')
-			|| (copy[*i] == '<' && copy[*i + 1] != '<')))
-		single_operator(start, copy, i, tokens);
-	else if ((copy[*i] == '>' && copy[*i + 1] == '>')
-		|| (copy[*i] == '<' && copy[*i + 1] == '<'))
-		double_operator(start, copy, i, tokens);
-	else
-		(*i)++;
 }
