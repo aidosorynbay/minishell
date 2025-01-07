@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/06 15:15:36 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/07 17:40:53 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,10 @@ t_token	*tokenize_input(char *input)
 	tokens = NULL;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
-	free(copy);
 	print_tokens(tokens);
+	check_syntax(&tokens);
+	free(copy);
+	if (tokens)
+		token_clear(&tokens);
 	return (tokens);
 }

@@ -6,6 +6,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft.h"
+# include <string.h>
 
 typedef enum e_token_type {
 	TOKEN_WORD,
@@ -36,13 +37,17 @@ void	print_tokens(t_token *tokens);
 // token_utils
 void	token_add_back(t_token **lst, t_token *new);
 char	*two_char_op(char *str, int i);
-void	token_clear(t_token *tokens);
+void	token_clear(t_token **tokens);
 void	single_operator(int *start, char *copy, int *i, t_token **tokens);
 void	double_operator(int *start, char *copy, int *i, t_token **tokens);
 // more_utils
-void	check_double_pipe(char *copy, int *i, t_token **tokens);
 void 	quote_error(t_quote_status quote);
 void	assign_quote(char *copy, int *i, t_quote_status *quote);
 void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 
+// syntax_check
+void check_syntax(t_token **tokens);
+//syntax_check_utils
+int	checker(t_token *tmp, t_token **tokens);
+int	check_here_doc(t_token *tmp, t_token **tokens);
 #endif

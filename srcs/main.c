@@ -6,11 +6,17 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/07 12:08:12 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/07 17:41:29 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	return_tokens(t_token *tokens)
+{
+	(void)tokens;
+	return ;
+}
 
 int	main(int ac, char **av, char **ev)
 {
@@ -27,6 +33,7 @@ int	main(int ac, char **av, char **ev)
 		if (*input)
 			add_history(input);
 		free(input);
-		token_clear(tokens);
+		if (tokens)
+			return_tokens(tokens);
 	}
 }
