@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/10 18:26:32 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/07 12:08:12 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	main(int ac, char **av, char **ev)
 	(void)ev;
 	while (1)
 	{
-		input = readline("\033[34mminishell$ \033[0m");
+		input = readline("minishell$ ");
 		tokens = tokenize_input(input);
 		if (*input)
 			add_history(input);
