@@ -57,7 +57,6 @@ void	token_clear(t_token *tokens)
 		tokens = tokens->next;
 		free(temp->value);
 		free(temp);
-		printf("Freed a token\n");
 	}
 }
 
@@ -65,20 +64,26 @@ void	single_operator(int *start, char *copy, int *i, t_token **tokens)
 {
 	t_token	*curr;
 
-	// if (copy[*i] == '|' && copy[*i + 1] == '|')
-	// {
-	// 	perror("Syntax error.");
-	// 	token_clear(*tokens);
-	// 	free(copy);
-	// 	exit(1);
-	// }
+	check_double_pipe(copy, i, tokens);
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
-	token_add_back(tokens, curr);
+	if (curr->value && curr->value[0] != '\0')
+		token_add_back(tokens, curr);
+	else
+	{
+		free(curr->value);
+		free(curr);
+	}
 	curr = malloc(sizeof(t_token));
 	curr->value = ft_substr(&copy[*i], 0, 1);
 	curr->next = NULL;
-	token_add_back(tokens, curr);
+	if (curr->value && curr->value[0] != '\0')
+		token_add_back(tokens, curr);
+	else
+	{
+		free(curr->value);
+		free(curr);
+	}
 	(*i)++;
 	*start = *i;
 }
@@ -89,11 +94,23 @@ void	double_operator(int *start, char *copy, int *i, t_token **tokens)
 
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
-	token_add_back(tokens, curr);
+	if (curr->value && curr->value[0] != '\0')
+		token_add_back(tokens, curr);
+	else
+	{
+		free(curr->value);
+		free(curr);
+	}
 	curr = malloc(sizeof(t_token));
 	curr->value = two_char_op(copy, *i);
 	curr->next = NULL;
-	token_add_back(tokens, curr);
+	if (curr->value && curr->value[0] != '\0')
+		token_add_back(tokens, curr);
+	else
+	{
+		free(curr->value);
+		free(curr);
+	}
 	*i += 2;
 	*start = *i;
 }
