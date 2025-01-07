@@ -1,6 +1,6 @@
 # Compiler and flags
-CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -g3 -Iinc/ -Ilibft/
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
 
 # Directories
 SRCS_DIR	= srcs
@@ -13,7 +13,10 @@ LIBFT_DIR	= libft
 NAME		= minishell
 SRCS		= $(SRCS_DIR)/main.c \
 			  $(TOKENS_DIR)/tokenization.c \
-			  $(TOKENS_DIR)/token_utils.c
+			  $(TOKENS_DIR)/token_utils.c \
+			  $(TOKENS_DIR)/syntax_check.c \
+			  $(TOKENS_DIR)/more_utils.c
+
 OBJS		= $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 # Libraries
