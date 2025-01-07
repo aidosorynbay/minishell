@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:53:54 by aorynbay          #+#    #+#             */
-/*   Updated: 2024/12/25 18:24:59 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/07 17:37:49 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,24 +47,25 @@ char	*two_char_op(char *str, int i)
 	return (res);
 }
 
-void	token_clear(t_token *tokens)
+void	token_clear(t_token **tokens)
 {
 	t_token	*temp;
 
-	while (tokens != NULL)
+	while (*tokens != NULL)
 	{
-		temp = tokens;
-		tokens = tokens->next;
-		free(temp->value);
-		free(temp);
+		temp = (*tokens)->next;
+		free((*tokens)->value);
+		(*tokens)->value = NULL;
+		free(*tokens);
+		*tokens = temp;
 	}
+	*tokens = NULL;
 }
 
 void	single_operator(int *start, char *copy, int *i, t_token **tokens)
 {
 	t_token	*curr;
 
-	check_double_pipe(copy, i, tokens);
 	curr = malloc(sizeof(t_token));
 	create_token(curr, &copy[*start], *i - *start);
 	if (curr->value && curr->value[0] != '\0')

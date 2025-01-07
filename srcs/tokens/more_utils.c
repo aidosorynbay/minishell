@@ -1,23 +1,21 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   more_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/07 16:59:06 by aorynbay          #+#    #+#             */
+/*   Updated: 2025/01/07 16:59:12 by aorynbay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	check_double_pipe(char *copy, int *i, t_token **tokens)
-{
-	if (copy[*i] == '|' && copy[*i + 1] == '|')
-	{
-		perror("Syntax error.");
-		token_clear(*tokens);
-		free(copy);
-		exit(1);
-	}
-}
+#include "minishell.h"
 
 void	quote_error(t_quote_status quote)
 {
 	if (quote != Q_NONE)
-	{
 		perror("quotes error.");
-		exit(1);
-	}
 }
 
 void	assign_quote(char *copy, int *i, t_quote_status *quote)

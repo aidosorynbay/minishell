@@ -1,112 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   syntax_check.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/07 16:59:21 by aorynbay          #+#    #+#             */
+/*   Updated: 2025/01/07 17:05:17 by aorynbay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-#include <stdio.h>
-#include <string.h>
-#include "minishell.h"
-
-void check_syntax(t_token *tokens)
+static int	check_pipes(t_token *tmp, t_token **tokens)
 {
-	t_token *tmp;
-
-	tmp = tokens;
-	while (tmp)
+	if (tmp->next == NULL)
 	{
-		if (strcmp(tmp->value, "|") == 0)
-		{
-			if (tmp->next == NULL)
-			{
-				perror("exit: 258 syntax error near unexpected token `|'");
-				// printf("%s\n", tokens->value);
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-			if (strcmp(tmp-> next -> value, "<<") == 0 || strcmp(tmp-> next -> value, ">") == 0 || strcmp(tmp-> next -> value, "<") == 0 
-				|| strcmp(tmp-> next -> value, ">>") == 0 || strcmp(tmp-> next -> value, "|") == 0 || strcmp(tmp-> next -> value, ";") == 0)
-			{
-				perror("exit: 258 syntax error near unexpected token `|'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-		}
-		if (strcmp(tmp->value, ">>") == 0)
-		{
-			if (tmp->next == NULL)
-			{
-				perror("exit: 258 syntax error near unexpected token `>'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-			if (strcmp(tmp-> next -> value, "<<") == 0 || strcmp(tmp-> next -> value, ">") == 0 || strcmp(tmp-> next -> value, "<") == 0 
-				|| strcmp(tmp-> next -> value, ">>") == 0 || strcmp(tmp-> next -> value, "|") == 0 || strcmp(tmp-> next -> value, ";") == 0)
-			{
-				perror("exit: 258 syntax error near unexpected token `>>'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-		}
-		if (strcmp(tmp->value, ">") == 0)
-		{
-			if (tmp->next == NULL)
-			{
-				perror("exit: 258 syntax error near unexpected token `>'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-			if (strcmp(tmp-> next -> value, "<<") == 0 || strcmp(tmp-> next -> value, ">") == 0 || strcmp(tmp-> next -> value, "<") == 0 
-				|| strcmp(tmp-> next -> value, ">>") == 0 || strcmp(tmp-> next -> value, "|") == 0 || strcmp(tmp-> next -> value, ";") == 0)
-			{
-				perror("exit: 258 syntax error near unexpected token `>>'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-		}
-		if (strcmp(tmp->value, "<<") == 0)
-		{
-			if (tmp->next == NULL)
-			{
-				perror("exit: 258 exit: 258 syntax error near unexpected token `<'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-			if (strcmp(tmp-> next -> value, "<<") == 0 || strcmp(tmp-> next -> value, ">") == 0 || strcmp(tmp-> next -> value, "<") == 0 
-				|| strcmp(tmp-> next -> value, ">>") == 0 || strcmp(tmp-> next -> value, "|") == 0 || strcmp(tmp-> next -> value, ";") == 0)
-			{
-				perror("exit: 258 syntax error near unexpected token `<<'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-		}
-		if (strcmp(tmp->value, "<") == 0)
-		{
-			if (tmp->next == NULL)
-			{
-				perror("exit: 258 exit: 258 syntax error near unexpected token `<'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-			if (strcmp(tmp-> next -> value, "<<") == 0 || strcmp(tmp-> next -> value, ">") == 0 || strcmp(tmp-> next -> value, "<") == 0 
-				|| strcmp(tmp-> next -> value, ">>") == 0 || strcmp(tmp-> next -> value, "|") == 0 || strcmp(tmp-> next -> value, ";") == 0)
-			{
-				perror("exit: 258 syntax error near unexpected token `<<'");
-				// free(tmp);
-				token_clear(tokens);
-				return ;
-			}
-		}
-		tmp = tmp->next;
+		perror("exit: 258 syntax error near unexpected token `|'");
+		token_clear(tokens);
+		return (1);
 	}
-	// if (tmp != NULL)
-	// 	free(tmp);
-	return ;
+	else if (checker(tmp, tokens) == 1)
+		return (1);
+	return (0);
 }
 
+static int	check_append(t_token *tmp, t_token **tokens)
+{
+	if (tmp->next == NULL)
+	{
+		perror("exit: 258 syntax error near unexpected token `>'");
+		token_clear(tokens);
+		return (1);
+	}
+	else if (checker(tmp, tokens) == 1)
+		return (1);
+	return (0);
+}
 
+static int	check_redirection(t_token *tmp, t_token **tokens)
+{
+	if (tmp->next == NULL)
+	{
+		perror("exit: 258 syntax error near unexpected token `>'");
+		token_clear(tokens);
+		return (1);
+	}
+	else if (checker(tmp, tokens) == 1)
+		return (1);
+	return (0);
+}
+
+static int	check_lesser(t_token *tmp, t_token **tokens)
+{
+	if (tmp->next == NULL)
+	{
+		perror("exit: 258 exit: 258 syntax error near unexpected token `<'");
+		token_clear(tokens);
+		return (1);
+	}
+	else if (checker(tmp, tokens) == 1)
+		return (1);
+	return (0);
+}
+
+void	check_syntax(t_token **tokens)
+{
+	t_token	*tmp;
+	int		flag;
+
+	tmp = *tokens;
+	flag = 0;
+	while (tmp)
+	{
+		if (strcmp(tmp->value, "<<") == 0)
+			flag = check_here_doc(tmp, tokens);
+		else if (strcmp(tmp->value, "|") == 0)
+			flag = check_pipes(tmp, tokens);
+		else if (strcmp(tmp->value, ">>") == 0)
+			flag = check_append(tmp, tokens);
+		else if (strcmp(tmp->value, ">") == 0)
+			flag = check_redirection(tmp, tokens);
+		else if (strcmp(tmp->value, "<") == 0)
+			flag = check_lesser(tmp, tokens);
+		if (flag == 1)
+			return ;
+		tmp = tmp->next;
+	}
+	return ;
+}
