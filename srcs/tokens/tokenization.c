@@ -72,10 +72,13 @@ t_token	*tokenize_input(char *input)
 	tokens = NULL;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
-	print_tokens(tokens);
+	// print_tokens(tokens);
 	check_syntax(&tokens);
+	// build_ast(&tokens);
+	// print_ast(&tokens, 0);
 	free(copy);
 	if (tokens)
 		token_clear(&tokens);
 	return (tokens);
 }
+

@@ -16,6 +16,18 @@ typedef enum e_token_type {
 	TOKEN_EOF
 } t_token_type;
 
+typedef enum e_ast_node_type {
+    NODE_COMMAND,
+    NODE_OPERATOR
+} t_ast_node_type;
+
+typedef struct s_ast_node {
+    char            *value;       // Command or operator
+    struct s_ast_node *left;      // Left child (e.g., input redirection or previous pipe)
+    struct s_ast_node *right;     // Right child (e.g., output redirection or next pipe)
+} t_ast_node;
+
+
 typedef enum S_QUOTE_STATUS {
 	Q_NONE,
 	Q_SINGLE,
@@ -50,4 +62,8 @@ void check_syntax(t_token **tokens);
 //syntax_check_utils
 int	checker(t_token *tmp, t_token **tokens);
 int	check_here_doc(t_token *tmp, t_token **tokens);
+
+//ast
+void print_ast(t_ast_node *node, int depth);
+t_ast_node *build_ast(t_token *tokens);
 #endif
