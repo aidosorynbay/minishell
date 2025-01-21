@@ -12,6 +12,26 @@
 
 #include "minishell.h"
 
+static int	checker_pipe(t_token *tmp, t_token **tokens)
+{
+	if (tmp->next == NULL)
+	{
+		perror("exit: 258 syntax error near unexpected token `|'");
+		token_clear(tokens);
+		return (1);
+	}
+	else if (strcmp(tmp->next->value, "|") == 0 || (strcmp(tmp->next->value,
+			">") == 0 && (tmp->next->next->value == NULL) ) || strcmp(tmp->next->value, "<") == 0
+		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,
+			"<<") == 0 || strcmp(tmp->next->value, ";") == 0)
+	{
+		perror("exit: 258 syntax error near unexpected token `|'");
+		token_clear(tokens);
+		return (1);
+	}
+	return (0);
+}
+
 static int	check_pipes(t_token *tmp, t_token **tokens)
 {
 	if (tmp->next == NULL)
@@ -20,7 +40,7 @@ static int	check_pipes(t_token *tmp, t_token **tokens)
 		token_clear(tokens);
 		return (1);
 	}
-	else if (checker(tmp, tokens) == 1)
+	else if (checker_pipe(tmp, tokens) == 1)
 		return (1);
 	return (0);
 }
