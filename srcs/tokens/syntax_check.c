@@ -20,10 +20,10 @@ static int	checker_pipe(t_token *tmp, t_token **tokens)
 		token_clear(tokens);
 		return (1);
 	}
-	else if (strcmp(tmp->next->value, "|") == 0 || (strcmp(tmp->next->value,
-			">") == 0 && (tmp->next->next->value == NULL) ) || strcmp(tmp->next->value, "<") == 0
-		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,
-			"<<") == 0 || strcmp(tmp->next->value, ";") == 0)
+	else if ((strcmp(tmp->next->value, "|") == 0 || (strcmp(tmp->next->value,">") == 0
+		|| strcmp(tmp->next->value, "<") == 0
+		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,"<<") == 0))
+		&& tmp->next->next == NULL)
 	{
 		perror("exit: 258 syntax error near unexpected token `|'");
 		token_clear(tokens);
