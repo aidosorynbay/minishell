@@ -62,7 +62,7 @@ void check_syntax(t_token **tokens);
 //syntax_check_utils
 int	checker(t_token *tmp, t_token **tokens);
 int	check_here_doc(t_token *tmp, t_token **tokens);
-
+// int error_syntaxcheck(t_token **tokens);
 //ast
 void print_ast(t_ast_node *node, int depth);
 t_ast_node *build_ast(t_token *tokens);
