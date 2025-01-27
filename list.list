@@ -1,3 +1,3 @@
 ctrl d in interactive prompt segfault
 echo <input >>output arg arg <hh arg | <infile cmd // probably after pipe not accepting redirect directly
-a<a>a | 'hi // throws syntax error then proceeds 
+a<a>a | 'hi // throws syntax error then proceeds
