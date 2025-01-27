@@ -56,4 +56,7 @@ void 	check_syntax(t_token **tokens);
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
 
+// assign type
+void	assign_token_type(t_token **tokens);
+
 #endif
