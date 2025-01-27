@@ -7,13 +7,18 @@
 # include <readline/history.h>
 # include "libft.h"
 # include <string.h>
+# include <signal.h>
 
 typedef enum e_token_type {
-	TOKEN_WORD,
-	TOKEN_BUILT_IN,
-	TOKEN_OPERATOR,
-	TOKEN_ENV_VAR,
-	TOKEN_EOF
+	TOKEN_CMD, // commands
+	TOKEN_BUILTIN, // echo, cd, pwd, export etc.
+	TOKEN_ARG, // arguments
+	TOKEN_PIPE, // |
+	TOKEN_REDIRECT_IN, // <
+	TOKEN_REDIRECT_OUT, // >
+	TOKEN_REDIRECT_APPEND, // >>
+	TOKEN_HEREDOC, // <<
+	TOKEN_FILE
 } t_token_type;
 
 typedef enum S_QUOTE_STATUS {
@@ -23,7 +28,7 @@ typedef enum S_QUOTE_STATUS {
 } t_quote_status;
 
 typedef struct s_token {
-	t_token_type	type;
+	t_token_type	type;		
 	char			*value;
 	t_quote_status	status;
 	struct s_token	*next;
@@ -46,8 +51,11 @@ void	assign_quote(char *copy, int *i, t_quote_status *quote);
 void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 
 // syntax_check
-void check_syntax(t_token **tokens);
-//syntax_check_utils
-int	checker(t_token *tmp, t_token **tokens);
-int	check_here_doc(t_token *tmp, t_token **tokens);
+void 	check_syntax(t_token **tokens);
+// syntax_check_utils
+int		checker(t_token *tmp, t_token **tokens);
+int		check_here_doc(t_token *tmp, t_token **tokens);
+
+// assign_type
+void	assign_token_type(t_token **tokens);
 #endif

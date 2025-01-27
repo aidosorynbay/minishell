@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/07 17:40:53 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/20 19:03:11 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		printf("{%s}\n", tokens->value);
+		printf("value: {%s}\n", tokens->value);
+		printf("type: {%d}\n", tokens->type);
 		tokens = tokens->next;
 		i++;
 	}
@@ -72,8 +73,9 @@ t_token	*tokenize_input(char *input)
 	tokens = NULL;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
-	print_tokens(tokens);
 	check_syntax(&tokens);
+	assign_token_type(&tokens);
+	print_tokens(tokens);
 	free(copy);
 	if (tokens)
 		token_clear(&tokens);
