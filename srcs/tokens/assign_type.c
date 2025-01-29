@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:48:59 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/20 17:57:38 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:37:42 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	assign_token_type(t_token **tokens)
 	tmp = *tokens;
 	while (tmp)
 	{
-		tmp->type = 0;
 		assign_builtin_type(tmp);
 		assign_op_type(tmp);
 		tmp = tmp->next;
+		tmp->type = TOKEN_UNKNOWN;
 	}
 }

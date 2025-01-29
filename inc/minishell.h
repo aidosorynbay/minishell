@@ -18,7 +18,9 @@ typedef enum e_token_type {
 	TOKEN_REDIRECT_OUT, // >
 	TOKEN_REDIRECT_APPEND, // >>
 	TOKEN_HEREDOC, // <<
-	TOKEN_FILE
+	TOKEN_FILE,
+	TOKEN_BUILTIN_FLAG, // -n
+	TOKEN_UNKNOWN
 } t_token_type;
 
 typedef enum S_QUOTE_STATUS {

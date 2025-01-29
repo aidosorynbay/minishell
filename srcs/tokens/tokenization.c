@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/20 19:03:11 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/01/29 18:06:04 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,28 @@ void	print_tokens(t_token *tokens)
 	while (tokens != NULL)
 	{
 		printf("value: {%s}\n", tokens->value);
-		printf("type: {%d}\n", tokens->type);
+		if (tokens->type == 0)
+			printf("type: |TOKEN_CMD|\n");
+		else if (tokens->type == 1)
+			printf("type: |TOKEN_BUILTIN|\n");
+		else if (tokens->type == 2)
+			printf("type: |TOKEN_ARG|\n");
+		else if (tokens->type == 3)
+			printf("type: |TOKEN_PIPE|\n");
+		else if (tokens->type == 4)
+			printf("type: |TOKEN_REDIRECT_IN|\n");
+		else if (tokens->type == 5)
+			printf("type: |TOKEN_REDIRECT_OUT|\n");
+		else if (tokens->type == 6)
+			printf("type: |TOKEN_REDIRECT_APPEND|\n");
+		else if (tokens->type == 7)
+			printf("type: |TOKEN_HEREDOC|\n");
+		else if (tokens->type == 8)
+			printf("type: |TOKEN_FILE|\n");
+		else if (tokens->type == 10)
+			printf("UNKNOWN TYPE\n");
+		else if (tokens->type == 9)
+			printf("type: |TOKEN_BUILTIN_FLAG|\n");
 		tokens = tokens->next;
 		i++;
 	}
