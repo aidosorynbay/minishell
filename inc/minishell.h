@@ -41,6 +41,13 @@ typedef struct s_token {
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_cmd {
+    char **args;          // Command and its arguments
+    int input_fd;         // Input file descriptor (for redirections)
+    int output_fd;        // Output file descriptor (for redirections)
+    struct s_cmd *next;   // Pointer to the next command (for pipes)
+} t_cmd;
+
 // tokenization
 t_token	*tokenize_input(char *input);
 void	tokenization(t_token **tokens, char *input, int i, int start);
@@ -63,7 +70,6 @@ void check_syntax(t_token **tokens);
 int	checker(t_token *tmp, t_token **tokens);
 int	check_here_doc(t_token *tmp, t_token **tokens);
 // int error_syntaxcheck(t_token **tokens);
-//ast
-void print_ast(t_ast_node *node, int depth);
-t_ast_node *build_ast(t_token *tokens);
+
+//token_parser
 #endif
