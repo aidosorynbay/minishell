@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/29 18:06:04 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/03 18:44:32 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ t_token	*tokenize_input(char *input)
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
 	check_syntax(&tokens);
-	assign_token_type(&tokens);
+	// assign_token_type(&tokens);
 	print_tokens(tokens);
 	free(copy);
 	if (tokens)
