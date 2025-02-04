@@ -7,6 +7,8 @@
 # include <readline/history.h>
 # include "libft.h"
 # include <string.h>
+# include <fcntl.h>
+
 
 typedef enum e_token_type {
 	TOKEN_WORD,
@@ -41,6 +43,13 @@ typedef struct s_token {
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_cmd {
+    char **args;          // Command and its arguments
+    int input_fd;         // Input file descriptor (for redirections)
+    int output_fd;        // Output file descriptor (for redirections)
+    struct s_cmd *next;   // Pointer to the next command (for pipes)
+} t_cmd;
+
 // tokenization
 t_token	*tokenize_input(char *input);
 void	tokenization(t_token **tokens, char *input, int i, int start);
@@ -67,8 +76,7 @@ int	check_here_doc(t_token *tmp, t_token **tokens);
 //utils
 void    clear_screen(void);
 
-
-//ast
-void print_ast(t_ast_node *node, int depth);
-t_ast_node *build_ast(t_token *tokens);
+//token_parser
+t_cmd *parse_tokens(char **tokens);
+t_cmd *create_cmd();
 #endif
