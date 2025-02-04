@@ -88,7 +88,12 @@ void	check_syntax(t_token **tokens)
 	flag = 0;
 	while (tmp)
 	{
-		if (strcmp(tmp->value, "<<") == 0)
+		if (strcmp(tmp->value, "clear") == 0)
+		{
+    		clear_screen();
+    		return ;
+		}
+		else if (strcmp(tmp->value, "<<") == 0)
 			flag = check_here_doc(tmp, tokens);
 		else if (strcmp(tmp->value, "|") == 0)
 			flag = check_pipes(tmp, tokens);

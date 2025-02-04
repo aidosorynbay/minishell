@@ -18,6 +18,7 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/syntax_check.c \
               $(TOKENS_DIR)/more_utils.c \
               $(TOKENS_DIR)/syntax_check_utils.c \
+              $(TOKENS_DIR)/utils.c \
               $(AST_DIR)/ast.c 
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
