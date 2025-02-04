@@ -78,5 +78,5 @@ void    clear_screen(void);
 
 //token_parser
 t_cmd *parse_tokens(char **tokens);
-t_cmd *create_cmd();
+void free_all(t_token *tokens, t_cmd *cmd);
 #endif

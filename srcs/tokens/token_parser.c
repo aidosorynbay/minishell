@@ -1,13 +1,13 @@
 #include "minishell.h"
 
 
-static t_cmd *create_cmd(char ***tokens)
+static t_cmd *create_cmd()
 {
 	t_cmd *cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 	{
 		perror("malloc");
-		free_all(NULL, cmd);
+		// free_all(tokens, cmd);
 		exit(1);
 	}
 	cmd->args = NULL;
@@ -55,12 +55,12 @@ t_cmd *parse_tokens(char **tokens)
 	{
 		if (!head)
 		{
-			head = create_cmd(&tokens);
+			head = create_cmd();
 			current = head;
 		}
 		else if (strcmp(tokens[i], "|") == 0)
 		{
-			current->next = create_cmd(&tokens);
+			current->next = create_cmd();
 			current = current->next;
 			i++;
 		}
