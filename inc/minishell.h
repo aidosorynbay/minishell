@@ -30,7 +30,7 @@ typedef enum S_QUOTE_STATUS {
 } t_quote_status;
 
 typedef struct s_token {
-	t_token_type	type;		
+	t_token_type	type;
 	char			*value;
 	t_quote_status	status;
 	struct s_token	*next;
@@ -60,5 +60,6 @@ int		check_here_doc(t_token *tmp, t_token **tokens);
 
 // assign type
 void	assign_token_type(t_token **tokens);
+void	unknown_assign(t_token **tokens);
 
 #endif

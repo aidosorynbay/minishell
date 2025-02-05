@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:48:59 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/29 19:37:42 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/05 21:12:25 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,13 @@ void	assign_op_type(t_token *tmp)
 	else if (strcmp(tmp->value, "<") == 0)
 		tmp->type = TOKEN_REDIRECT_IN;
 	else if (strcmp(tmp->value, ">") == 0)
+	{
 		tmp->type = TOKEN_REDIRECT_OUT;
+	}
 	else if (strcmp(tmp->value, ">>") == 0)
+	{
 		tmp->type = TOKEN_REDIRECT_APPEND;
+	}
 	else if (strcmp(tmp->value, "<<") == 0)
 		tmp->type = TOKEN_HEREDOC;
 }
@@ -32,19 +36,55 @@ void	assign_builtin_type(t_token *tmp)
 		|| !(strcmp(tmp->value, "pwd")) || !(strcmp(tmp->value, "export"))
 		|| !(strcmp(tmp->value, "unset")) || !(strcmp(tmp->value, "env"))
 		|| !(strcmp(tmp->value, "exit")))
+	{
 		tmp->type = TOKEN_BUILTIN;
+	}
+}
+
+void	assign_builtin_flag(t_token *tmp)
+{
+	if (strcmp(tmp->value, "-n") == 0)
+		tmp->type = TOKEN_BUILTIN_FLAG;
 }
 
 void	assign_token_type(t_token **tokens)
 {
 	t_token *tmp;
+	int		expect_file;
+	int		expect_command;
 
 	tmp = *tokens;
+	expect_file = 0;
+	expect_command = 0;
 	while (tmp)
 	{
-		assign_builtin_type(tmp);
 		assign_op_type(tmp);
+		if (tmp->type == 4 || tmp->type == 5 || tmp->type == 6 || tmp->type == 7)
+			expect_file = 1;
+		else if (tmp->type == TOKEN_PIPE)
+			expect_command = 1;
+		else if (expect_file)
+		{
+			tmp->type = TOKEN_FILE;
+			expect_file = 0;
+		}
+		else if (tmp == *tokens)
+		{
+			assign_builtin_type(tmp);
+			if (tmp->type == TOKEN_UNKNOWN)
+				tmp->type = TOKEN_CMD;
+		}
+		else if (expect_command)
+		{
+			tmp->type = TOKEN_CMD;
+			expect_command = 0;
+		}
+		else
+		{
+			assign_builtin_flag(tmp);
+			if (tmp->type == TOKEN_UNKNOWN)
+				tmp->type = TOKEN_ARG;
+		}
 		tmp = tmp->next;
-		tmp->type = TOKEN_UNKNOWN;
 	}
 }

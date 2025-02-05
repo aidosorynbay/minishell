@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:53:54 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/07 17:41:17 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/05 20:32:58 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,19 @@
 void	token_add_back(t_token **lst, t_token *new)
 {
 	t_token	*curr;
-	t_token	*temp;
 
-	if (new == NULL)
+	if (!new)
 		return ;
 	if (lst == NULL || *lst == NULL)
+	{
 		*lst = new;
+	}
 	else
 	{
 		curr = *lst;
-		temp = curr;
-		while (curr->next != NULL)
-		{
+		while (curr->next)
 			curr = curr->next;
-		}
 		curr->next = new;
-		*lst = temp;
 	}
 }
 

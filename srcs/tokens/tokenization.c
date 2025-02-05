@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/03 18:44:32 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/05 20:59:03 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,27 +55,27 @@ void	print_tokens(t_token *tokens)
 	{
 		printf("value: {%s}\n", tokens->value);
 		if (tokens->type == 0)
-			printf("type: |TOKEN_CMD|\n");
+			printf("type: |TOKEN_CMD|\n\n");
 		else if (tokens->type == 1)
-			printf("type: |TOKEN_BUILTIN|\n");
+			printf("type: |TOKEN_BUILTIN|\n\n");
 		else if (tokens->type == 2)
-			printf("type: |TOKEN_ARG|\n");
+			printf("type: |TOKEN_ARG|\n\n");
 		else if (tokens->type == 3)
-			printf("type: |TOKEN_PIPE|\n");
+			printf("type: |TOKEN_PIPE|\n\n");
 		else if (tokens->type == 4)
-			printf("type: |TOKEN_REDIRECT_IN|\n");
+			printf("type: |TOKEN_REDIRECT_IN|\n\n");
 		else if (tokens->type == 5)
-			printf("type: |TOKEN_REDIRECT_OUT|\n");
+			printf("type: |TOKEN_REDIRECT_OUT|\n\n");
 		else if (tokens->type == 6)
-			printf("type: |TOKEN_REDIRECT_APPEND|\n");
+			printf("type: |TOKEN_REDIRECT_APPEND|\n\n");
 		else if (tokens->type == 7)
-			printf("type: |TOKEN_HEREDOC|\n");
+			printf("type: |TOKEN_HEREDOC|\n\n");
 		else if (tokens->type == 8)
-			printf("type: |TOKEN_FILE|\n");
+			printf("type: |TOKEN_FILE|\n\n");
 		else if (tokens->type == 10)
-			printf("UNKNOWN TYPE\n");
+			printf("|UNKNOWN TYPE|\n\n");
 		else if (tokens->type == 9)
-			printf("type: |TOKEN_BUILTIN_FLAG|\n");
+			printf("type: |TOKEN_BUILTIN_FLAG|\n\n");
 		tokens = tokens->next;
 		i++;
 	}
@@ -95,7 +95,8 @@ t_token	*tokenize_input(char *input)
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
 	check_syntax(&tokens);
-	// assign_token_type(&tokens);
+	unknown_assign(&tokens);
+	assign_token_type(&tokens);
 	print_tokens(tokens);
 	free(copy);
 	if (tokens)
