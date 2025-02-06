@@ -60,7 +60,6 @@ void	assign_token_type(t_token **tokens)
 	expect_EOF = 0;
 	while (tmp)
 	{
-		printf("%d\n", expect_EOF);
 		if (expect_EOF == 1)
 		{
 			tmp->type = TOKEN_EOF;
@@ -68,7 +67,6 @@ void	assign_token_type(t_token **tokens)
 		}
 		else
 			assign_op_type(tmp);
-		printf("|%d|\n", tmp->type);
 		if (tmp->type == 4 || tmp->type == 5 || tmp->type == 6)
 			expect_file = 1;
 		else if (tmp->type == TOKEN_HEREDOC)
@@ -97,8 +95,6 @@ void	assign_token_type(t_token **tokens)
 			if (tmp->type == TOKEN_UNKNOWN)
 				tmp->type = TOKEN_ARG;
 		}
-		printf("[%d]\n", expect_EOF);
-		printf("%s\n", tmp->value);
 		tmp = tmp->next;
 	}
 }

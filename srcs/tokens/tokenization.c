@@ -72,10 +72,12 @@ void	print_tokens(t_token *tokens)
 			printf("type: |TOKEN_HEREDOC|\n\n");
 		else if (tokens->type == 8)
 			printf("type: |TOKEN_FILE|\n\n");
-		else if (tokens->type == 10)
+		else if (tokens->type == 11)
 			printf("|UNKNOWN TYPE|\n\n");
 		else if (tokens->type == 9)
 			printf("type: |TOKEN_BUILTIN_FLAG|\n\n");
+        else if (tokens->type == 10)
+			printf("type: |TOKEN_EOF|\n\n");
 		tokens = tokens->next;
 		i++;
 	}
