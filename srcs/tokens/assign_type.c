@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:48:59 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/05 21:12:25 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/06 18:18:39 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,27 @@ void	assign_token_type(t_token **tokens)
 	t_token *tmp;
 	int		expect_file;
 	int		expect_command;
+	int		expect_EOF;
 
 	tmp = *tokens;
 	expect_file = 0;
 	expect_command = 0;
+	expect_EOF = 0;
 	while (tmp)
 	{
-		assign_op_type(tmp);
-		if (tmp->type == 4 || tmp->type == 5 || tmp->type == 6 || tmp->type == 7)
+		printf("%d\n", expect_EOF);
+		if (expect_EOF == 1)
+		{
+			tmp->type = TOKEN_EOF;
+			expect_EOF = 0;
+		}
+		else
+			assign_op_type(tmp);
+		printf("|%d|\n", tmp->type);
+		if (tmp->type == 4 || tmp->type == 5 || tmp->type == 6)
 			expect_file = 1;
+		else if (tmp->type == TOKEN_HEREDOC)
+			expect_EOF = 1;
 		else if (tmp->type == TOKEN_PIPE)
 			expect_command = 1;
 		else if (expect_file)
@@ -85,6 +97,8 @@ void	assign_token_type(t_token **tokens)
 			if (tmp->type == TOKEN_UNKNOWN)
 				tmp->type = TOKEN_ARG;
 		}
+		printf("[%d]\n", expect_EOF);
+		printf("%s\n", tmp->value);
 		tmp = tmp->next;
 	}
 }

@@ -20,6 +20,7 @@ typedef enum e_token_type {
 	TOKEN_HEREDOC, // <<
 	TOKEN_FILE,
 	TOKEN_BUILTIN_FLAG, // -n
+	TOKEN_EOF, // for heredoc
 	TOKEN_UNKNOWN
 } t_token_type;
 
