@@ -72,4 +72,8 @@ int	check_here_doc(t_token *tmp, t_token **tokens);
 // int error_syntaxcheck(t_token **tokens);
 
 //token_parser
+t_cmd	*parse_tokens(t_token **tokens);
+
+//execusion
+void execute_command(char **args);
 #endif

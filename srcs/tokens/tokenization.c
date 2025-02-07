@@ -74,8 +74,7 @@ t_token	*tokenize_input(char *input)
 	tokenization(&tokens, copy, i, start);
 	print_tokens(tokens);
 	check_syntax(&tokens);
-	// build_ast(&tokens);
-	// print_ast(&tokens, 0);
+	parse_tokens(tokens);
 	free(copy);
 	if (tokens)
 		token_clear(&tokens);

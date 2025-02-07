@@ -5,7 +5,7 @@ CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
 # Directories
 SRCS_DIR    = srcs
 TOKENS_DIR  = $(SRCS_DIR)/tokens
-AST_DIR     = $(SRCS_DIR)/ast
+EXECUTION_DIR = $(SRCS_DIR)/execution
 INC_DIR     = inc
 OBJS_DIR    = objs
 LIBFT_DIR   = libft
@@ -18,8 +18,8 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/syntax_check.c \
               $(TOKENS_DIR)/more_utils.c \
               $(TOKENS_DIR)/syntax_check_utils.c \
-              $(AST_DIR)/ast.c 
-
+			  $(EXECUTION_DIR)/builtins.c
+			   
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 # Libraries
