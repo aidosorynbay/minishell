@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/07 16:51:30 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/05 20:59:03 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,31 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		printf("{%s}\n", tokens->value);
+		printf("value: {%s}\n", tokens->value);
+		if (tokens->type == 0)
+			printf("type: |TOKEN_CMD|\n\n");
+		else if (tokens->type == 1)
+			printf("type: |TOKEN_BUILTIN|\n\n");
+		else if (tokens->type == 2)
+			printf("type: |TOKEN_ARG|\n\n");
+		else if (tokens->type == 3)
+			printf("type: |TOKEN_PIPE|\n\n");
+		else if (tokens->type == 4)
+			printf("type: |TOKEN_REDIRECT_IN|\n\n");
+		else if (tokens->type == 5)
+			printf("type: |TOKEN_REDIRECT_OUT|\n\n");
+		else if (tokens->type == 6)
+			printf("type: |TOKEN_REDIRECT_APPEND|\n\n");
+		else if (tokens->type == 7)
+			printf("type: |TOKEN_HEREDOC|\n\n");
+		else if (tokens->type == 8)
+			printf("type: |TOKEN_FILE|\n\n");
+		else if (tokens->type == 11)
+			printf("|UNKNOWN TYPE|\n\n");
+		else if (tokens->type == 9)
+			printf("type: |TOKEN_BUILTIN_FLAG|\n\n");
+        else if (tokens->type == 10)
+			printf("type: |TOKEN_EOF|\n\n");
 		tokens = tokens->next;
 		i++;
 	}
@@ -72,12 +96,12 @@ t_token	*tokenize_input(char *input)
 	tokens = NULL;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
-	print_tokens(tokens);
 	check_syntax(&tokens);
-	parse_tokens(tokens);
+	unknown_assign(&tokens);
+	assign_token_type(&tokens);
+	print_tokens(tokens);
 	free(copy);
 	if (tokens)
 		token_clear(&tokens);
 	return (tokens);
 }
-

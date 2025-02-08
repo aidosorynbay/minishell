@@ -1,11 +1,11 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
+CFLAGS      = -Wall -Wextra -Werror -g3 -Iinc/ -Ilibft/
 
 # Directories
 SRCS_DIR    = srcs
 TOKENS_DIR  = $(SRCS_DIR)/tokens
-EXECUTION_DIR = $(SRCS_DIR)/execution
+AST_DIR     = $(SRCS_DIR)/ast
 INC_DIR     = inc
 OBJS_DIR    = objs
 LIBFT_DIR   = libft
@@ -18,8 +18,9 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/syntax_check.c \
               $(TOKENS_DIR)/more_utils.c \
               $(TOKENS_DIR)/syntax_check_utils.c \
-			  $(EXECUTION_DIR)/builtins.c
-			   
+			  $(TOKENS_DIR)/assign_type.c \
+			  $(TOKENS_DIR)/assign_type_utils.c
+
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 # Libraries

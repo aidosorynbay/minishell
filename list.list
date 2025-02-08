@@ -1,0 +1,4 @@
+ctrl d in interactive prompt segfault
+a<a>a | 'hi // throws syntax error then proceeds
+
+create ft_strcmp
