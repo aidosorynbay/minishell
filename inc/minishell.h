@@ -7,17 +7,22 @@
 # include <readline/history.h>
 # include "libft.h"
 # include <string.h>
+# include <signal.h>
 
 typedef enum e_token_type {
-	TOKEN_WORD,
-	TOKEN_BUILT_IN,
-	TOKEN_OPERATOR,
-	TOKEN_ENV_VAR,
-	TOKEN_EOF
+	TOKEN_CMD, // commands
+	TOKEN_BUILTIN, // echo, cd, pwd, export etc.
+	TOKEN_ARG, // arguments
+	TOKEN_PIPE, // |
+	TOKEN_REDIRECT_IN, // <
+	TOKEN_REDIRECT_OUT, // >
+	TOKEN_REDIRECT_APPEND, // >>
+	TOKEN_HEREDOC, // <<
+	TOKEN_FILE,
+	TOKEN_BUILTIN_FLAG, // -n
+	TOKEN_EOF, // for heredoc
+	TOKEN_UNKNOWN
 } t_token_type;
-
-
-
 
 typedef enum S_QUOTE_STATUS {
 	Q_NONE,
@@ -31,13 +36,6 @@ typedef struct s_token {
 	t_quote_status	status;
 	struct s_token	*next;
 }	t_token;
-
-typedef struct s_cmd {
-    char **args;          // Command and its arguments
-    int input_fd;         // Input file descriptor (for redirections)
-    int output_fd;        // Output file descriptor (for redirections)
-    struct s_cmd *next;   // Pointer to the next command (for pipes)
-} t_cmd;
 
 // tokenization
 t_token	*tokenize_input(char *input);
@@ -56,15 +54,17 @@ void	assign_quote(char *copy, int *i, t_quote_status *quote);
 void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 
 // syntax_check
-void check_syntax(t_token **tokens);
-//syntax_check_utils
-int	checker(t_token *tmp, t_token **tokens);
-int	check_here_doc(t_token *tmp, t_token **tokens);
-// int error_syntaxcheck(t_token **tokens);
+void 	check_syntax(t_token **tokens);
+// syntax_check_utils
+int		checker(t_token *tmp, t_token **tokens);
+int		check_here_doc(t_token *tmp, t_token **tokens);
 
-//token_parser
-t_cmd	*parse_tokens(t_token **tokens);
+// assign type
+void	assign_token_type(t_token **tokens);
+void	unknown_assign(t_token **tokens);
 
-//execusion
+//execution
+t_cmd *parse_tokens(t_token **tokens);
 void execute_command(char **args);
+
 #endif
