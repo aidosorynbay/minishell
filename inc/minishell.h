@@ -7,6 +7,8 @@
 # include <readline/history.h>
 # include "libft.h"
 # include <string.h>
+# include <fcntl.h>
+
 # include <signal.h>
 
 typedef enum e_token_type {
@@ -63,8 +65,13 @@ int		check_here_doc(t_token *tmp, t_token **tokens);
 void	assign_token_type(t_token **tokens);
 void	unknown_assign(t_token **tokens);
 
+//utils
+void    clear_screen(void);
+
 //execution
 t_cmd *parse_tokens(t_token **tokens);
 void execute_command(char **args);
 
+t_cmd *parse_tokens(char **tokens);
+void free_all(t_token *tokens, t_cmd *cmd);
 #endif
