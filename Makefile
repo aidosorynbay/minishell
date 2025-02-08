@@ -9,6 +9,7 @@ AST_DIR     = $(SRCS_DIR)/ast
 INC_DIR     = inc
 OBJS_DIR    = objs
 LIBFT_DIR   = libft
+EXECUTION_DIR = $(SRCS_DIR)/execution
 
 # Files and output
 NAME        = minishell
@@ -19,7 +20,11 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/more_utils.c \
               $(TOKENS_DIR)/syntax_check_utils.c \
               $(TOKENS_DIR)/utils.c \
-              $(TOKENS_DIR)/token_parser.c \
+              $(TOKENS_DIR)/assign_type_utils.c \
+              $(TOKENS_DIR)/assign_type.c \
+			  $(EXECUTION_DIR)/builtins.c 
+			  $(EXECUTION_DIR)/converter.c 
+            #   $(EXECUTION_DIR)/token_parser.c 
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 

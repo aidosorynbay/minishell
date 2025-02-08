@@ -97,8 +97,10 @@ t_token	*tokenize_input(char *input)
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
 	check_syntax(&tokens);
+	parse_tokens(convert_tokens_to_args(&tokens));
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
+	execute_command(&tokens);
 	print_tokens(tokens);
 	free(copy);
 	if (tokens)

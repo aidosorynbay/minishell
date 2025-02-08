@@ -58,24 +58,53 @@
 //     return 0;
 // }
 
-static char *find_executable(char *args)
+#include "minishell.h"
+
+void ft_echo(t_token *args)
 {
-    (void)args;
-    return("/bin/ls");
+    t_token *current = args;
+
+    while (current)
+    {
+        ft_putstr_fd(current->value, 1);
+        if (current->next)
+            ft_putchar_fd(' ' , 1);
+        current = current->next;
+    }
+    ft_putchar_fd('\n', 1);
+}
+void    handle_builtin(t_cmd *cmd)
+{
+    if (!cmd || !cmd->args || !cmd->args[0])
+        return;
+
+    if (strcmp(cmd->args[0], "echo") == 0)
+        ft_echo(cmd->args);
+    else if (strcmp(cmd->args[0], "cd") == 0)
+        ft_cd(cmd->args);
+    else if (strcmp(cmd->args[0], "pwd") == 0)
+        ft_pwd();
+    else if (strcmp(cmd->args[0], "export") == 0)
+        ft_export(cmd->args);
+    else if (strcmp(cmd->args[0], "unset") == 0)
+        ft_unset(cmd->args);
+    else if (strcmp(cmd->args[0], "env") == 0)
+        ft_env();
+    else if (strcmp(cmd->args[0], "exit") == 0)
+        ft_exit(cmd->args);
 }
 
-void execute_command(char **args)
+void execute_command(t_cmd *cmd)
 {
-    char *cmd_path = find_executable(args[0]); // Find full path
-    if (!cmd_path)
-    {
-        fprintf(stderr, "Command not found: %s\n", args[0]);
-        exit(127);
-    }
-    execve(cmd_path, args, NULL);
-    perror("execve failed"); // If execve fails
-    exit(1);
+    if (!cmd || !cmd->args || !cmd->args[0])
+        return;
+
+    if (is_builtin(cmd->args[0]))
+        handle_builtin(cmd);
+    else
+        execute_external(cmd);
 }
+
 
 
 // void execute_commands(t_cmd *cmd_list)

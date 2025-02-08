@@ -39,6 +39,15 @@ typedef struct s_token {
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_cmd {
+	char			*cmd;
+	char			**args;
+	int				argc;
+	struct s_cmd	*next;
+	int				input_fd;
+	int				output_fd;
+}	t_cmd;
+
 // tokenization
 t_token	*tokenize_input(char *input);
 void	tokenization(t_token **tokens, char *input, int i, int start);
@@ -65,13 +74,18 @@ int		check_here_doc(t_token *tmp, t_token **tokens);
 void	assign_token_type(t_token **tokens);
 void	unknown_assign(t_token **tokens);
 
+//converter
+char **convert_tokens_to_args(t_token **tokens);
+
+
 //utils
 void    clear_screen(void);
 
 //execution
-t_cmd *parse_tokens(t_token **tokens);
-void execute_command(char **args);
+t_cmd *parse_tokens(char **av);
 
-t_cmd *parse_tokens(char **tokens);
-void free_all(t_token *tokens, t_cmd *cmd);
+//builtins
+void execute_command(t_token **args);
+
+
 #endif
