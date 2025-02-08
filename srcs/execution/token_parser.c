@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int count_args(char **tokens, int start)
+static count_args(char **tokens, int start)
 {
     int count = 0;
     while (tokens[start] && strcmp(tokens[start], "|") != 0)
@@ -9,20 +9,6 @@ int count_args(char **tokens, int start)
         start++;
     }
     return count;
-}
-
-int is_builtin(char *cmd)
-{
-    if (!cmd)
-        return 0;
-
-    return (!strcmp(cmd, "echo") ||
-            !strcmp(cmd, "cd") ||
-            !strcmp(cmd, "pwd") ||
-            !strcmp(cmd, "export") ||
-            !strcmp(cmd, "unset") ||
-            !strcmp(cmd, "env") ||
-            !strcmp(cmd, "exit"));
 }
 
 

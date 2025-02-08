@@ -41,22 +41,19 @@
 //     return 1;
 // }
 
-// int handle_builtin(t_cmd *cmd)
-// {
-//     if (!cmd || !cmd->args || !cmd->args[0])
-//         return 0;
+static int is_builtin(char *cmd)
+{
+    if (!cmd)
+        return 0;
 
-//     if (cmd->cmd_type == TOKEN_BUILTIN)
-//     {
-//         if (strcmp(cmd->args[0], "cd") == 0)
-//             return builtin_cd(cmd->args);
-//         else if (strcmp(cmd->args[0], "exit") == 0)
-//             return builtin_exit(cmd->args);
-//         else if (strcmp(cmd->args[0], "echo") == 0)
-//             return builtin_echo(cmd->args);
-//     }
-//     return 0;
-// }
+    return (!strcmp(cmd, "echo") ||
+            !strcmp(cmd, "cd") ||
+            !strcmp(cmd, "pwd") ||
+            !strcmp(cmd, "export") ||
+            !strcmp(cmd, "unset") ||
+            !strcmp(cmd, "env") ||
+            !strcmp(cmd, "exit"));
+}
 
 #include "minishell.h"
 

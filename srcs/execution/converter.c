@@ -2,10 +2,10 @@
 
 char **convert_tokens_to_args(t_token **tokens)
 {
-    int count = 0;
+    int count;
     int i;
     t_token **tmp;
-    
+
     tmp = tokens;
     count = 0;
     i = 0;
