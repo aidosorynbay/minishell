@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 12:48:59 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/06 18:18:39 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/10 17:34:20 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,28 @@
 
 void	assign_op_type(t_token *tmp)
 {
-	if (strcmp(tmp->value, "|") == 0)
+	if (ft_strcmp(tmp->value, "|") == 0)
 		tmp->type = TOKEN_PIPE;
-	else if (strcmp(tmp->value, "<") == 0)
+	else if (ft_strcmp(tmp->value, "<") == 0)
 		tmp->type = TOKEN_REDIRECT_IN;
-	else if (strcmp(tmp->value, ">") == 0)
+	else if (ft_strcmp(tmp->value, ">") == 0)
 	{
 		tmp->type = TOKEN_REDIRECT_OUT;
 	}
-	else if (strcmp(tmp->value, ">>") == 0)
+	else if (ft_strcmp(tmp->value, ">>") == 0)
 	{
 		tmp->type = TOKEN_REDIRECT_APPEND;
 	}
-	else if (strcmp(tmp->value, "<<") == 0)
+	else if (ft_strcmp(tmp->value, "<<") == 0)
 		tmp->type = TOKEN_HEREDOC;
 }
 
 void	assign_builtin_type(t_token *tmp)
 {
-	if ((strcmp(tmp->value, "echo") == 0) || !(strcmp(tmp->value, "cd"))
-		|| !(strcmp(tmp->value, "pwd")) || !(strcmp(tmp->value, "export"))
-		|| !(strcmp(tmp->value, "unset")) || !(strcmp(tmp->value, "env"))
-		|| !(strcmp(tmp->value, "exit")))
+	if ((ft_strcmp(tmp->value, "echo") == 0) || !(ft_strcmp(tmp->value, "cd"))
+		|| !(ft_strcmp(tmp->value, "pwd")) || !(ft_strcmp(tmp->value, "export"))
+		|| !(ft_strcmp(tmp->value, "unset")) || !(ft_strcmp(tmp->value, "env"))
+		|| !(ft_strcmp(tmp->value, "exit")))
 	{
 		tmp->type = TOKEN_BUILTIN;
 	}
@@ -43,7 +43,7 @@ void	assign_builtin_type(t_token *tmp)
 
 void	assign_builtin_flag(t_token *tmp)
 {
-	if (strcmp(tmp->value, "-n") == 0)
+	if (ft_strcmp(tmp->value, "-n") == 0)
 		tmp->type = TOKEN_BUILTIN_FLAG;
 }
 

@@ -14,10 +14,10 @@
 
 int	checker(t_token *tmp, t_token **tokens)
 {
-	if (strcmp(tmp->next->value, "<<") == 0 || strcmp(tmp->next->value,
-			">") == 0 || strcmp(tmp->next->value, "<") == 0
-		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,
-			"|") == 0 || strcmp(tmp->next->value, ";") == 0)
+	if (ft_strcmp(tmp->next->value, "<<") == 0 || ft_strcmp(tmp->next->value,
+			">") == 0 || ft_strcmp(tmp->next->value, "<") == 0
+		|| ft_strcmp(tmp->next->value, ">>") == 0 || ft_strcmp(tmp->next->value,
+			"|") == 0 || ft_strcmp(tmp->next->value, ";") == 0)
 	{
 		perror("exit: 258 syntax error near unexpected token `<<'");
 		token_clear(tokens);

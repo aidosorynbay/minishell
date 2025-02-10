@@ -22,12 +22,12 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/utils.c \
               $(TOKENS_DIR)/assign_type_utils.c \
               $(TOKENS_DIR)/assign_type.c \
-			  $(EXECUTION_DIR)/converter.c \
-			  $(EXECUTION_DIR)/token_parser.c \
-			  $(BUILTINS_DIR)/builtins.c \
-			  $(BUILTINS_DIR)/cd.c \
-			  $(BUILTINS_DIR)/echo.c \
-			  $(BUILTINS_DIR)/exit.c 
+			#   $(EXECUTION_DIR)/converter.c \
+			#   $(EXECUTION_DIR)/token_parser.c \
+			#   $(BUILTINS_DIR)/builtins.c \
+			#   $(BUILTINS_DIR)/cd.c \
+			#   $(BUILTINS_DIR)/echo.c \
+			#   $(BUILTINS_DIR)/exit.c 
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
