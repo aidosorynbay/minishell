@@ -46,6 +46,7 @@ typedef struct s_cmd {
 	struct s_cmd	*next;
 	int				input_fd;
 	int				output_fd;
+	t_token_type	cmd_type;
 }	t_cmd;
 
 // tokenization
@@ -85,7 +86,9 @@ void    clear_screen(void);
 t_cmd *parse_tokens(char **av);
 
 //builtins
-void execute_command(t_token **args);
-
+void init_execution(t_cmd *cmd_list);
+int ft_echo(char **args);
+int ft_exit(char **args);
+int ft_cd(char **args);
 
 #endif
