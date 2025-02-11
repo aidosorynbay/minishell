@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int ft__echo(char **args)
+int ft_echo(char **args)
 {
     int i = 1;
     while (args[i])

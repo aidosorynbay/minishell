@@ -28,10 +28,10 @@ int	main(int ac, char **av, char **ev)
 	(void)ev;
 	while (1)
 	{
-		if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-			perror("signal");
-		if (signal(SIGINT, SIG_IGN) == SIG_ERR)
-			perror("signal");
+		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		// 	perror("signal");
+		// if (signal(SIGINT, SIG_IGN) == SIG_ERR)
+		// 	perror("signal");
 		input = readline("minishell$ ");
 		if (!input)
 			break ;

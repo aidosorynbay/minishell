@@ -76,7 +76,7 @@ void	assign_token_type(t_token **tokens);
 void	unknown_assign(t_token **tokens);
 
 //converter
-char **convert_tokens_to_args(t_token **tokens);
+char **convert_tokens_to_args(t_token *tokens);
 
 
 //utils
@@ -90,5 +90,7 @@ void init_execution(t_cmd *cmd_list);
 int ft_echo(char **args);
 int ft_exit(char **args);
 int ft_cd(char **args);
+void ft_pwd();
+
 
 #endif

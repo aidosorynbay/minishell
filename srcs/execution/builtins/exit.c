@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int ft__exit(char **args)
+int ft_exit(char **args)
 {
     if (args[1])
     {

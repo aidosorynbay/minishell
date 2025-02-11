@@ -99,7 +99,7 @@ t_token	*tokenize_input(char *input)
 	check_syntax(&tokens);
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	init_execution(parse_tokens(convert_tokens_to_args(&tokens)));
+	init_execution(parse_tokens(convert_tokens_to_args(tokens)));
 	print_tokens(tokens);
 	free(copy);
 	if (tokens)

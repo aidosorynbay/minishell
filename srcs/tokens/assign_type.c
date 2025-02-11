@@ -32,10 +32,10 @@ void	assign_op_type(t_token *tmp)
 
 void	assign_builtin_type(t_token *tmp)
 {
-	if ((strcmp(tmp->value, "echo") == 0) || !(strcmp(tmp->value, "cd"))
-		|| !(strcmp(tmp->value, "pwd")) || !(strcmp(tmp->value, "export"))
-		|| !(strcmp(tmp->value, "unset")) || !(strcmp(tmp->value, "env"))
-		|| !(strcmp(tmp->value, "exit")))
+	if ((strcmp(tmp->value, "echo") == 0) || (strcmp(tmp->value, "cd") == 0)
+		|| (strcmp(tmp->value, "pwd") == 0) || (strcmp(tmp->value, "export") == 0)
+		|| (strcmp(tmp->value, "unset") == 0) || (strcmp(tmp->value, "env") == 0)
+		|| (strcmp(tmp->value, "exit") == 0))
 	{
 		tmp->type = TOKEN_BUILTIN;
 	}
