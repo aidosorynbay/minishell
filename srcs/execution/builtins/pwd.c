@@ -14,6 +14,6 @@ void ft_pwd(void)
     if (cwd)
         ft_putendl_fd(cwd, 1);
 
-    if (alloc) // Only free if `cwd` was allocated by `getcwd()`
+    if (alloc)  
         free(cwd);
 }

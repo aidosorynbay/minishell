@@ -2,11 +2,11 @@
 
 int ft_exit(char **args)
 {
+    int exit_code ;
+
+    exit_code = 0;
     if (args[1])
-    {
-        int exit_code = ft_atoi(args[1]);
-        exit(exit_code);
-    }
-    exit(0);
+        exit_code = ft_atoi(args[1]);
+    exit(exit_code);
     return 1;
 }

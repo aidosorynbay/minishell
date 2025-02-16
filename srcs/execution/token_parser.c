@@ -51,8 +51,6 @@ t_cmd *parse_tokens(char **tokens)
             i++;
         }
         new_cmd->args[j] = NULL;
-
-        // Detect built-in commands
         if (new_cmd->args[0] && (strcmp(new_cmd->args[0], "echo") == 0 ||
                                  strcmp(new_cmd->args[0], "cd") == 0 ||
                                  strcmp(new_cmd->args[0], "exit") == 0||
@@ -66,9 +64,11 @@ t_cmd *parse_tokens(char **tokens)
 
         current = new_cmd;
 
-        if (tokens[i] && strcmp(tokens[i], "|") == 0) // Skip the pipe
+        if (tokens[i] && strcmp(tokens[i], "|") == 0)
             i++;
     }
-
     return head;
 }
+
+
+

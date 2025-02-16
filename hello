@@ -1,0 +1,14 @@
+Arg: echo
+Arg: echo
+entered builtin
+Executing builtin command: echo
+Arg[1]: hello
+hello
+value: {echo}
+type: |TOKEN_BUILTIN|
+
+value: {hello}
+type: |TOKEN_ARG|
+
+2
+[?2004hminishell$ ^C[?2004l
