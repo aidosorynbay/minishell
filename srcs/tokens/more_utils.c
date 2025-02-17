@@ -6,16 +6,19 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 16:59:06 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/01/07 17:40:46 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/17 19:28:42 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	quote_error(t_quote_status quote)
+void	quote_error(t_quote_status quote, t_token **tokens)
 {
 	if (quote != Q_NONE)
+	{
 		perror("quotes error.");
+		token_clear(tokens);
+	}
 }
 
 void	assign_quote(char *copy, int *i, t_quote_status *quote)

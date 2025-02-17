@@ -61,7 +61,7 @@ void	token_clear(t_token **tokens);
 void	single_operator(int *start, char *copy, int *i, t_token **tokens);
 void	double_operator(int *start, char *copy, int *i, t_token **tokens);
 // more_utils
-void 	quote_error(t_quote_status quote);
+void	quote_error(t_quote_status quote, t_token **tokens);
 void	assign_quote(char *copy, int *i, t_quote_status *quote);
 void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 

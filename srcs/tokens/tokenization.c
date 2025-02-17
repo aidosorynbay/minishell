@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/10 17:27:36 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/17 19:28:24 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	tokenization(t_token **tokens, char *copy, int i, int start)
 	}
 	if (start < i)
 		create_and_add_token(tokens, copy, start, i);
-	quote_error(quote);
+	quote_error(quote, tokens);
 }
 
 void	print_tokens(t_token *tokens)

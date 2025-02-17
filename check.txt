@@ -1,5 +1,2 @@
-echo hello | grep llo >> text.txt | < eof
 
 ctrl d in interactive prompt segfault
-
-a<a>a | 'hi // throws syntax error then proceeds
