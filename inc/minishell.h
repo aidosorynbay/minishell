@@ -42,6 +42,7 @@ typedef struct s_token {
 typedef struct s_cmd {
 	char			*cmd;
 	char			**args;
+	char			**args2;
 	int				argc;
 	struct s_cmd	*next;
 	int				input_fd;
@@ -87,9 +88,9 @@ t_cmd *parse_tokens(char **av);
 
 //builtins
 void init_execution(t_cmd *cmd_list);
-int ft_echo(char **args);
-int ft_exit(char **args);
-int ft_cd(char **args);
+int ft_echo(char **total_arg);
+int ft_exit(char **total_arg);
+int ft_cd(char **total_arg);
 void ft_pwd();
 
 

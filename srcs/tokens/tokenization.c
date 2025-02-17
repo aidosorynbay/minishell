@@ -53,35 +53,35 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (tokens != NULL)
 	{
-		printf("value: {%s}\n", tokens->value);
+		fprintf(stderr, "value: {%s}\n", tokens->value);
 		if (tokens->type == 0)
-			printf("type: |TOKEN_CMD|\n\n");
+			fprintf(stderr, "type: |TOKEN_CMD|\n\n");
 		else if (tokens->type == 1)
-			printf("type: |TOKEN_BUILTIN|\n\n");
+			fprintf(stderr, "type: |TOKEN_BUILTIN|\n\n");
 		else if (tokens->type == 2)
-			printf("type: |TOKEN_ARG|\n\n");
+			fprintf(stderr, "type: |TOKEN_ARG|\n\n");
 		else if (tokens->type == 3)
-			printf("type: |TOKEN_PIPE|\n\n");
+			fprintf(stderr, "type: |TOKEN_PIPE|\n\n");
 		else if (tokens->type == 4)
-			printf("type: |TOKEN_REDIRECT_IN|\n\n");
+			fprintf(stderr, "type: |TOKEN_REDIRECT_IN|\n\n");
 		else if (tokens->type == 5)
-			printf("type: |TOKEN_REDIRECT_OUT|\n\n");
+			fprintf(stderr, "type: |TOKEN_REDIRECT_OUT|\n\n");
 		else if (tokens->type == 6)
-			printf("type: |TOKEN_REDIRECT_APPEND|\n\n");
+			fprintf(stderr, "type: |TOKEN_REDIRECT_APPEND|\n\n");
 		else if (tokens->type == 7)
-			printf("type: |TOKEN_HEREDOC|\n\n");
+			fprintf(stderr, "type: |TOKEN_HEREDOC|\n\n");
 		else if (tokens->type == 8)
-			printf("type: |TOKEN_FILE|\n\n");
+			fprintf(stderr, "type: |TOKEN_FILE|\n\n");
 		else if (tokens->type == 11)
-			printf("|UNKNOWN TYPE|\n\n");
+			fprintf(stderr, "|UNKNOWN TYPE|\n\n");
 		else if (tokens->type == 9)
-			printf("type: |TOKEN_BUILTIN_FLAG|\n\n");
+			fprintf(stderr, "type: |TOKEN_BUILTIN_FLAG|\n\n");
         else if (tokens->type == 10)
-			printf("type: |TOKEN_EOF|\n\n");
+			fprintf(stderr, "type: |TOKEN_EOF|\n\n");
 		tokens = tokens->next;
 		i++;
 	}
-	printf("%d\n", i);
+	fprintf(stderr, "%d\n", i);
 }
 
 t_token	*tokenize_input(char *input)

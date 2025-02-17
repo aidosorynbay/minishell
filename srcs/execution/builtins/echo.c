@@ -5,7 +5,7 @@ int ft_echo(char **args)
     if (strcmp(args[1], "-n") == 0)
     {
         int i = 2;
-        while (args[i])
+        while (args[i] != NULL)
         {
             ft_putstr_fd(args[i], 1);
             if (args[i + 1])
