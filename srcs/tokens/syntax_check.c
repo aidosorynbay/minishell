@@ -12,29 +12,10 @@
 
 #include "minishell.h"
 
-int error_syntaxcheck(t_token **tokens)
-{
-    perror("exit: 258 syntax error near unexpected token `|'");
-	token_clear(tokens);
-    return 1;
-}
-
-static int	checker_pipe(t_token *tmp, t_token **tokens)
-{
-	if (tmp->next == NULL)
-		return(error_syntaxcheck(tokens));
-	else if ((ft_strcmp(tmp->next->value, "|") == 0 || (ft_strcmp(tmp->next->value,">") == 0
-		|| ft_strcmp(tmp->next->value, "<") == 0
-		|| ft_strcmp(tmp->next->value, ">>") == 0 || ft_strcmp(tmp->next->value,"<<") == 0))
-		&& tmp->next->next == NULL)
-		return(error_syntaxcheck(tokens));
-	return (0);
-}
-
 static int	check_pipes(t_token *tmp, t_token **tokens)
 {
 	if (tmp->next == NULL)
-		return(error_syntaxcheck(tokens));
+		return (error_syntaxcheck(tokens));
 	else if (checker_pipe(tmp, tokens) == 1)
 		return (1);
 	return (0);
@@ -89,10 +70,7 @@ void	check_syntax(t_token **tokens)
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->value, "clear") == 0)
-		{
-    		clear_screen();
-    		return ;
-		}
+			return (clear_screen(), (void)0);
 		else if (ft_strcmp(tmp->value, "<<") == 0)
 			flag = check_here_doc(tmp, tokens);
 		else if (ft_strcmp(tmp->value, "|") == 0)

@@ -70,10 +70,17 @@ void 	check_syntax(t_token **tokens);
 // syntax_check_utils
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
+int		checker_pipe(t_token *tmp, t_token **tokens);
+int		error_syntaxcheck(t_token **tokens);
 
 // assign type
 void	assign_token_type(t_token **tokens);
+void	assign_builtin_type(t_token *tmp);
+void	assign_op_type(t_token *tmp);
 void	unknown_assign(t_token **tokens);
+void	assign_op_eof(t_token *tmp, int *expect_eof);
+void	handle_op(t_token *tmp, int *expect_file, int *expect_eof, int *expect_command);
+void	handle_comman_file(t_token *tmp, t_token **tokens, int *expect_file, int *expect_command);
 
 //converter
 char **convert_tokens_to_args(t_token **tokens);
