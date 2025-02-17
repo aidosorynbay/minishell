@@ -51,8 +51,6 @@ void handle_redirection(char *outfile, int append)
         dup2(fd, STDOUT_FILENO); // Redirect stdout to file 
         close(fd);
     }
-    // dup2(saved_stdout, STDOUT_FILENO);
-    // close(saved_stdout);
     fprintf(stderr, "---------------*************----------------\n");
 }
 
@@ -89,11 +87,15 @@ void init_execution(t_cmd *cmd_list)
 {
     fprintf(stderr, "---------------*************----------------\n");
     t_cmd *cmd = cmd_list;
-    int saved_stdout = dup(STDOUT_FILENO);
-    int saved_stdin = dup(STDIN_FILENO);
+    int saved_stdout;
+    int saved_stdin:
+    saved_stdout = dup(STDOUT_FILENO);
+    saved_stdin = dup(STDIN_FILENO);
+    int i;
+    
     while (cmd)
     {
-        int i = 0;
+        i = 0;
         fprintf(stderr, "Executing command: %d\n", cmd->cmd_type);
         while (cmd->args[i])
         {

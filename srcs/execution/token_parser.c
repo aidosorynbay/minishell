@@ -28,8 +28,8 @@ t_cmd *parse_tokens(char **tokens)
         t_cmd *new_cmd = malloc(sizeof(t_cmd));
         if (!new_cmd)
             return NULL;
-        int k = 0;
-        int l = 0;
+        // int k = 0;
+        // int l = 0;
         new_cmd->input_fd = STDIN_FILENO;
         new_cmd->output_fd = STDOUT_FILENO;
         new_cmd->cmd_type = TOKEN_UNKNOWN;
@@ -46,15 +46,15 @@ t_cmd *parse_tokens(char **tokens)
         int j = 0;
         while (tokens[i] && strcmp(tokens[i], "|") != 0)
         {
-            fprintf(stderr, "------Creating new cmd args---------\n");
-            if (strcmp(tokens[l], ">") != 0 || strcmp(tokens[l], ">>") != 0 || strcmp(tokens[l], "<") != 0 || strcmp(tokens[l], "<<") != 0)
-                l+=2;
-            else
-                l++;
-            new_cmd->args2[k] = tokens[l];
-            fprintf(stderr, "args[%d]: %s\n", k, new_cmd->args[k]);
-            k++;
-            fprintf(stderr, "------Done creating new cmd args---------\n");
+            // fprintf(stderr, "------Creating new cmd args---------\n");
+            // if (strcmp(tokens[l], ">") != 0 || strcmp(tokens[l], ">>") != 0 || strcmp(tokens[l], "<") != 0 || strcmp(tokens[l], "<<") != 0)
+            //     l+=2;
+            // else
+            //     l++;
+            // new_cmd->args2[k] = tokens[l];
+            // fprintf(stderr, "args[%d]: %s\n", k, new_cmd->args[k]);
+            // k++;
+            // fprintf(stderr, "------Done creating new cmd args---------\n");
             if (strcmp(tokens[i], ">") == 0 || strcmp(tokens[i], ">>") == 0 || strcmp(tokens[i], "<") == 0 || strcmp(tokens[i], "<<") == 0)
             {
                 if (strcmp(tokens[i], ">") == 0)
