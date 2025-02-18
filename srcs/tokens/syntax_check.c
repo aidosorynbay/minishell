@@ -21,12 +21,10 @@ int error_syntaxcheck(t_token **tokens)
 
 static int	checker_pipe(t_token *tmp, t_token **tokens)
 {
-	if (tmp->next == NULL)
-		return(error_syntaxcheck(tokens));
-	else if ((strcmp(tmp->next->value, "|") == 0 || (strcmp(tmp->next->value,">") == 0
+	if (strcmp(tmp->next->value, "|") == 0 || ((strcmp(tmp->next->value,">") == 0
 		|| strcmp(tmp->next->value, "<") == 0
-		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,"<<") == 0))
-		&& tmp->next->next == NULL)
+		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,"<<") == 0)
+		&& tmp->next->next == NULL))
 		return(error_syntaxcheck(tokens));
 	return (0);
 }
@@ -96,7 +94,10 @@ void	check_syntax(t_token **tokens)
 		else if (strcmp(tmp->value, "<<") == 0)
 			flag = check_here_doc(tmp, tokens);
 		else if (strcmp(tmp->value, "|") == 0)
+		{
+			fprintf(stderr, "entered pipe\n");
 			flag = check_pipes(tmp, tokens);
+		}
 		else if (strcmp(tmp->value, ">>") == 0)
 			flag = check_append(tmp, tokens);
 		else if (strcmp(tmp->value, ">") == 0)

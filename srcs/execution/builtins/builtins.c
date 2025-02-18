@@ -88,7 +88,7 @@ void init_execution(t_cmd *cmd_list)
     fprintf(stderr, "---------------*************----------------\n");
     t_cmd *cmd = cmd_list;
     int saved_stdout;
-    int saved_stdin:
+    int saved_stdin;
     saved_stdout = dup(STDOUT_FILENO);
     saved_stdin = dup(STDIN_FILENO);
     int i;
