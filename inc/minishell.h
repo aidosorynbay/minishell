@@ -82,6 +82,9 @@ void	assign_op_eof(t_token *tmp, int *expect_eof);
 void	handle_op(t_token *tmp, int *expect_file, int *expect_eof, int *expect_command);
 void	handle_comman_file(t_token *tmp, t_token **tokens, int *expect_file, int *expect_command);
 
+// trimming
+void	trim_quotes(t_token **tokens);
+
 //converter
 char **convert_tokens_to_args(t_token **tokens);
 

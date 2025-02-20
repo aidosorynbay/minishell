@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/17 18:14:13 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/20 10:13:39 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ int	main(int ac, char **av, char **ev)
 	(void)ev;
 	while (1)
 	{
-		if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-			perror("signal");
-		if (signal(SIGINT, SIG_IGN) == SIG_ERR)
-			perror("signal");
+		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		// 	perror("signal");
+		// if (signal(SIGINT, SIG_IGN) == SIG_ERR)
+		// 	perror("signal");
 		input = readline("minishell$ ");
 		if (!input)
 			break ;

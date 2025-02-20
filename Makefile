@@ -22,6 +22,7 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/utils.c \
               $(TOKENS_DIR)/assign_type_utils.c \
               $(TOKENS_DIR)/assign_type.c \
+			  $(TOKENS_DIR)/trimming.c \
 			#   $(EXECUTION_DIR)/converter.c \
 			#   $(EXECUTION_DIR)/token_parser.c \
 			#   $(BUILTINS_DIR)/builtins.c \
