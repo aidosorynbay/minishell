@@ -42,11 +42,15 @@ typedef struct s_token {
 typedef struct s_cmd {
 	char			*cmd;
 	char			**args;
-	char			**args2;
+	char			**args_for_cmd;
 	int				argc;
 	struct s_cmd	*next;
 	int				input_fd;
 	int				output_fd;
+	char *outfile;
+	char *inputfile;
+	int				append_fd;
+	// int				heredoc;
 	t_token_type	cmd_type;
 }	t_cmd;
 

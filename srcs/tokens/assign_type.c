@@ -14,28 +14,28 @@
 
 void	assign_op_type(t_token *tmp)
 {
-	if (strcmp(tmp->value, "|") == 0)
+	if (ft_strcmp(tmp->value, "|") == 0)
 		tmp->type = TOKEN_PIPE;
-	else if (strcmp(tmp->value, "<") == 0)
+	else if (ft_strcmp(tmp->value, "<") == 0)
 		tmp->type = TOKEN_REDIRECT_IN;
-	else if (strcmp(tmp->value, ">") == 0)
+	else if (ft_strcmp(tmp->value, ">") == 0)
 	{
 		tmp->type = TOKEN_REDIRECT_OUT;
 	}
-	else if (strcmp(tmp->value, ">>") == 0)
+	else if (ft_strcmp(tmp->value, ">>") == 0)
 	{
 		tmp->type = TOKEN_REDIRECT_APPEND;
 	}
-	else if (strcmp(tmp->value, "<<") == 0)
+	else if (ft_strcmp(tmp->value, "<<") == 0)
 		tmp->type = TOKEN_HEREDOC;
 }
 
 void	assign_builtin_type(t_token *tmp)
 {
-	if ((strcmp(tmp->value, "echo") == 0) || (strcmp(tmp->value, "cd") == 0)
-		|| (strcmp(tmp->value, "pwd") == 0) || (strcmp(tmp->value, "export") == 0)
-		|| (strcmp(tmp->value, "unset") == 0) || (strcmp(tmp->value, "env") == 0)
-		|| (strcmp(tmp->value, "exit") == 0))
+	if ((ft_strcmp(tmp->value, "echo") == 0) || (ft_strcmp(tmp->value, "cd") == 0)
+		|| (ft_strcmp(tmp->value, "pwd") == 0) || (ft_strcmp(tmp->value, "export") == 0)
+		|| (ft_strcmp(tmp->value, "unset") == 0) || (ft_strcmp(tmp->value, "env") == 0)
+		|| (ft_strcmp(tmp->value, "exit") == 0))
 	{
 		tmp->type = TOKEN_BUILTIN;
 	}
@@ -43,7 +43,7 @@ void	assign_builtin_type(t_token *tmp)
 
 void	assign_builtin_flag(t_token *tmp)
 {
-	if (strcmp(tmp->value, "-n") == 0)
+	if (ft_strcmp(tmp->value, "-n") == 0)
 		tmp->type = TOKEN_BUILTIN_FLAG;
 }
 

@@ -21,9 +21,9 @@ int error_syntaxcheck(t_token **tokens)
 
 static int	checker_pipe(t_token *tmp, t_token **tokens)
 {
-	if (strcmp(tmp->next->value, "|") == 0 || ((strcmp(tmp->next->value,">") == 0
-		|| strcmp(tmp->next->value, "<") == 0
-		|| strcmp(tmp->next->value, ">>") == 0 || strcmp(tmp->next->value,"<<") == 0)
+	if (ft_strcmp(tmp->next->value, "|") == 0 || ((ft_strcmp(tmp->next->value,">") == 0
+		|| ft_strcmp(tmp->next->value, "<") == 0
+		|| ft_strcmp(tmp->next->value, ">>") == 0 || ft_strcmp(tmp->next->value,"<<") == 0)
 		&& tmp->next->next == NULL))
 		return(error_syntaxcheck(tokens));
 	return (0);
@@ -86,23 +86,23 @@ void	check_syntax(t_token **tokens)
 	flag = 0;
 	while (tmp)
 	{
-		if (strcmp(tmp->value, "clear") == 0)
+		if (ft_strcmp(tmp->value, "clear") == 0)
 		{
     		clear_screen();
     		return ;
 		}
-		else if (strcmp(tmp->value, "<<") == 0)
+		else if (ft_strcmp(tmp->value, "<<") == 0)
 			flag = check_here_doc(tmp, tokens);
-		else if (strcmp(tmp->value, "|") == 0)
+		else if (ft_strcmp(tmp->value, "|") == 0)
 		{
 			fprintf(stderr, "entered pipe\n");
 			flag = check_pipes(tmp, tokens);
 		}
-		else if (strcmp(tmp->value, ">>") == 0)
+		else if (ft_strcmp(tmp->value, ">>") == 0)
 			flag = check_append(tmp, tokens);
-		else if (strcmp(tmp->value, ">") == 0)
+		else if (ft_strcmp(tmp->value, ">") == 0)
 			flag = check_redirection(tmp, tokens);
-		else if (strcmp(tmp->value, "<") == 0)
+		else if (ft_strcmp(tmp->value, "<") == 0)
 			flag = check_lesser(tmp, tokens);
 		if (flag == 1)
 			return ;

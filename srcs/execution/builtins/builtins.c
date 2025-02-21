@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+static int count_args_for_cmd(char **tokens)
+{
+    int count = 0;
+    int start = 0;
+    while (tokens[start] && ft_strcmp(tokens[start], "|") != 0 && 
+       ft_strcmp(tokens[start], ">") != 0 && 
+       ft_strcmp(tokens[start], ">>") != 0 && 
+       ft_strcmp(tokens[start], "<") != 0)
+    {
+        count++;
+        start++;
+    }
+    return count;
+}
+
 static void handle_builtin(t_cmd *cmd)
 {
     fprintf(stderr, "---------------*************----------------\n");
@@ -10,13 +25,13 @@ static void handle_builtin(t_cmd *cmd)
     for (int i = 1; cmd->args[i]; i++)
         fprintf(stderr, "Arg[%d]: %s\n", i, cmd->args[i]);
 
-    if (strcmp(cmd->args[0], "echo") == 0)
-        ft_echo(cmd->args);
-    else if (strcmp(cmd->args[0], "cd") == 0)
-        ft_cd(cmd->args);
-    else if (strcmp(cmd->args[0], "exit") == 0)
-        ft_exit(cmd->args);
-    else if (strcmp(cmd->args[0], "pwd") == 0)
+    if (ft_strcmp(cmd->args[0], "echo") == 0)
+        ft_echo(cmd->args_for_cmd);
+    else if (ft_strcmp(cmd->args[0], "cd") == 0)
+        ft_cd(cmd->args_for_cmd);
+    else if (ft_strcmp(cmd->args[0], "exit") == 0)
+        ft_exit(cmd->args_for_cmd);
+    else if (ft_strcmp(cmd->args[0], "pwd") == 0)
         ft_pwd();
     else
         fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
@@ -54,71 +69,78 @@ void handle_redirection(char *outfile, int append)
     fprintf(stderr, "---------------*************----------------\n");
 }
 
-// void init_execution(t_cmd *cmd_list)
-// {
-//     t_cmd *cmd = cmd_list;
-
-//     while (cmd)
-//     {
-//         printf("Executing command: %d\n", cmd->cmd_type);
-
-//         if (cmd->cmd_type == TOKEN_BUILTIN)
-//         {
-//             printf("Executing built-in command: %s\n", cmd->args[0]);
-//             handle_builtin(cmd);
-//         }
-//         else if (cmd->cmd_type == TOKEN_REDIRECT_OUT || cmd->cmd_type == TOKEN_REDIRECT_APPEND ||
-//                  cmd->cmd_type == TOKEN_REDIRECT_IN || cmd->cmd_type == TOKEN_HEREDOC)
-//         {
-//             printf("Handling redirection\n");
-//             handle_redirection(cmd->args[1], cmd->cmd_type);
-//         }
-//         else
-//         {
-//             // execute_external_command(cmd);
-//             printf("Executing external command: %s\n", cmd->args[0]);
-//         }
-//         cmd = cmd->next;
-//     }
-// }
 
 
 void init_execution(t_cmd *cmd_list)
 {
     fprintf(stderr, "---------------*************----------------\n");
     t_cmd *cmd = cmd_list;
-    int saved_stdout;
-    int saved_stdin;
-    saved_stdout = dup(STDOUT_FILENO);
-    saved_stdin = dup(STDIN_FILENO);
+    int saved_stdout = dup(STDOUT_FILENO);
+    int saved_stdin = dup(STDIN_FILENO);
     int i;
+    int j;
     
     while (cmd)
     {
         i = 0;
+        j = 0;
         fprintf(stderr, "Executing command: %d\n", cmd->cmd_type);
+        cmd->args_for_cmd = malloc(sizeof(char *) * (count_args_for_cmd(cmd->args) + 1));
+        if (!cmd->args_for_cmd)
+        {
+            perror("malloc failed");
+            exit(1);
+        }
         while (cmd->args[i])
         {
+            if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
+            {
+                cmd->outfile = strdup(cmd->args[i + 1]);  // Save output file
+                cmd->append_fd = (ft_strcmp(cmd->args[i], ">>") == 0);  // Set append flag
+                i++;  // Skip file name
+            }
+            else if (ft_strcmp(cmd->args[i], "<") == 0)
+            {
+                cmd->inputfile = strdup(cmd->args[i + 1]);  // Save input file
+                i++;  // Skip file name
+            }
+            // else if (ft_strcmp(cmd->args[i], "<<") == 0)
+            // {
+            //     cmd->heredoc = strdup(cmd->args[i + 1]);  // Save heredoc delimiter
+            //     i++;  // Skip delimiter
+            // }
+            else
+            {
+                cmd->args_for_cmd[j++] = strdup(cmd->args[i]);  // Copy normal arguments
+            }
+            i++;
+        }
+        cmd->args_for_cmd[j] = NULL;  // Null-terminate
+
+        j = 0;
+        while (cmd->args[j])
+        {
             fprintf(stderr, "checking for redirection\n");
-            if (strcmp(cmd->args[i], ">") == 0 || strcmp(cmd->args[i], ">>") == 0)
+            fprintf(stderr, "args of i are %s\n", cmd->args[j]);
+            if (ft_strcmp(cmd->args[j], ">") == 0 || ft_strcmp(cmd->args[j], ">>") == 0)
             {
                 fprintf(stderr, "entering redirection\n");
-                if (strcmp(cmd->args[i], ">") == 0)
+                if (ft_strcmp(cmd->args[j], ">") == 0)
                 {
                     fprintf(stderr, "entered truncate mode\n");
-                    handle_redirection(cmd->args[i + 1], 0);
+                    handle_redirection(cmd->args[j + 1], 0);
                 }
                 else
                 {
                     fprintf(stderr, "entered append mode\n");
-                    handle_redirection(cmd->args[i + 1], 1);
+                    handle_redirection(cmd->args[j + 1], 1);
                 }
-                i++;
+                j++;
             }
             else
             {
-                fprintf(stderr, "*******Args are: %s*********\n", cmd->args[i]);
-                i++;
+                fprintf(stderr, "*******Args are: %s*********\n", cmd->args[j]);
+                j++;
             }
         }
         if (cmd->cmd_type == TOKEN_BUILTIN)
@@ -130,7 +152,7 @@ void init_execution(t_cmd *cmd_list)
         //     execute_command(cmd);
         cmd = cmd->next;
     }
-    if ( dup2(saved_stdout, STDOUT_FILENO) == -1)
+    if (dup2(saved_stdout, STDOUT_FILENO) == -1)
         perror("minishell: dup2 error");
     if (dup2(saved_stdin, STDIN_FILENO) == -1)
         perror("minishell: dup2 error");
@@ -138,4 +160,5 @@ void init_execution(t_cmd *cmd_list)
     close(saved_stdin);
     fprintf(stderr, "---------------*************----------------\n");
 }
+
 

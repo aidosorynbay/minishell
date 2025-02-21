@@ -1,6 +1,6 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iinc/ -Ilibft/
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
 
 # Directories
 SRCS_DIR    = srcs

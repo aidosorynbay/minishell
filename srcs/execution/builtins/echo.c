@@ -2,7 +2,9 @@
 
 int ft_echo(char **args)
 {
-    if (strcmp(args[1], "-n") == 0)
+    if (!args[1])
+        return(0);
+    if (ft_strcmp(args[1], "-n") == 0)
     {
         int i = 2;
         while (args[i] != NULL)
