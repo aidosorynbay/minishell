@@ -1,1 +1,10 @@
-ADD OWN STRCMP FUNCTION
+minishell$ "|Kpppppp"''""''O"Hello" "Hi | Hi" "|k" > >       
+exit: 258 syntax error near unexpected token `<<': Success
+
+
+
+"e'ch''o" l|a l<<doc>>app>out<in arg arg << doc zrg ||fvfvfv
+syntax error
+
+
+trimming -> commands

@@ -38,3 +38,24 @@ int	check_here_doc(t_token *tmp, t_token **tokens)
 		return (1);
 	return (0);
 }
+
+int	error_syntaxcheck(t_token **tokens)
+{
+	perror("exit: 258 syntax error near unexpected token `|'");
+	token_clear(tokens);
+	return (1);
+}
+
+// int	checker_pipe(t_token *tmp, t_token **tokens)
+// {
+// 	if (tmp->next == NULL)
+// 		return (error_syntaxcheck(tokens));
+// 	else if ((ft_strcmp(tmp->next->value, "|") == 0
+// 			|| (ft_strcmp(tmp->next->value, ">") == 0
+// 				|| ft_strcmp(tmp->next->value, "<") == 0
+// 				|| ft_strcmp(tmp->next->value, ">>") == 0
+// 				|| ft_strcmp(tmp->next->value, "<<") == 0))
+// 		&& tmp->next->next == NULL)
+// 		return (error_syntaxcheck(tokens));
+// 	return (0);
+// }

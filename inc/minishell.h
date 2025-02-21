@@ -8,6 +8,8 @@
 # include "libft.h"
 # include <string.h>
 # include <fcntl.h>
+# include <unistd.h>
+# include <sys/wait.h>
 
 # include <signal.h>
 
@@ -66,7 +68,7 @@ void	token_clear(t_token **tokens);
 void	single_operator(int *start, char *copy, int *i, t_token **tokens);
 void	double_operator(int *start, char *copy, int *i, t_token **tokens);
 // more_utils
-void 	quote_error(t_quote_status quote);
+void	quote_error(t_quote_status quote, t_token **tokens);
 void	assign_quote(char *copy, int *i, t_quote_status *quote);
 void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 
@@ -75,10 +77,20 @@ void 	check_syntax(t_token **tokens);
 // syntax_check_utils
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
+// int		checker_pipe(t_token *tmp, t_token **tokens);
+int		error_syntaxcheck(t_token **tokens);
 
 // assign type
 void	assign_token_type(t_token **tokens);
+void	assign_builtin_type(t_token *tmp);
+void	assign_op_type(t_token *tmp);
 void	unknown_assign(t_token **tokens);
+void	assign_op_eof(t_token *tmp, int *expect_eof);
+void	handle_op(t_token *tmp, int *expect_file, int *expect_eof, int *expect_command);
+void	handle_comman_file(t_token *tmp, t_token **tokens, int *expect_file, int *expect_command);
+
+// trimming
+void	trim_quotes(t_token **tokens);
 
 //converter
 char **convert_tokens_to_args(t_token *tokens);
