@@ -45,3 +45,16 @@ int	error_syntaxcheck(t_token **tokens)
 	token_clear(tokens);
 	return (1);
 }
+
+int	check_lesser(t_token *tmp, t_token **tokens)
+{
+	if (tmp->next == NULL)
+	{
+		perror("exit: 258 exit: 258 syntax error near unexpected token `<'");
+		token_clear(tokens);
+		return (1);
+	}
+	else if (checker(tmp, tokens) == 1)
+		return (1);
+	return (0);
+}
