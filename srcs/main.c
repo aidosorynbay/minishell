@@ -18,14 +18,15 @@ void	return_tokens(t_token *tokens)
 	return ;
 }
 
-int	main(int ac, char **av, char **ev)
+int	main(int ac, char **av, char **envp)
 {
 	char	*input;
 	t_token	*tokens;
 
 	(void)ac;
 	(void)av;
-	(void)ev;
+	// (void)ev;
+	g_env = env_init(envp);
 	while (1)
 	{
 		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
@@ -35,7 +36,7 @@ int	main(int ac, char **av, char **ev)
 		input = readline("minishell$ ");
 		if (!input)
 			break ;
-		tokens = tokenize_input(input);
+		tokens = tokenize_input(input, envp);
 		if (*input)
 			add_history(input);
 		free(input);

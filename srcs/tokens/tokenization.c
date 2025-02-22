@@ -84,7 +84,7 @@ void	print_tokens(t_token *tokens)
 	fprintf(stderr, "%d\n", i);
 }
 
-t_token	*tokenize_input(char *input)
+t_token	*tokenize_input(char *input, char **ev)
 {
 	t_token	*tokens;
 	char	*copy;
@@ -97,10 +97,10 @@ t_token	*tokenize_input(char *input)
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
 	check_syntax(&tokens);
-	// trim_quotes(&tokens);
+	trim_quotes(&tokens);
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	init_execution(parse_tokens(convert_tokens_to_args(tokens)));
+	init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
 	print_tokens(tokens);
 	free(copy);
 	if (tokens)

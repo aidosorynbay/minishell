@@ -84,7 +84,7 @@ void    trim_quotes(t_token **tokens)
         quote_loc = find_quotes(tmp->value);
         if (!quote_loc)
         exit(EXIT_FAILURE);
-        trimmed_value = malloc(sizeof(char) * (ft_strlen(tmp->value) - 1));
+        trimmed_value = malloc(sizeof(char) * (ft_strlen(tmp->value) + 1));
         if (!trimmed_value)
         {
             free(quote_loc);
