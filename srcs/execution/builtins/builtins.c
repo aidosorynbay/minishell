@@ -170,8 +170,8 @@ void init_execution(t_cmd *cmd_list)
             fprintf(stderr, "*******entered builtin*****\n");
             handle_builtin(cmd);
         }
-        // else
-        //     execute_command(cmd);
+        else
+            execute_command(cmd);
         cmd = cmd->next;
     }
     if (dup2(saved_stdout, STDOUT_FILENO) == -1)

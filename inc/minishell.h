@@ -49,8 +49,8 @@ typedef struct s_cmd {
 	struct s_cmd	*next;
 	int				input_fd;
 	int				output_fd;
-	char *outfile;
-	char *inputfile;
+	char			*outfile;
+	char			*inputfile;
 	int				append_fd;
 	// int				heredoc;
 	t_token_type	cmd_type;
@@ -109,6 +109,9 @@ int ft_echo(char **total_arg);
 int ft_exit(char **total_arg);
 int ft_cd(char **total_arg);
 void ft_pwd();
+
+// commands
+void	execute_command(t_cmd *cmd);
 
 
 #endif
