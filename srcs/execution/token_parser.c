@@ -29,9 +29,6 @@ t_cmd *parse_tokens(char **tokens)
         new_cmd->next = NULL;
 
         int arg_count = count_args(tokens, i);
-        // int arg_count2 = count_args_for_cmd(tokens, i);
-        fprintf(stderr, "%d\n", i);
-
         new_cmd->args = (char **)malloc(sizeof(char *) * (arg_count + 1));
         if (!new_cmd->args)
             return NULL;
@@ -52,8 +49,8 @@ t_cmd *parse_tokens(char **tokens)
 
         current = new_cmd;
 
-        // if (tokens[i] && ft_strcmp(tokens[i], "|") == 0)
-        //     i++;
+        if (tokens[i] && ft_strcmp(tokens[i], "|") == 0)
+            i++;
     }
     return head;
 }
