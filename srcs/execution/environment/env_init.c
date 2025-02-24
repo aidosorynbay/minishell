@@ -5,22 +5,21 @@ t_env *g_env = NULL;
 
 void add_env_node(t_env **env_list, char *key, char *value)
 {
-    t_env *tmp = *env_list;
+    t_env *tmp;
+    t_env *new_node;
     
-    // If key exists, update value
+    tmp = *env_list;
     while (tmp)
     {
         if (ft_strcmp(tmp->key, key) == 0)
         {
             free(tmp->value);
             tmp->value = ft_strdup(value);
-            return;
+            return ;
         }
         tmp = tmp->next;
     }
-
-    // Otherwise, create a new variable
-    t_env *new_node = malloc(sizeof(t_env));
+    new_node = malloc(sizeof(t_env));
     new_node->key = ft_strdup(key);
     new_node->value = ft_strdup(value);
     new_node->next = *env_list;

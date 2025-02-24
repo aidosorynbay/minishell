@@ -1,19 +1,19 @@
 #include "minishell.h"
 
 
-void ft_env(char **envp)
+void ft_env(t_env_data *ev)
 {
     int i;
     
     i  = 0;
-    if (!envp || !envp[0])
+    if (!ev || !ev->envp)
     {
-        printf("minishell: env: No environment variables found\n");
+        perror("minishell: env: No environment variables found\n");
         return;
     }
-    while(envp[i])
+    while(ev->envp[i])
     {
-        ft_putendl_fd(envp[i], 1);
+        ft_putendl_fd(ev->envp[i], 1);
         i++;
     }
     return ;

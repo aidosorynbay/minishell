@@ -31,9 +31,9 @@ SRCS        = $(SRCS_DIR)/main.c \
 			  $(BUILTINS_DIR)/pwd.c \
 			  $(BUILTINS_DIR)/exit.c \
 			  $(BUILTINS_DIR)/env.c \
-			  $(BUILTINS_DIR)/export.c \
-			  $(ENVIRONMENT_DIR_DIR)/env_init.c \
 			  $(TOKENS_DIR)/trimming.c \
+			  $(BUILTINS_DIR)/export.c \
+			  $(ENVIRONMENT_DIR)/env_init.c 
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 

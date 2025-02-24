@@ -84,7 +84,7 @@ void	print_tokens(t_token *tokens)
 	fprintf(stderr, "%d\n", i);
 }
 
-t_token	*tokenize_input(char *input, char **ev)
+t_token	*tokenize_input(char *input, t_env_data *ev)
 {
 	t_token	*tokens;
 	char	*copy;

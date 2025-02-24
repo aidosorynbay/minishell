@@ -27,7 +27,7 @@ static int count_args_for_cmd(char **tokens)
     return count;
 }
 
-static void handle_builtin(t_cmd *cmd, char **ev)
+static void handle_builtin(t_cmd *cmd, t_env_data *ev)
 {
     fprintf(stderr, "---------------*************----------------\n");
     if (!cmd || !cmd->args || !cmd->args[0])
@@ -46,7 +46,7 @@ static void handle_builtin(t_cmd *cmd, char **ev)
     else if (ft_strcmp(cmd->args[0], "env") == 0)
         ft_env(ev);
     else if (ft_strcmp(cmd->args[0], "export") == 0)
-        ft_export(cmd->args_for_cmd, ev);
+        ft_export(ev, cmd->args_for_cmd);
     // else if (ft_strcmp(cmd->args[0], "unset") == 0)
     //     ft_unset(cmd->args_for_cmd, ev);
     else
@@ -96,7 +96,7 @@ void handle_input_redirection(char *infile)
     }
 }
 
-void init_execution(t_cmd *cmd_list, char **ev)
+void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
     fprintf(stderr, "---------------*************----------------\n");
     t_cmd *cmd = cmd_list;
