@@ -52,12 +52,29 @@ typedef struct s_cmd {
 	char			*outfile;
 	char			*inputfile;
 	int				append_fd;
+	char			**env;
 	// int				heredoc;
 	t_token_type	cmd_type;
 }	t_cmd;
 
+//env
+
+typedef struct s_env
+{
+    char            *key;   // Variable name (e.g., "PATH")
+    char            *value; // Variable value (e.g., "/usr/bin")
+    struct s_env    *next;
+}   t_env;
+
+typedef struct s_env_data
+{
+    t_env   *env;      // Environment linked list
+	char	**envp;
+    int     last_exit; // Store last exit status ($?)
+}   t_env_data;
+
 // tokenization
-t_token	*tokenize_input(char *input);
+t_token	*tokenize_input(char *input, t_env_data *ev);
 void	tokenization(t_token **tokens, char *input, int i, int start);
 void	create_token(t_token *curr, char *str, int len);
 void	print_tokens(t_token *tokens);
@@ -104,14 +121,19 @@ void    clear_screen(void);
 t_cmd *parse_tokens(char **av);
 
 //builtins
-void init_execution(t_cmd *cmd_list);
+void init_execution(t_cmd *cmd_list, t_env_data *ev);
 int ft_echo(char **total_arg);
 int ft_exit(char **total_arg);
 int ft_cd(char **total_arg);
+void ft_env(t_env_data *ev);
 void ft_pwd();
+void ft_export(t_env_data *env_list, char **args);
 
 // commands
 void	execute_command(t_cmd *cmd);
 
 
+//environment
+t_env *env_init(char **envp);
+void add_env_node(t_env **env_list, char *key, char *value);
 #endif

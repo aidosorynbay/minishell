@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
+/*   Updated: 2025/02/25 18:19:44 by aorynbay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int count_args_for_cmd(char **tokens)
@@ -15,16 +27,14 @@ static int count_args_for_cmd(char **tokens)
     return count;
 }
 
-static void handle_builtin(t_cmd *cmd)
+static void handle_builtin(t_cmd *cmd, t_env_data *ev)
 {
     fprintf(stderr, "---------------*************----------------\n");
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
     fprintf(stderr, "Executing builtin command: %s\n", cmd->args[0]);
-    
     for (int i = 1; cmd->args[i]; i++)
         fprintf(stderr, "Arg[%d]: %s\n", i, cmd->args[i]);
-
     if (ft_strcmp(cmd->args[0], "echo") == 0)
         ft_echo(cmd->args_for_cmd);
     else if (ft_strcmp(cmd->args[0], "cd") == 0)
@@ -33,6 +43,12 @@ static void handle_builtin(t_cmd *cmd)
         ft_exit(cmd->args_for_cmd);
     else if (ft_strcmp(cmd->args[0], "pwd") == 0)
         ft_pwd();
+    else if (ft_strcmp(cmd->args[0], "env") == 0)
+        ft_env(ev);
+    else if (ft_strcmp(cmd->args[0], "export") == 0)
+        ft_export(ev, cmd->args_for_cmd);
+    // else if (ft_strcmp(cmd->args[0], "unset") == 0)
+    //     ft_unset(cmd->args_for_cmd, ev);
     else
         fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
     fprintf(stderr, "---------------*************----------------\n");
@@ -43,7 +59,6 @@ void handle_redirection(char *outfile, int append)
     fprintf(stderr, "---------------*************----------------\n");
     int fd;
 
-    // fprintf(stderr, "FOR DEBUGGING: Entering handle_redirection with outfile = %s, append = %d\n", outfile, append);
     if (outfile)
     {
         fprintf(stderr, "-----------------------\n");
@@ -59,10 +74,7 @@ void handle_redirection(char *outfile, int append)
             fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         }
         if (fd == -1)
-        {
-            perror("minishell: redirection error");
-            return;
-        }
+            return(perror("minishell: redirection error"), (void)0);
         if(dup2(fd, STDOUT_FILENO) == -1)
             perror("DUP2 DUPPPED"); // Redirect stdout to file 
         close(fd);
@@ -77,22 +89,14 @@ void handle_input_redirection(char *infile)
     {
         fd = open(infile, O_RDONLY);
         if (fd == -1)
-        {
-            perror("minishell: input redirection error");
-            return ;
-        }
+            return(perror("minishell: input redirection error"), (void)0);
         if (dup2(fd, STDIN_FILENO) == -1)
-        {
-            perror("Dup2 got dupped\n");
-            return ;
-        }
+            return(perror("Dup2 got dupped\n"), (void)0);
         close(fd);
-    }   
+    }
 }
 
-
-
-void init_execution(t_cmd *cmd_list)
+void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
     fprintf(stderr, "---------------*************----------------\n");
     t_cmd *cmd = cmd_list;
@@ -124,28 +128,26 @@ void init_execution(t_cmd *cmd_list)
         {
             if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
             {
-                cmd->outfile = strdup(cmd->args[i + 1]);  // Save output file
+                cmd->outfile = strdup(cmd->args[i + 1]);  // Saving output file
                 if (!cmd->outfile)
                     return ;
-                cmd->append_fd = (ft_strcmp(cmd->args[i], ">>") == 0);  // Set append flag
-                i++;  // Skip file name
+                if (ft_strcmp(cmd->args[i], ">>") == 0)
+                    cmd->append_fd = 1;
+                else
+                    cmd->append_fd = 0;
+
+                i++;
             }
             else if (ft_strcmp(cmd->args[i], "<") == 0)
             {
-                cmd->inputfile = strdup(cmd->args[i + 1]);  // Save input file
-                i++;  // Skip file name
+                cmd->inputfile = strdup(cmd->args[i + 1]);  // Saving input file
+                i++;
             }
-            // else if (ft_strcmp(cmd->args[i], "<<") == 0)
-            // {
-            //     cmd->heredoc = strdup(cmd->args[i + 1]);  // Save heredoc delimiter
-            //     i++;  // Skip delimiter
-            // }
             else
                 cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
             i++;
         }
-        cmd->args_for_cmd[j] = NULL;  // Null-terminate
-
+        cmd->args_for_cmd[j] = NULL;
         fprintf(stderr, "checking for redirection\n");
         if (cmd->outfile || cmd-> inputfile)
         {
@@ -168,10 +170,10 @@ void init_execution(t_cmd *cmd_list)
         if (cmd->cmd_type == TOKEN_BUILTIN)
         {
             fprintf(stderr, "*******entered builtin*****\n");
-            handle_builtin(cmd);
+            handle_builtin(cmd, ev);
         }
-        else
-            execute_command(cmd);
+        // else
+        //     execute_command(cmd); // Aidos working on this
         cmd = cmd->next;
     }
     if (dup2(saved_stdout, STDOUT_FILENO) == -1)
