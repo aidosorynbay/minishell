@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/25 18:19:44 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/25 20:38:16 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,174 +14,217 @@
 
 static int count_args_for_cmd(char **tokens)
 {
-    int count = 0;
-    int start = 0;
-    while (tokens[start] && ft_strcmp(tokens[start], "|") != 0 && 
-       ft_strcmp(tokens[start], ">") != 0 && 
-       ft_strcmp(tokens[start], ">>") != 0 && 
-       ft_strcmp(tokens[start], "<") != 0)
-    {
-        count++;
-        start++;
-    }
-    return count;
+	int count = 0;
+	int start = 0;
+	while (tokens[start] && ft_strcmp(tokens[start], "|") != 0 && 
+	   ft_strcmp(tokens[start], ">") != 0 && 
+	   ft_strcmp(tokens[start], ">>") != 0 && 
+	   ft_strcmp(tokens[start], "<") != 0)
+	{
+		count++;
+		start++;
+	}
+	return count;
 }
 
 static void handle_builtin(t_cmd *cmd, t_env_data *ev)
 {
-    fprintf(stderr, "---------------*************----------------\n");
-    if (!cmd || !cmd->args || !cmd->args[0])
-        return;
-    fprintf(stderr, "Executing builtin command: %s\n", cmd->args[0]);
-    for (int i = 1; cmd->args[i]; i++)
-        fprintf(stderr, "Arg[%d]: %s\n", i, cmd->args[i]);
-    if (ft_strcmp(cmd->args[0], "echo") == 0)
-        ft_echo(cmd->args_for_cmd);
-    else if (ft_strcmp(cmd->args[0], "cd") == 0)
-        ft_cd(cmd->args_for_cmd);
-    else if (ft_strcmp(cmd->args[0], "exit") == 0)
-        ft_exit(cmd->args_for_cmd);
-    else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-        ft_pwd();
-    else if (ft_strcmp(cmd->args[0], "env") == 0)
-        ft_env(ev);
-    else if (ft_strcmp(cmd->args[0], "export") == 0)
-        ft_export(ev, cmd->args_for_cmd);
-    // else if (ft_strcmp(cmd->args[0], "unset") == 0)
-    //     ft_unset(cmd->args_for_cmd, ev);
-    else
-        fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
-    fprintf(stderr, "---------------*************----------------\n");
+	fprintf(stderr, "---------------*************----------------\n");
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return;
+	fprintf(stderr, "Executing builtin command: %s\n", cmd->args[0]);
+	for (int i = 1; cmd->args[i]; i++)
+		fprintf(stderr, "Arg[%d]: %s\n", i, cmd->args[i]);
+	if (ft_strcmp(cmd->args[0], "echo") == 0)
+		ft_echo(cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "cd") == 0)
+		ft_cd(cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "exit") == 0)
+		ft_exit(cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+		ft_pwd();
+	else if (ft_strcmp(cmd->args[0], "env") == 0)
+		ft_env(ev);
+	else if (ft_strcmp(cmd->args[0], "export") == 0)
+		ft_export(ev, cmd->args_for_cmd);
+	// else if (ft_strcmp(cmd->args[0], "unset") == 0)
+	//     ft_unset(cmd->args_for_cmd, ev);
+	else
+		fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
+	fprintf(stderr, "---------------*************----------------\n");
 }
 
 void handle_redirection(char *outfile, int append)
 {
-    fprintf(stderr, "---------------*************----------------\n");
-    int fd;
+	fprintf(stderr, "---------------*************----------------\n");
+	int fd;
 
-    if (outfile)
-    {
-        fprintf(stderr, "-----------------------\n");
-        fprintf(stderr, "ENTERED REDIRECTION\n");
-        if (append)
-        {
-            fprintf(stderr, "entered append mode\n");
-            fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        }
-        else
-        {
-            printf("entered truncate mode\n");
-            fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        }
-        if (fd == -1)
-            return(perror("minishell: redirection error"), (void)0);
-        if(dup2(fd, STDOUT_FILENO) == -1)
-            perror("DUP2 DUPPPED"); // Redirect stdout to file 
-        close(fd);
-    }
-    fprintf(stderr, "---------------*************----------------\n");
+	if (outfile)
+	{
+		fprintf(stderr, "-----------------------\n");
+		fprintf(stderr, "ENTERED REDIRECTION\n");
+		if (append)
+		{
+			fprintf(stderr, "entered append mode\n");
+			fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		}
+		else
+		{
+			printf("entered truncate mode\n");
+			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		}
+		if (fd == -1)
+			return(perror("minishell: redirection error"), (void)0);
+		if(dup2(fd, STDOUT_FILENO) == -1)
+			perror("DUP2 DUPPPED"); // Redirect stdout to file 
+		close(fd);
+	}
+	fprintf(stderr, "---------------*************----------------\n");
 }
 
 void handle_input_redirection(char *infile)
 {
-    int fd;
-    if (infile)
-    {
-        fd = open(infile, O_RDONLY);
-        if (fd == -1)
-            return(perror("minishell: input redirection error"), (void)0);
-        if (dup2(fd, STDIN_FILENO) == -1)
-            return(perror("Dup2 got dupped\n"), (void)0);
-        close(fd);
-    }
+	int fd;
+	if (infile)
+	{
+		fd = open(infile, O_RDONLY);
+		if (fd == -1)
+			return(perror("minishell: input redirection error"), (void)0);
+		if (dup2(fd, STDIN_FILENO) == -1)
+			return(perror("Dup2 got dupped\n"), (void)0);
+		close(fd);
+	}
 }
 
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
-    fprintf(stderr, "---------------*************----------------\n");
-    t_cmd *cmd = cmd_list;
-    int saved_stdout = dup(STDOUT_FILENO);
-    int saved_stdin = dup(STDIN_FILENO);
-    int i;
-    int j;
-    
-    while (cmd)
-    {
-        i = 0;
-        j = 0;
-        fprintf(stderr, "Executing command: %d\n", cmd->cmd_type);
-        int arg_count = count_args_for_cmd(cmd->args);
-        if (arg_count > 0)
-        {
-            cmd->args_for_cmd = malloc(sizeof(char *) * (arg_count + 1));
-            if (!cmd->args_for_cmd)
-            {
-                perror("malloc failed");
-                exit(1);
-            }
-        }
-        else
-            cmd->args_for_cmd = NULL;
-        cmd->inputfile = NULL;
-        cmd->outfile = NULL;
-        while (cmd->args[i])
-        {
-            if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
-            {
-                cmd->outfile = strdup(cmd->args[i + 1]);  // Saving output file
-                if (!cmd->outfile)
-                    return ;
-                if (ft_strcmp(cmd->args[i], ">>") == 0)
-                    cmd->append_fd = 1;
-                else
-                    cmd->append_fd = 0;
+	fprintf(stderr, "---------------*************----------------\n");
+	int fd[2];
+	int prev_fd;
+	int pid;
+	int	status;
+	t_cmd *cmd = cmd_list;
+	int saved_stdout = dup(STDOUT_FILENO);
+	int saved_stdin = dup(STDIN_FILENO);
+	int i;
+	int j;
+	
+	prev_fd = -1;
+	while (cmd)
+	{
+		if (cmd->next)
+		{
+			if (pipe(fd) == -1)
+			{
+				perror("pipe error");
+				exit(EXIT_FAILURE);
+			}
+		}
+		i = 0;
+		j = 0;
+		fprintf(stderr, "Executing command: %d\n", cmd->cmd_type);
+		int arg_count = count_args_for_cmd(cmd->args);
+		if (arg_count > 0)
+		{
+			cmd->args_for_cmd = malloc(sizeof(char *) * (arg_count + 1));
+			if (!cmd->args_for_cmd)
+			{
+				perror("malloc failed");
+				exit(1);
+			}
+		}
+		else
+			cmd->args_for_cmd = NULL;
+		cmd->inputfile = NULL;
+		cmd->outfile = NULL;
+		while (cmd->args[i])
+		{
+			if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
+			{
+				cmd->outfile = strdup(cmd->args[i + 1]);  // Saving output file
+				if (!cmd->outfile)
+					return ;
+				if (ft_strcmp(cmd->args[i], ">>") == 0)
+					cmd->append_fd = 1;
+				else
+					cmd->append_fd = 0;
 
-                i++;
-            }
-            else if (ft_strcmp(cmd->args[i], "<") == 0)
-            {
-                cmd->inputfile = strdup(cmd->args[i + 1]);  // Saving input file
-                i++;
-            }
-            else
-                cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
-            i++;
-        }
-        cmd->args_for_cmd[j] = NULL;
-        fprintf(stderr, "checking for redirection\n");
-        if (cmd->outfile || cmd-> inputfile)
-        {
-            fprintf(stderr, "entering redirection\n");
-            if (cmd->inputfile)
-            {
-                handle_input_redirection(cmd->inputfile);
-            }
-            if (cmd->outfile && !cmd->append_fd)
-            {
-                fprintf(stderr, "entered truncate mode\n");
-                handle_redirection(cmd->outfile, 0);
-            }
-            else if (cmd->outfile && cmd->append_fd)
-            {
-                fprintf(stderr, "entered append mode\n");
-                handle_redirection(cmd->outfile, 1);
-            }
-        }
-        if (cmd->cmd_type == TOKEN_BUILTIN)
-        {
-            fprintf(stderr, "*******entered builtin*****\n");
-            handle_builtin(cmd, ev);
-        }
-        // else
-        //     execute_command(cmd); // Aidos working on this
-        cmd = cmd->next;
-    }
-    if (dup2(saved_stdout, STDOUT_FILENO) == -1)
-        perror("minishell: dup2 error");
-    if (dup2(saved_stdin, STDIN_FILENO) == -1)
-        perror("minishell: dup2 error");
-    close(saved_stdout);
-    close(saved_stdin);
-    fprintf(stderr, "---------------*************----------------\n");
+				i++;
+			}
+			else if (ft_strcmp(cmd->args[i], "<") == 0)
+			{
+				cmd->inputfile = strdup(cmd->args[i + 1]);  // Saving input file
+				i++;
+			}
+			else
+				cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
+			i++;
+		}
+		cmd->args_for_cmd[j] = NULL;
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork error.");
+			exit(EXIT_FAILURE);
+		}
+		else if (pid == 0)
+		{
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, STDIN_FILENO);
+				close(prev_fd);
+			}
+			if (cmd->next)
+			{
+				dup2(fd[1], STDOUT_FILENO);
+				close(fd[1]);
+				close(fd[0]);
+			}
+			if (cmd->outfile || cmd-> inputfile)
+			{
+				fprintf(stderr, "entering redirection\n");
+				if (cmd->inputfile)
+				{
+					handle_input_redirection(cmd->inputfile);
+				}
+				if (cmd->outfile && !cmd->append_fd)
+				{
+					fprintf(stderr, "entered truncate mode\n");
+					handle_redirection(cmd->outfile, 0);
+				}
+				else if (cmd->outfile && cmd->append_fd)
+				{
+					fprintf(stderr, "entered append mode\n");
+					handle_redirection(cmd->outfile, 1);
+				}
+			}
+			if (cmd->cmd_type == TOKEN_BUILTIN)
+			{
+				fprintf(stderr, "*******entered builtin*****\n");
+				handle_builtin(cmd, ev);
+			}
+			else
+				execute_command(cmd);
+		}
+		if (prev_fd != -1)
+		{
+			close(prev_fd);
+		}
+		if (cmd->next)
+		{
+			close(fd[1]);
+			prev_fd = fd[0];
+		}
+		cmd = cmd->next;
+	}
+	while (wait(&status) > 0);
+	
+	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
+		perror("minishell: dup2 error");
+	if (dup2(saved_stdin, STDIN_FILENO) == -1)
+		perror("minishell: dup2 error");
+	close(saved_stdout);
+	close(saved_stdin);
+	fprintf(stderr, "---------------*************----------------\n");
 }
 

@@ -10,6 +10,7 @@ OBJS_DIR    = objs
 LIBFT_DIR   = libft
 EXECUTION_DIR = $(SRCS_DIR)/execution
 BUILTINS_DIR  = $(EXECUTION_DIR)/builtins
+COMMANDS_DIR  = $(EXECUTION_DIR)/commands
 ENVIRONMENT_DIR  = $(EXECUTION_DIR)/environment
 
 # Files and output
@@ -25,6 +26,7 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/assign_type.c \
 			  $(EXECUTION_DIR)/converter.c \
 			  $(EXECUTION_DIR)/token_parser.c \
+			  $(COMMANDS_DIR)/commands.c \
 			  $(BUILTINS_DIR)/builtins.c \
 			  $(BUILTINS_DIR)/cd.c \
 			  $(BUILTINS_DIR)/echo.c \
