@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/25 20:38:16 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/26 17:52:03 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,12 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				handle_builtin(cmd, ev);
 			}
 			else
+			{
 				execute_command(cmd);
+			}
+			// close(fd[2]);
+			// close(fd[0]);
+			// close(fd[1]);
 		}
 		if (prev_fd != -1)
 		{
