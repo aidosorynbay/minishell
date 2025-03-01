@@ -6,74 +6,110 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/26 17:41:57 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/01 17:39:38 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char **environ; // Global environment variable
+extern char **environ;
 
-char *find_command_path(char *cmd, char **envp)
+char	*get_next_path(char *path, int *index)
 {
-    int i;
-    char *path;
-    char *full_path;
-    char *token;
-    
-    if (!cmd || !envp)
-        return (NULL);
-    if (access(cmd, X_OK) == 0) // If command is an absolute/relative path and executable
-        return (strdup(cmd));
-    i = 0;
-    while (envp[i])
-    {
-        if (strncmp(envp[i], "PATH=", 5) == 0) // Find PATH variable in env
-        {
-            path = envp[i] + 5;
-            token = strtok(path, ":");
-            while (token)
-            {
-                full_path = malloc(strlen(token) + strlen(cmd) + 2);
-                if (!full_path)
-                    return (NULL);
-                sprintf(full_path, "%s/%s", token, cmd);
-                if (access(full_path, X_OK) == 0) // Check if executable
-                    return (full_path);
-                free(full_path);
-                token = strtok(NULL, ":");
-            }
-        }
-        i++;
-    }
-    return (NULL); // Command not found
+	int		start;
+	int		len;
+	char	*token;
+
+	while (path[*index] == ':')
+		(*index)++;
+	if (path[*index] == '\0')
+		return (NULL);
+	start = *index;
+	len = strcspn(path + start, ":");
+	*index += len;
+	token = malloc(len + 1);
+	if (!token)
+		return (NULL);
+	ft_strncpy(token, path + start, len); // make
+	token[len] = '\0';
+	return (token);
 }
+
+
+char	*build_command_path(const char *dir, const char *cmd)
+{
+	int		dir_len;
+	int		cmd_len;
+	char	*full_path;
+
+	cmd_len = ft_strlen(cmd);
+	dir_len = ft_strlen(dir);
+	full_path = malloc(dir_len + cmd_len + 2);
+	if (!full_path)
+		return (NULL);
+	ft_strcpy(full_path, dir); // make
+	full_path[dir_len] = '/';
+	ft_strcpy(full_path + dir_len + 1, cmd);
+	return (full_path);
+}
+
+
+char	*find_command_path(char *cmd, char **envp)
+{
+	int		i;
+	int		index;
+	char	*path;
+	char	*dir;
+	char	*full_path;
+
+	if (!cmd || !envp)
+		return (NULL);
+	if (access(cmd, X_OK) == 0)
+		return (ft_strdup(cmd));
+	i = 0;
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
+		i++;
+	if (!envp[i])
+		return (NULL);
+	path = envp[i] + 5;
+	index = 0;
+	while ((dir = get_next_path(path, &index)))
+	{
+		full_path = build_command_path(dir, cmd);
+		free(dir);
+		if (!full_path)
+			return (NULL);
+		if (access(full_path, X_OK) == 0)
+			return (full_path);
+		free(full_path);
+	}
+	return (NULL);
+}
+
 
 void execute_command(t_cmd *cmd)
 {
-    char *cmd_path;
+	char *cmd_path;
 
-    if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0])
-    {
-        fprintf(stderr, "minishell: command not found\n");
-        exit(127);
-    }
-    
-    cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
-    if (!cmd_path)
-    {
-        fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
-        exit(127);
-    }
-    
-    if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
-    {
-        perror("execve");
-        free(cmd_path);
-        if (errno == EACCES)
-			exit(126); // Permission denied
+	if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0])
+	{
+		fprintf(stderr, "minishell: command not found\n");
+		exit(127);
+	}
+	cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
+	if (!cmd_path)
+	{
+		fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
+		exit(127);
+	}
+	if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
+	{
+		perror("execve error");
+		free(cmd_path);
+		if (errno == EACCES)
+			exit(126);
 		else
-			exit(127); // Command not found
+			exit(127);
 
-    }
+	}
 }
