@@ -30,7 +30,6 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-    data.envp = envp;
 	data.env = env_init(envp);
 	while (1)
 	{

@@ -69,7 +69,6 @@ typedef struct s_env
 typedef struct s_env_data
 {
     t_env   *env;      // Environment linked list
-	char	**envp;
     int     last_exit; // Store last exit status ($?)
 }   t_env_data;
 
@@ -91,10 +90,10 @@ void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 
 // syntax_check
 void 	check_syntax(t_token **tokens);
+
 // syntax_check_utils
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
-// int		checker_pipe(t_token *tmp, t_token **tokens);
 int		error_syntaxcheck(t_token **tokens);
 
 // assign type
@@ -110,26 +109,26 @@ void	handle_comman_file(t_token *tmp, t_token **tokens, int *expect_file, int *e
 void	trim_quotes(t_token **tokens);
 
 //converter
-char **convert_tokens_to_args(t_token *tokens);
+char	**convert_tokens_to_args(t_token *tokens);
 
 
 //utils
-void    clear_screen(void);
+void	clear_screen(void);
 
 //execution
-t_cmd *parse_tokens(char **av);
+t_cmd	*parse_tokens(char **av);
 
 //builtins
-void init_execution(t_cmd *cmd_list, t_env_data *ev);
-int ft_echo(char **total_arg);
-int ft_exit(char **total_arg);
-int ft_cd(char **total_arg);
-void ft_env(t_env_data *ev);
-void ft_pwd();
-void ft_export(t_env_data *env_list, char **args);
+void	init_execution(t_cmd *cmd_list, t_env_data *ev);
+int		ft_echo(char **total_arg);
+int		ft_exit(char **total_arg);
+int		ft_cd(char **total_arg);
+void	ft_env(t_env_data *ev);
+void	ft_pwd();
+void	ft_export(t_env_data *env_list, char **args);
 
 
 //environment
-t_env *env_init(char **envp);
-void add_env_node(t_env **env_list, char *key, char *value);
+t_env	*env_init(char **envp);
+void	add_env_node(t_env **env_list, char *key, char *value);
 #endif

@@ -3,10 +3,17 @@
 void ft_export(t_env_data *env_list, char **args)
 {
     int i;
+    char **split;
+    t_env *env;
+    t_env *tmp;
 
+    fprintf(stderr, "---------------*************----------------\n");
+    fprintf(stderr, "Executing builtin command: export\n");
+
+    // If no arguments, print environment variables
     if (!args[1])
     {
-        t_env *tmp = env_list->env;
+        tmp = env_list->env;
         while (tmp)
         {
             ft_putstr_fd("declare -x ", 1);
@@ -20,21 +27,32 @@ void ft_export(t_env_data *env_list, char **args)
             ft_putstr_fd("\n", 1);
             tmp = tmp->next;
         }
-        return ;
+        return;
     }
+
+    // Process each argument (`export VAR=value`)
     i = 1;
-    t_env *env = env_list->env;
+    env = env_list->env;
     while (args[i])
     {
-        char **split = ft_split(args[i], '=');
-        if (!split[0])
-            perror("minishell: export: not a valid identifier\n");
+        // Split into "VAR" and "VALUE"
+        split = ft_split(args[i], '=');
+        if (!split[0]) // Invalid format
+        {
+            ft_putstr_fd("minishell: export: `", 2);
+            ft_putstr_fd(args[i], 2);
+            ft_putstr_fd("': not a valid identifier\n", 2);
+            if (split)
+                free(split);
+            i++;
+            continue;
+        }
+        // If `VAR=value`, store value
         if (split[1])
             add_env_node(&env, split[0], split[1]);
         else
-            add_env_node(&env, split[0], "");
+            add_env_node(&env, split[0], ""); // If only `VAR`, store empty value
         free(split);
         i++;
     }
-    return ;
 }

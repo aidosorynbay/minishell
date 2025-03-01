@@ -3,18 +3,21 @@
 
 void ft_env(t_env_data *ev)
 {
-    int i;
-    
-    i  = 0;
-    if (!ev || !ev->envp)
+    t_env *tmp;
+
+    tmp = ev->env;
+    if (!ev || !ev->env)
     {
         perror("minishell: env: No environment variables found\n");
         return;
     }
-    while(ev->envp[i])
+    while(tmp)
     {
-        ft_putendl_fd(ev->envp[i], 1);
-        i++;
+        ft_putstr_fd(tmp->key, 1);
+        ft_putstr_fd("=", 1);
+        ft_putstr_fd(tmp->value, 1);
+        ft_putstr_fd("\n", 1);
+        tmp = tmp->next;
     }
     return ;
 }
