@@ -132,7 +132,10 @@ void ft_export(t_env_data *env_list, char **args);
 
 // commands
 void	execute_command(t_cmd *cmd);
-
+void    ft_strcpy(char *dst, const char *src);
+void	ft_strncpy(char *dst, const char *src, size_t len);
+char	*find_command_path(char *cmd, char **envp);
+int		find_char(char *str, char *charset);
 
 //environment
 t_env *env_init(char **envp);

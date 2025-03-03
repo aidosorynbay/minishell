@@ -1,1 +1,5 @@
 protect all functions: write, read, etc.
+
+
+conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
+

@@ -6,15 +6,15 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/01 17:39:38 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/03 21:23:57 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char **environ;
+extern char	**environ;
 
-char	*get_next_path(char *path, int *index)
+static char	*get_next_path(char *path, int *index)
 {
 	int		start;
 	int		len;
@@ -25,18 +25,17 @@ char	*get_next_path(char *path, int *index)
 	if (path[*index] == '\0')
 		return (NULL);
 	start = *index;
-	len = strcspn(path + start, ":");
+	len = find_char(path + start, ":");
 	*index += len;
 	token = malloc(len + 1);
 	if (!token)
 		return (NULL);
-	ft_strncpy(token, path + start, len); // make
+	ft_strncpy(token, path + start, len);
 	token[len] = '\0';
 	return (token);
 }
 
-
-char	*build_command_path(const char *dir, const char *cmd)
+static char	*build_command_path(const char *dir, const char *cmd)
 {
 	int		dir_len;
 	int		cmd_len;
@@ -47,12 +46,11 @@ char	*build_command_path(const char *dir, const char *cmd)
 	full_path = malloc(dir_len + cmd_len + 2);
 	if (!full_path)
 		return (NULL);
-	ft_strcpy(full_path, dir); // make
+	ft_strcpy(full_path, dir);
 	full_path[dir_len] = '/';
 	ft_strcpy(full_path + dir_len + 1, cmd);
 	return (full_path);
 }
-
 
 char	*find_command_path(char *cmd, char **envp)
 {
@@ -73,7 +71,8 @@ char	*find_command_path(char *cmd, char **envp)
 		return (NULL);
 	path = envp[i] + 5;
 	index = 0;
-	while ((dir = get_next_path(path, &index)))
+	dir = get_next_path(path, &index);
+	while (dir)
 	{
 		full_path = build_command_path(dir, cmd);
 		free(dir);
@@ -82,14 +81,14 @@ char	*find_command_path(char *cmd, char **envp)
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
 		free(full_path);
+		dir = get_next_path(path, &index);
 	}
 	return (NULL);
 }
 
-
-void execute_command(t_cmd *cmd)
+void	execute_command(t_cmd *cmd)
 {
-	char *cmd_path;
+	char	*cmd_path;
 
 	if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0])
 	{
@@ -99,7 +98,8 @@ void execute_command(t_cmd *cmd)
 	cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
 	if (!cmd_path)
 	{
-		fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
+		fprintf(stderr, "minishell: %s: command not found\n",
+			cmd->args_for_cmd[0]);
 		exit(127);
 	}
 	if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
@@ -110,6 +110,5 @@ void execute_command(t_cmd *cmd)
 			exit(126);
 		else
 			exit(127);
-
 	}
 }

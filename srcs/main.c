@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/25 18:21:14 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/03 21:08:28 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-    data.envp = envp;
-	data.env = env_init(envp);
+    // data.envp = envp;
+	// data.env = env_init(envp);
+	(void)envp;
 	while (1)
 	{
 		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)

@@ -27,6 +27,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 			  $(EXECUTION_DIR)/converter.c \
 			  $(EXECUTION_DIR)/token_parser.c \
 			  $(COMMANDS_DIR)/commands.c \
+			  $(COMMANDS_DIR)/commands_utils.c \
 			  $(BUILTINS_DIR)/builtins.c \
 			  $(BUILTINS_DIR)/cd.c \
 			  $(BUILTINS_DIR)/echo.c \
