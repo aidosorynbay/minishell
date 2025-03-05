@@ -1,6 +1,8 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/ -I/usr/local/Cellar/readline/8.1/include
+LDFLAGS     = -L/usr/local/Cellar/readline/8.1/lib -L$(LIBFT_DIR) 
+LIBS        = -lreadline -lft
 
 # Directories
 SRCS_DIR    = srcs
@@ -55,7 +57,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_DIR)/libft.a
 	@echo $(START_ART)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS) $(LIBS)
 	@echo $(END_ART)
 
 $(LIBFT_DIR)/libft.a:
