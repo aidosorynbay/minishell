@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:56:08 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/22 10:56:09 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/02/25 19:24:01 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	count_args(char **tokens, int start)
 	return (count);
 }
 
-t_cmd	*parse_tokens(char **tokens)
+t_cmd	*	parse_tokens(char **tokens)
 {
 	t_cmd	*head;
 	t_cmd	*current;
@@ -61,6 +61,8 @@ t_cmd	*parse_tokens(char **tokens)
 				|| ft_strcmp(new_cmd->args[0], "env") == 0
 				|| ft_strcmp(new_cmd->args[0], "export") == 0))
 			new_cmd->cmd_type = TOKEN_BUILTIN;
+		else
+			new_cmd->cmd_type = TOKEN_CMD;
 		// fprintf(stderr, "Command: %d\n", new_cmd->cmd_type);
 		if (!head)
 			head = new_cmd;

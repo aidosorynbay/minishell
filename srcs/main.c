@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/20 10:13:39 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:56:04 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,15 @@ void	return_tokens(t_token *tokens)
 	(void)tokens;
 	return ;
 }
-		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-		// 	perror("signal");
-		// if (signal(SIGINT, SIG_IGN) == SIG_ERR)
-		// 	perror("signal");
+
+void	signal_handle(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -33,6 +38,8 @@ int	main(int ac, char **av, char **envp)
 	data.env = env_init(envp);
 	while (1)
 	{
+		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		// 	perror("signal");
 		input = readline("minishell$ ");
 		if (!input)
 			break ;

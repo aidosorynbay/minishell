@@ -1,6 +1,8 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/ -I/usr/local/Cellar/readline/8.1/include
+LDFLAGS     = -L/usr/local/Cellar/readline/8.1/lib -L$(LIBFT_DIR) 
+LIBS        = -lreadline -lft
 
 # Directories
 SRCS_DIR    = srcs
@@ -10,6 +12,7 @@ OBJS_DIR    = objs
 LIBFT_DIR   = libft
 EXECUTION_DIR = $(SRCS_DIR)/execution
 BUILTINS_DIR  = $(EXECUTION_DIR)/builtins
+COMMANDS_DIR  = $(EXECUTION_DIR)/commands
 ENVIRONMENT_DIR  = $(EXECUTION_DIR)/environment
 
 # Files and output
@@ -25,6 +28,8 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/assign_type.c \
 			  $(EXECUTION_DIR)/converter.c \
 			  $(EXECUTION_DIR)/token_parser.c \
+			  $(COMMANDS_DIR)/commands.c \
+			  $(COMMANDS_DIR)/commands_utils.c \
 			  $(BUILTINS_DIR)/builtins.c \
 			  $(BUILTINS_DIR)/cd.c \
 			  $(BUILTINS_DIR)/echo.c \
@@ -52,7 +57,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_DIR)/libft.a
 	@echo $(START_ART)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS)
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS) $(LIBS)
 	@echo $(END_ART)
 
 $(LIBFT_DIR)/libft.a:

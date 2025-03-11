@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 19:25:00 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/02/22 10:31:38 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/02/25 18:22:14 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
 	init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
-	print_tokens(tokens);
+	// print_tokens(tokens);
 	free(copy);
 	if (tokens)
 		token_clear(&tokens);

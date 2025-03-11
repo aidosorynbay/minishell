@@ -10,6 +10,7 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <errno.h> // can we have this????
 
 # include <signal.h>
 
@@ -94,6 +95,8 @@ void 	check_syntax(t_token **tokens);
 // syntax_check_utils
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
+int		check_lesser(t_token *tmp, t_token **tokens);
+// int		checker_pipe(t_token *tmp, t_token **tokens);
 int		error_syntaxcheck(t_token **tokens);
 
 // assign type
@@ -127,6 +130,12 @@ void	ft_env(t_env_data *ev);
 void	ft_pwd();
 void	ft_export(t_env_data *env_list, char **args);
 
+// commands
+void	execute_command(t_cmd *cmd);
+void    ft_strcpy(char *dst, const char *src);
+void	ft_strncpy(char *dst, const char *src, size_t len);
+char	*find_command_path(char *cmd, char **envp);
+int		find_char(char *str, char *charset);
 
 //environment
 t_env	*env_init(char **envp);
