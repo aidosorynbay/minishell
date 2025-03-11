@@ -43,16 +43,16 @@ void ft_export(t_env_data *env_list, char **args)
             i++;
             continue; // Skip this argument and continue to the next one
         }
-        if (!is_valid_env_key(split[0]))
-        {
-            ft_putstr_fd("minishell: export: `", 2);
-            ft_putstr_fd(args[i], 2);
-            ft_putstr_fd("': not a valid identifier\n", 2);
-            if (split)
-                free(split);
-            i++;
-            continue; // Skip this argument and continue to the next one
-        }
+        // if (!is_valid_env_key(split[0]))
+        // {
+        //     ft_putstr_fd("minishell: export: `", 2);
+        //     ft_putstr_fd(args[i], 2);
+        //     ft_putstr_fd("': not a valid identifier\n", 2);
+        //     if (split)
+        //         free(split);
+        //     i++;
+        //     continue; // Skip this argument and continue to the next one
+        // }
 
         if (split[1])
         {

@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/05 16:56:04 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:06:55 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,16 @@ int	main(int ac, char **av, char **envp)
 	data.env = env_init(envp);
 	while (1)
 	{
-		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-		// 	perror("signal");
+		signal(SIGQUIT, SIG_IGN);
 		input = readline("minishell$ ");
 		if (!input)
+		{
+			printf("exit\n");
 			break ;
-		tokens = tokenize_input(input, &data);
+		}
 		if (*input)
 			add_history(input);
+		tokens = tokenize_input(input, &data);
 		free(input);
 		if (tokens)
 			return_tokens(tokens);
