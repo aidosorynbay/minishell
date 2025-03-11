@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/03 21:23:57 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:51:59 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,5 @@ void	execute_command(t_cmd *cmd)
 		else
 			exit(127);
 	}
+	return ;
 }

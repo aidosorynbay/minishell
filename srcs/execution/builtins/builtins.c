@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/03/05 17:23:09 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:00:25 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,13 +161,16 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			i++;
 		}
 		cmd->args_for_cmd[j] = NULL;
-		pid = fork();
-		if (pid == -1)
+		if (cmd->cmd_type != TOKEN_BUILTIN)
 		{
-			perror("fork error.");
-			exit(EXIT_FAILURE);
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork error.");
+				exit(EXIT_FAILURE);
+			}
 		}
-		else if (pid == 0)
+		if (pid == 0)
 		{
 			if (prev_fd != -1)
 			{
@@ -198,13 +201,42 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					handle_redirection(cmd->outfile, 1);
 				}
 			}
-			if (cmd->cmd_type == TOKEN_BUILTIN)
+			
+			execute_command(cmd);
+		}
+		else if (cmd->cmd_type == TOKEN_BUILTIN)
+		{
+			// if (prev_fd != -1)
+			// {
+			// 	dup2(prev_fd, STDIN_FILENO);
+			// 	close(prev_fd);
+			// }
+			// if (cmd->next)
+			// {
+			// 	dup2(fd[1], STDOUT_FILENO);
+			// 	close(fd[1]);
+			// 	close(fd[0]);
+			// }
+			if (cmd->outfile || cmd-> inputfile)
 			{
-				fprintf(stderr, "*******entered builtin*****\n");
-				handle_builtin(cmd, ev);
+				fprintf(stderr, "entering redirection\n");
+				if (cmd->inputfile)
+				{
+					handle_input_redirection(cmd->inputfile);
+				}
+				if (cmd->outfile && !cmd->append_fd)
+				{
+					fprintf(stderr, "entered truncate mode\n");
+					handle_redirection(cmd->outfile, 0);
+				}
+				else if (cmd->outfile && cmd->append_fd)
+				{
+					fprintf(stderr, "entered append mode\n");
+					handle_redirection(cmd->outfile, 1);
+				}
 			}
-			else
-				execute_command(cmd);
+			fprintf(stderr, "*******entered builtin*****\n");
+			handle_builtin(cmd, ev);
 		}
 		if (prev_fd != -1)
 		{
