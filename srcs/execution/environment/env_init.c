@@ -28,6 +28,8 @@ void add_env_node(t_env **env_list, char *key, char *value)
     new_node->key = ft_strdup(key);
     if (value)
         new_node->value = ft_strdup(value);
+    else if (value == NULL)
+        new_node->value = NULL;
     else
         new_node->value = ft_strdup("");
 

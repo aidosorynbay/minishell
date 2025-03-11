@@ -4,7 +4,6 @@ void ft_export(t_env_data *env_list, char **args)
 {
     int i;
     char **split;
-    t_env *env;
     t_env *tmp;
 
     fprintf(stderr, "---------------*************----------------\n");
@@ -29,10 +28,7 @@ void ft_export(t_env_data *env_list, char **args)
         }
         return;
     }
-
-    // Process each argument (`export VAR=value`)
     i = 1;
-    env = env_list->env;
     while (args[i])
     {
         // Split into "VAR" and "VALUE"
@@ -45,14 +41,28 @@ void ft_export(t_env_data *env_list, char **args)
             if (split)
                 free(split);
             i++;
-            continue;
+            continue; // Skip this argument and continue to the next one
         }
-        // If `VAR=value`, store value
+        if (!is_valid_env_key(split[0]))
+        {
+            ft_putstr_fd("minishell: export: `", 2);
+            ft_putstr_fd(args[i], 2);
+            ft_putstr_fd("': not a valid identifier\n", 2);
+            if (split)
+                free(split);
+            i++;
+            continue; // Skip this argument and continue to the next one
+        }
+
         if (split[1])
-            add_env_node(&env, split[0], split[1]);
+        {
+            fprintf(stderr, "adding env node: %s=%s\n", split[0], split[1]);
+            add_env_node(&(env_list->env), split[0], split[1]); // Pass address of env_list->env
+        }
         else
-            add_env_node(&env, split[0], ""); // If only `VAR`, store empty value
-        free(split);
+            add_env_node(&(env_list->env), split[0], "");
+        if (split)
+            free(split);
         i++;
     }
 }
