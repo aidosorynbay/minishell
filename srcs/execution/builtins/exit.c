@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:55:20 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/22 10:55:22 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/03/11 13:41:58 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int ft_exit(char **args)
 {
-    int exit_code ;
+    int exit_code;
 
     exit_code = 0;
     if (args[1])

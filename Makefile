@@ -1,8 +1,8 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/ -I/usr/local/Cellar/readline/8.1/include
-LDFLAGS     = -L/usr/local/Cellar/readline/8.1/lib -L$(LIBFT_DIR) 
-LIBS        = -lreadline -lft
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
+CFLAGS += -Iinc
+READLINE    = -L/opt/vagrant/embedded/lib/ -lreadline
 
 # Directories
 SRCS_DIR    = srcs
@@ -26,24 +26,24 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/utils.c \
               $(TOKENS_DIR)/assign_type_utils.c \
               $(TOKENS_DIR)/assign_type.c \
-			  $(EXECUTION_DIR)/converter.c \
-			  $(EXECUTION_DIR)/token_parser.c \
-			  $(COMMANDS_DIR)/commands.c \
-			  $(COMMANDS_DIR)/commands_utils.c \
-			  $(BUILTINS_DIR)/builtins.c \
-			  $(BUILTINS_DIR)/cd.c \
-			  $(BUILTINS_DIR)/echo.c \
-			  $(BUILTINS_DIR)/pwd.c \
-			  $(BUILTINS_DIR)/exit.c \
-			  $(BUILTINS_DIR)/env.c \
-			  $(TOKENS_DIR)/trimming.c \
-			  $(BUILTINS_DIR)/export.c \
-			  $(ENVIRONMENT_DIR)/env_init.c 
+		  $(EXECUTION_DIR)/converter.c \
+		  $(EXECUTION_DIR)/token_parser.c \
+		  $(COMMANDS_DIR)/commands.c \
+		  $(COMMANDS_DIR)/commands_utils.c \
+		  $(BUILTINS_DIR)/builtins.c \
+		  $(BUILTINS_DIR)/cd.c \
+		  $(BUILTINS_DIR)/echo.c \
+		  $(BUILTINS_DIR)/pwd.c \
+		  $(BUILTINS_DIR)/exit.c \
+		  $(BUILTINS_DIR)/env.c \
+		  $(TOKENS_DIR)/trimming.c \
+		  $(BUILTINS_DIR)/export.c \
+		  $(ENVIRONMENT_DIR)/env_init.c 
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 # Libraries
-LIBS        = -lreadline -L$(LIBFT_DIR) -lft
+LIBS        = $(READLINE) -L$(LIBFT_DIR) -lft
 
 # Ascii art
 START_ART   = "🌟 Starting compilation of Minishell! 🌟"
@@ -57,7 +57,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_DIR)/libft.a
 	@echo $(START_ART)
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS) $(LIBS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS)
 	@echo $(END_ART)
 
 $(LIBFT_DIR)/libft.a:
@@ -82,4 +82,4 @@ fclean: clean
 re: fclean all
 	@echo $(RE_ART)
 
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re
