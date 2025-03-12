@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/03/11 15:00:25 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/12 22:24:09 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,24 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			i++;
 		}
 		cmd->args_for_cmd[j] = NULL;
+		if (cmd->outfile || cmd-> inputfile)
+		{
+			fprintf(stderr, "entering redirection\n");
+			if (cmd->inputfile)
+			{
+				handle_input_redirection(cmd->inputfile);
+			}
+			if (cmd->outfile && !cmd->append_fd)
+			{
+				fprintf(stderr, "entered truncate mode\n");
+				handle_redirection(cmd->outfile, 0);
+			}
+			else if (cmd->outfile && cmd->append_fd)
+			{
+				fprintf(stderr, "entered append mode\n");
+				handle_redirection(cmd->outfile, 1);
+			}
+		}
 		if (cmd->cmd_type != TOKEN_BUILTIN)
 		{
 			pid = fork();
@@ -183,25 +201,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				close(fd[1]);
 				close(fd[0]);
 			}
-			if (cmd->outfile || cmd-> inputfile)
-			{
-				fprintf(stderr, "entering redirection\n");
-				if (cmd->inputfile)
-				{
-					handle_input_redirection(cmd->inputfile);
-				}
-				if (cmd->outfile && !cmd->append_fd)
-				{
-					fprintf(stderr, "entered truncate mode\n");
-					handle_redirection(cmd->outfile, 0);
-				}
-				else if (cmd->outfile && cmd->append_fd)
-				{
-					fprintf(stderr, "entered append mode\n");
-					handle_redirection(cmd->outfile, 1);
-				}
-			}
-			
 			execute_command(cmd);
 		}
 		else if (cmd->cmd_type == TOKEN_BUILTIN)
@@ -217,24 +216,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			// 	close(fd[1]);
 			// 	close(fd[0]);
 			// }
-			if (cmd->outfile || cmd-> inputfile)
-			{
-				fprintf(stderr, "entering redirection\n");
-				if (cmd->inputfile)
-				{
-					handle_input_redirection(cmd->inputfile);
-				}
-				if (cmd->outfile && !cmd->append_fd)
-				{
-					fprintf(stderr, "entered truncate mode\n");
-					handle_redirection(cmd->outfile, 0);
-				}
-				else if (cmd->outfile && cmd->append_fd)
-				{
-					fprintf(stderr, "entered append mode\n");
-					handle_redirection(cmd->outfile, 1);
-				}
-			}
 			fprintf(stderr, "*******entered builtin*****\n");
 			handle_builtin(cmd, ev);
 		}
@@ -250,7 +231,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		cmd = cmd->next;
 	}
 	while (wait(&status) > 0);
-	
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
 		perror("minishell: dup2 error");
 	if (dup2(saved_stdin, STDIN_FILENO) == -1)

@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/11 13:56:38 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/12 21:57:52 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	data.env = env_init(envp);
 	// (void)envp;
-	if (signal(SIGINT, signal_handle) == SIG_ERR)
-		perror("signal");
 	while (1)
 	{
-		// if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-		// 	perror("signal");
+		if (signal(SIGINT, signal_handle) == SIG_ERR)
+			perror("signal");
+		if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+			perror("signal");
 		input = readline("minishell$ ");
 		if (!input)
 		{
