@@ -138,6 +138,8 @@ char	*find_command_path(char *cmd, char **envp);
 int		find_char(char *str, char *charset);
 
 //environment
-t_env *env_init(char **envp);
-void add_env_node(t_env **env_list, char *key, char *value);
+t_env	*env_init(char **envp);
+void	add_env_node(t_env **head, char *key, char *value);
+char	*expand_variables(char *input, t_env_data *data);
+
 #endif

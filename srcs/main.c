@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/12 21:57:52 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/19 00:58:00 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,15 @@ void	signal_handle(int sig)
 
 int	main(int ac, char **av, char **envp)
 {
-	char	*input;
-	t_token	*tokens;
-	t_env_data data;
+	char		*input;
+	char		*expanded_input;
+	t_token		*tokens;
+	t_env_data	data;
 
 	(void)ac;
 	(void)av;
 	data.env = env_init(envp);
-	// (void)envp;
+	data.last_exit = 0;
 	while (1)
 	{
 		if (signal(SIGINT, signal_handle) == SIG_ERR)
@@ -49,10 +50,12 @@ int	main(int ac, char **av, char **envp)
 			printf("exit\n");
 			break ;
 		}
-		tokens = tokenize_input(input, &data);
 		if (*input)
 			add_history(input);
+		expanded_input = expand_variables(input, &data);
 		free(input);
+		tokens = tokenize_input(expanded_input, &data);
+		free(expanded_input);
 		if (tokens)
 			return_tokens(tokens);
 	}
