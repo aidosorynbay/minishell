@@ -45,16 +45,26 @@ char	*expand_variables(char *input, t_env_data *data)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '$' && input[i + 1] && (isalnum(input[i + 1]) || input[i + 1] == '_'))
+		if (input[i] == '$' && input[i + 1])
 		{
 			i++; // Skip '$'
-			j = 0;
-			while (input[i] && (isalnum(input[i]) || input[i] == '_')) // Extract var name
-				var_name[j++] = input[i++];
-			var_name[j] = '\0';
-			var_value = get_env_value(var_name, data->env, data->last_exit);
-			result = realloc(result, strlen(result) + strlen(var_value) + 1);
-			strcat(result, var_value);
+			if (input[i] == '?') // Special case for $?
+			{
+				var_value = get_env_value("?", data->env, data->last_exit);
+				result = realloc(result, strlen(result) + strlen(var_value) + 1);
+				strcat(result, var_value);
+				i++;
+			}
+			else if (isalnum(input[i]) || input[i] == '_')
+			{
+				j = 0;
+				while (input[i] && (isalnum(input[i]) || input[i] == '_')) // Extract var name
+					var_name[j++] = input[i++];
+				var_name[j] = '\0';
+				var_value = get_env_value(var_name, data->env, data->last_exit);
+				result = realloc(result, strlen(result) + strlen(var_value) + 1);
+				strcat(result, var_value);
+			}
 		}
 		else
 		{
