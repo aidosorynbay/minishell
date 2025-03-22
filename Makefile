@@ -1,6 +1,8 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Iinc/ -Ilibft/
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
+CFLAGS += -Iinc
+READLINE    = -L/opt/vagrant/embedded/lib/ -lreadline
 
 # Directories
 SRCS_DIR    = srcs
@@ -10,6 +12,7 @@ OBJS_DIR    = objs
 LIBFT_DIR   = libft
 EXECUTION_DIR = $(SRCS_DIR)/execution
 BUILTINS_DIR  = $(EXECUTION_DIR)/builtins
+COMMANDS_DIR  = $(EXECUTION_DIR)/commands
 ENVIRONMENT_DIR  = $(EXECUTION_DIR)/environment
 
 # Files and output
@@ -23,22 +26,24 @@ SRCS        = $(SRCS_DIR)/main.c \
               $(TOKENS_DIR)/utils.c \
               $(TOKENS_DIR)/assign_type_utils.c \
               $(TOKENS_DIR)/assign_type.c \
-			  $(EXECUTION_DIR)/converter.c \
-			  $(EXECUTION_DIR)/token_parser.c \
-			  $(BUILTINS_DIR)/builtins.c \
-			  $(BUILTINS_DIR)/cd.c \
-			  $(BUILTINS_DIR)/echo.c \
-			  $(BUILTINS_DIR)/pwd.c \
-			  $(BUILTINS_DIR)/exit.c \
-			  $(BUILTINS_DIR)/env.c \
-			  $(TOKENS_DIR)/trimming.c \
-			  $(BUILTINS_DIR)/export.c \
-			  $(ENVIRONMENT_DIR)/env_init.c 
+		  $(EXECUTION_DIR)/converter.c \
+		  $(EXECUTION_DIR)/token_parser.c \
+		  $(COMMANDS_DIR)/commands.c \
+		  $(COMMANDS_DIR)/commands_utils.c \
+		  $(BUILTINS_DIR)/builtins.c \
+		  $(BUILTINS_DIR)/cd.c \
+		  $(BUILTINS_DIR)/echo.c \
+		  $(BUILTINS_DIR)/pwd.c \
+		  $(BUILTINS_DIR)/exit.c \
+		  $(BUILTINS_DIR)/env.c \
+		  $(TOKENS_DIR)/trimming.c \
+		  $(BUILTINS_DIR)/export.c \
+		  $(ENVIRONMENT_DIR)/env_init.c 
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 # Libraries
-LIBS        = -lreadline -L$(LIBFT_DIR) -lft
+LIBS        = $(READLINE) -L$(LIBFT_DIR) -lft
 
 # Ascii art
 START_ART   = "🌟 Starting compilation of Minishell! 🌟"
@@ -77,4 +82,4 @@ fclean: clean
 re: fclean all
 	@echo $(RE_ART)
 
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re

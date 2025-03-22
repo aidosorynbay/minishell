@@ -10,6 +10,7 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <errno.h> // can we have this????
 
 # include <signal.h>
 
@@ -69,9 +70,10 @@ typedef struct s_env
 
 typedef struct s_env_data
 {
-    t_env   *env_list;     // ✅ Stores **only exported** variables (`env`)
-    t_env   *export_list;  // ✅ Stores **all variables** (`export`)
-    int     last_exit;
+    t_env   *env_list;      // Env linked list
+	t_env	*env_export_list; // for export
+	char	**envp;
+    int     last_exit; // Store last exit status ($?)
 }   t_env_data;
 
 // tokenization
@@ -129,8 +131,15 @@ void	ft_env(t_env *ev);
 void	ft_pwd();
 void	ft_export(t_env_data *env_list, char **args);
 
+// commands
+void	execute_command(t_cmd *cmd);
+void    ft_strcpy(char *dst, const char *src);
+void	ft_strncpy(char *dst, const char *src, size_t len);
+char	*find_command_path(char *cmd, char **envp);
+int		find_char(char *str, char *charset);
 
 //environment
-t_env_data	*env_init(char **envp);
-int	add_env_node(t_env **env_list, char *key, char *value);
+t_env	*env_init(char **envp);
+void	add_env_node(t_env **head, char *key, char *value);
+
 #endif

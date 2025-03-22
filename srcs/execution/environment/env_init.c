@@ -1,144 +1,74 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_init.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/19 00:52:24 by aorynbay          #+#    #+#             */
+/*   Updated: 2025/03/22 12:31:50 by aorynbay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// void add_env_node(t_env **env_list, char *key, char *value, int flag)
-// {
-//     t_env *tmp = *env_list;
-//     t_env *new_node;
+// t_env *g_env = NULL;
 
-//     if (!key)
-//         return;
-//     while (tmp)
-//     {
-//         if (ft_strcmp(tmp->key, key) == 0)
-//         {
-//             free(tmp->value);
-//             if (value)
-//                 tmp->value = ft_strdup(value);
-//             else
-//                 tmp->value = ft_strdup("");
-//             return;
-//         }
-//         tmp = tmp->next;
-//     }
-
-//     new_node = malloc(sizeof(t_env));
-//     if (!new_node)
-//         return;
-
-//     new_node->key = ft_strdup(key);
-//     if (value)
-//         new_node->value = ft_strdup(value);
-//     else
-//         new_node->value = ft_strdup("");
-
-//     new_node->next = *env_list;
-//     *env_list = new_node;
-// }
-
-// t_env *env_init(char **envp)
-// {
-//     t_env *head;
-//     int i;
-//     char **splits;
-//     int j;
-    
-//     head = NULL;
-//     i = 0;
-//     while (envp[i])
-//     {
-//         splits = ft_split(envp[i], '=');
-//         if (!splits)
-//             return NULL;
-//         add_env_node(&head, splits[0], splits[1]);
-//         j = 0;
-//         while (splits[j])
-//             free(splits[j++]);
-//         free(splits);
-//         i++;
-//     }
-//     return head;
-// }
-
-int add_env_node(t_env **list, char *key, char *value)
+static t_env	*create_env_node(char *key, char *value)
 {
-    t_env *tmp;
-    t_env *new_node;
+	t_env	*new;
 
-    if (!key)  // ✅ Prevent NULL key issues
-        return (0);
-
-    // ✅ Check if the variable already exists and update it
-    tmp = *list;
-    while (tmp)
-    {
-        if (ft_strcmp(tmp->key, key) == 0)
-        {
-            free(tmp->value);
-            if (value)
-                tmp->value = ft_strdup(value);
-            else
-                tmp->value = ft_strdup("");
-            return (1);
-        }
-        tmp = tmp->next;
-    }
-
-    // ✅ If not found, create a new node
-    new_node = malloc(sizeof(t_env));
-    if (!new_node)
-        return (0);
-
-    new_node->key = ft_strdup(key);
-    if (value)
-        new_node->value = ft_strdup(value);
-    else
-        new_node->value = ft_strdup("");
-
-    new_node->next = *list;
-    *list = new_node;
-
-    return (1);  // ✅ Return 1 to indicate success
+	new = malloc(sizeof(t_env));
+	if (new == NULL)
+		return (NULL);
+	new->key = strdup(key);
+	if (value != NULL)
+		new->value = strdup(value);
+	else
+		new->value = strdup("");
+	new->next = NULL;
+	return (new);
 }
 
-t_env_data *env_init(char **envp)
+void	add_env_node(t_env **head, char *key, char *value)
 {
-    t_env_data *data;
-    int i;
-    char **split;
-    int j;
+	t_env	*new;
+	t_env	*temp;
 
-    data = malloc(sizeof(t_env_data));  // ✅ Allocate memory for both lists
-    if (!data)
-        return NULL;
+	if (key == NULL)
+		return ;
+	new = create_env_node(key, value);
+	if (*head == NULL)
+	{
+		*head = new;
+		return ;
+	}
+	temp = *head;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = new;
+}
 
-    data->env_list = NULL;
-    data->export_list = NULL;
-    i = 0;
-    
-    while (envp[i])
-    {
-        split = ft_split(envp[i], '=');
-        if (!split)
-            return NULL;
+t_env	*env_init(char **envp)
+{
+	t_env	*head;
+	int		i;
+	char	**splits;
 
-        if (split[0])  // ✅ Ensure key exists
-        {
-            if (split[1])
-            {
-                add_env_node(&data->env_list, split[0], split[1]);  // ✅ Store in `env`
-                add_env_node(&data->export_list, split[0], split[1]);  // ✅ Store in `export`
-            }
-            else
-            {
-                add_env_node(&data->export_list, split[0], "");  // ✅ Only store in `export`
-            }
-        }
-
-        j = 0;
-        while (split[j])
-            free(split[j++]);
-        free(split);
-        i++;
-    }
-    return data;
+	head = NULL;
+	i = 0;
+	while (envp[i] != NULL)
+	{
+		splits = ft_split(envp[i], '='); // Split "KEY=VALUE"
+		if (splits != NULL && splits[0] != NULL)
+		{
+			if (splits[1] != NULL)
+				add_env_node(&head, splits[0], splits[1]);
+			else
+				add_env_node(&head, splits[0], "");
+			free(splits);
+		}
+		i++;
+	}
+	return (head);
 }
