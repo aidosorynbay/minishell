@@ -44,7 +44,7 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev)
     else if (ft_strcmp(cmd->args[0], "pwd") == 0)
         ft_pwd();
     else if (ft_strcmp(cmd->args[0], "env") == 0 && !cmd->args[1])
-        ft_env(ev);
+        ft_env(ev->env_list);
     else if (ft_strcmp(cmd->args[0], "export") == 0)
         ft_export(ev, cmd->args_for_cmd);
     // else if (ft_strcmp(cmd->args[0], "unset") == 0)

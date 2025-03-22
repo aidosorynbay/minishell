@@ -30,7 +30,8 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-	data.env = env_init(envp);
+	data.env_list = env_init(envp);
+	data.export_list = env_init(envp);
 	while (1)
 	{
 		input = readline("minishell$ ");

@@ -13,7 +13,7 @@ void ft_export(t_env_data *env_list, char **args)
     // If no arguments, print environment variables
     if (!args[1])
     {
-        tmp = env_list->env;
+        tmp = env_list->env_list;
         while (tmp)
         {
             ft_putstr_fd("declare -x ", 1);
@@ -32,7 +32,7 @@ void ft_export(t_env_data *env_list, char **args)
 
     // Process each argument (`export VAR=value`)
     i = 1;
-    env = env_list->env;
+    env = env_list->env_list;
     while (args[i])
     {
         // Split into "VAR" and "VALUE"
