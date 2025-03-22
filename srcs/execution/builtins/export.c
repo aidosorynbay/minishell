@@ -6,7 +6,7 @@ void ft_export(t_env_data *env_list, char **args)
 
     if (!args[1])
     {
-        t_env *tmp = env_list->env;
+        t_env *tmp = env_list->env_export_list;
         while (tmp)
         {
             ft_putstr_fd("declare -x ", 1);
@@ -23,7 +23,7 @@ void ft_export(t_env_data *env_list, char **args)
         return ;
     }
     i = 1;
-    t_env *env = env_list->env;
+    t_env *env = env_list->env_list;
     while (args[i])
     {
         char **split = ft_split(args[i], '=');

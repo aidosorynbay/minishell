@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/19 00:58:00 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/22 12:37:04 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,12 @@ void	signal_handle(int sig)
 int	main(int ac, char **av, char **envp)
 {
 	char		*input;
-	char		*expanded_input;
 	t_token		*tokens;
 	t_env_data	data;
 
 	(void)ac;
 	(void)av;
-	data.env = env_init(envp);
+	data.env_list = env_init(envp);
 	data.last_exit = 0;
 	while (1)
 	{
@@ -46,16 +45,11 @@ int	main(int ac, char **av, char **envp)
 			perror("signal");
 		input = readline("minishell$ ");
 		if (!input)
-		{
-			printf("exit\n");
 			break ;
-		}
 		if (*input)
 			add_history(input);
-		expanded_input = expand_variables(input, &data);
+		tokens = tokenize_input(input, &data);
 		free(input);
-		tokens = tokenize_input(expanded_input, &data);
-		free(expanded_input);
 		if (tokens)
 			return_tokens(tokens);
 	}

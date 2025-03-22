@@ -69,7 +69,8 @@ typedef struct s_env
 
 typedef struct s_env_data
 {
-    t_env   *env;      // Environment linked list
+    t_env   *env_list;      // Env linked list
+	t_env	*env_export_list; // for export
 	char	**envp;
     int     last_exit; // Store last exit status ($?)
 }   t_env_data;
@@ -140,6 +141,5 @@ int		find_char(char *str, char *charset);
 //environment
 t_env	*env_init(char **envp);
 void	add_env_node(t_env **head, char *key, char *value);
-char	*expand_variables(char *input, t_env_data *data);
 
 #endif
