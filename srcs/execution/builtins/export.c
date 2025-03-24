@@ -1,40 +1,69 @@
 #include "minishell.h"
 
-void ft_export(t_env_data *env_list, char **args)
+static char	*get_env_value(t_env *env_list, char *key)
 {
-    int i;
+	t_env	*tmp;
 
-    if (!args[1])
-    {
-        t_env *tmp = env_list->env_export_list;
-        while (tmp)
-        {
-            ft_putstr_fd("declare -x ", 1);
-            ft_putstr_fd(tmp->key, 1);
-            if (tmp->value)
-            {
-                ft_putstr_fd("=\"", 1);
-                ft_putstr_fd(tmp->value, 1);
-                ft_putstr_fd("\"", 1);
-            }
-            ft_putstr_fd("\n", 1);
-            tmp = tmp->next;
-        }
-        return ;
-    }
-    i = 1;
-    t_env *env = env_list->env_list;
-    while (args[i])
-    {
-        char **split = ft_split(args[i], '=');
-        if (!split[0])
-            perror("minishell: export: not a valid identifier\n");
-        if (split[1])
-            add_env_node(&env, split[0], split[1]);
-        else
-            add_env_node(&env, split[0], "");
-        free(split);
-        i++;
-    }
-    return ;
+	tmp = env_list;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->key, key) == 0)
+			return (tmp->value);
+		tmp = tmp->next;
+	}
+	return (NULL);
 }
+
+void	ft_export(t_env_data *env_list, char **args)
+{
+	int		i;
+	char	**split;
+	t_env	*env;
+
+	if (!args[1])
+	{
+		t_env *tmp = env_list->env_export_list;
+		while (tmp)
+		{
+			ft_putstr_fd("declare -x ", 1);
+			ft_putstr_fd(tmp->key, 1);
+			if (tmp->value)
+			{
+				ft_putstr_fd("=\"", 1);
+				ft_putstr_fd(tmp->value, 1);
+				ft_putstr_fd("\"", 1);
+			}
+			ft_putstr_fd("\n", 1);
+			tmp = tmp->next;
+		}
+		return ;
+	}
+	i = 1;
+	while (args[i])
+	{
+		split = ft_split(args[i], '=');
+		if (!split[0])
+		{
+			perror("minishell: export: not a valid identifier");
+			free(split);
+			i++;
+			continue;
+		}
+		env = env_list->env_list;
+		if (args[i] && ft_strchr(args[i], '=')) // Key=value case
+		{
+			add_env_node(&env_list->env_list, split[0], split[1] ? split[1] : "");
+			add_env_node(&env_list->env_export_list, split[0], split[1] ? split[1] : "");
+		}
+		else // Key without `=` → Add only to export list
+		{
+			if (!get_env_value(env_list->env_export_list, split[0]))
+				add_env_node(&env_list->env_export_list, split[0], "");
+		}
+		free(split);
+		i++;
+	}
+}
+
+
+

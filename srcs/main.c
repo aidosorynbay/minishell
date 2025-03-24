@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/24 12:53:27 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/24 13:32:34 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,20 @@ void	signal_handle(int sig)
 	rl_redisplay();
 }
 
-// void	print_env(t_env *list)
-// {
-// 	while (list)
-// 	{
-// 		printf("%s=%s\n", list->key, list->value);
-// 		list = list->next;
-// 	}
-// }
-
-int	main(int ac, char **av, char **envp)
+int main(int ac, char **av, char **envp)
 {
-	char		*input;
-	t_token		*tokens;
-	t_env_data	data;
+	char        *input;
+	t_token     *tokens;
+	t_env_data  *data;
 
 	(void)ac;
 	(void)av;
-	data.env_list = env_init(envp);
-	data.last_exit = 0;
-	// print_env(data.env_list);
+	data = env_init(envp);
+	if (data == NULL)
+	{
+		perror("env_init failed");
+		return (EXIT_FAILURE);
+	}
 	while (1)
 	{
 		if (signal(SIGINT, signal_handle) == SIG_ERR)
@@ -54,13 +48,13 @@ int	main(int ac, char **av, char **envp)
 		if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
 			perror("signal");
 		input = readline("minishell$ ");
-		if (!input)
-			break ;
-		if (*input)
+		if (input == NULL)
+			break;
+		if (*input != '\0')
 			add_history(input);
-		tokens = tokenize_input(input, &data);
+		tokens = tokenize_input(input, data);
 		free(input);
-		if (tokens)
+		if (tokens != NULL)
 			return_tokens(tokens);
 	}
 }
