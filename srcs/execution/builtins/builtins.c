@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/03/19 01:32:48 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/24 13:01:09 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev)
 	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		ft_env(ev);
+		ft_env(ev->env_list);
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
 		ft_export(ev, cmd->args_for_cmd);
 	// else if (ft_strcmp(cmd->args[0], "unset") == 0)
@@ -231,10 +231,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				close(fd[1]);
 				close(fd[0]);
 			}
-
 			execute_command(cmd);
 		}
-
 		// Parent process
 		if (prev_fd != -1)
 			close(prev_fd);

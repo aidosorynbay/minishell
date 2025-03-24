@@ -69,7 +69,7 @@ typedef struct s_env
 
 typedef struct s_env_data
 {
-    t_env   *env_list;      // Env linked list
+    t_env   *env_list;	// Env linked list
 	t_env	*env_export_list; // for export
 	char	**envp;
     int     last_exit; // Store last exit status ($?)
@@ -127,7 +127,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev);
 int ft_echo(char **total_arg);
 int ft_exit(char **total_arg);
 int ft_cd(char **total_arg);
-void ft_env(t_env_data *ev);
+void ft_env(t_env *ev);
 void ft_pwd();
 void ft_export(t_env_data *env_list, char **args);
 

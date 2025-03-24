@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:38:27 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/22 12:37:04 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/03/24 12:53:27 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,15 @@ void	signal_handle(int sig)
 	rl_redisplay();
 }
 
+// void	print_env(t_env *list)
+// {
+// 	while (list)
+// 	{
+// 		printf("%s=%s\n", list->key, list->value);
+// 		list = list->next;
+// 	}
+// }
+
 int	main(int ac, char **av, char **envp)
 {
 	char		*input;
@@ -37,6 +46,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	data.env_list = env_init(envp);
 	data.last_exit = 0;
+	// print_env(data.env_list);
 	while (1)
 	{
 		if (signal(SIGINT, signal_handle) == SIG_ERR)
