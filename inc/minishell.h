@@ -95,10 +95,12 @@ void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 // syntax_check
 void 	check_syntax(t_token **tokens);
 
+
 // syntax_check_utils
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
 int		error_syntaxcheck(t_token **tokens);
+int		check_lesser(t_token *tmp, t_token **tokens);
 
 // assign type
 void	assign_token_type(t_token **tokens);
@@ -127,7 +129,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev);
 int		ft_echo(char **total_arg);
 int		ft_exit(char **total_arg);
 int		ft_cd(char **total_arg);
-void	ft_env(t_env *ev);
+void	ft_env(t_env_data *ev);
 void	ft_pwd();
 void	ft_export(t_env_data *env_list, char **args);
 

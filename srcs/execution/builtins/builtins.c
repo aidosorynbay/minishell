@@ -29,6 +29,7 @@ static int count_args_for_cmd(char **tokens)
 
 static void handle_builtin(t_cmd *cmd, t_env_data *ev)
 {
+	// (void)ev;
 	fprintf(stderr, "---------------*************----------------\n");
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return;
