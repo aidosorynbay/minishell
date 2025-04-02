@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/03/24 14:06:53 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:23:52 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,6 @@ static int count_args_for_cmd(char **tokens)
 		start++;
 	}
 	return count;
-}
-
-static void handle_builtin(t_cmd *cmd, t_env_data *ev)
-{
-	if (!cmd || !cmd->args || !cmd->args[0])
-		return;
-	if (ft_strcmp(cmd->args[0], "echo") == 0)
-		ft_echo(cmd->args_for_cmd);
-	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-		ft_cd(cmd->args_for_cmd);
-	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		ft_exit(cmd->args_for_cmd);
-	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		ft_pwd();
-	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		ft_env(ev->env_list);
-	else if (ft_strcmp(cmd->args[0], "export") == 0)
-		ft_export(ev, cmd->args_for_cmd);
-	// else if (ft_strcmp(cmd->args[0], "unset") == 0)
-	//     ft_unset(cmd->args_for_cmd, ev);
-	else
-		fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
 }
 
 void handle_redirection(char *outfile, int append)
@@ -81,6 +59,79 @@ void handle_input_redirection(char *infile)
 	}
 }
 
+static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
+{
+	pid_t pid;
+
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return;
+	
+	// Always fork if part of a pipeline
+	if (cmd->next)
+	{
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork error");
+			exit(EXIT_FAILURE);
+		}
+		if (pid == 0) // Child process
+		{
+			if (cmd->inputfile)
+				handle_input_redirection(cmd->inputfile);
+			if (cmd->outfile)
+				handle_redirection(cmd->outfile, cmd->append_fd);
+			
+			if (*prev_fd != -1)
+			{
+				dup2(*prev_fd, STDIN_FILENO);
+				close(*prev_fd); // FIX: Close previous pipe read end in child
+			}
+
+			// Redirect current command's output to pipe
+			if (cmd->next)
+			{
+				dup2(fd[1], STDOUT_FILENO);
+				close(fd[1]); // FIX: Close write end of pipe in child
+				close(fd[0]); // FIX: Close read end of pipe in child
+			}
+			// Close unused pipe ends to prevent blocking
+			if (cmd->next)
+			{
+				close(fd[0]); // Close read end
+				close(fd[1]); // Close write end
+			}
+			// Execute the built-in
+			if (ft_strcmp(cmd->args[0], "echo") == 0)
+				ft_echo(cmd->args_for_cmd);
+			else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+				ft_pwd();
+			else if (ft_strcmp(cmd->args[0], "env") == 0)
+				ft_env(ev->env_list);
+			else if (ft_strcmp(cmd->args[0], "export") == 0)
+				ft_export(ev, cmd->args_for_cmd);
+			exit(EXIT_SUCCESS);
+		}
+		waitpid(pid, NULL, 0); // Parent waits for child
+		return;
+	}
+	else
+	{
+			// Execute normally if not in a pipeline
+		if (ft_strcmp(cmd->args[0], "echo") == 0)
+			ft_echo(cmd->args_for_cmd);
+		else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+			ft_pwd();
+		else if (ft_strcmp(cmd->args[0], "env") == 0)
+			ft_env(ev->env_list);
+		else if (ft_strcmp(cmd->args[0], "export") == 0)
+			ft_export(ev, cmd->args_for_cmd);
+	}
+	
+}
+
+
+
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
 	int		fd[2];
@@ -98,7 +149,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		perror("minishell: dup error");
 		exit(EXIT_FAILURE);
 	}
-
 	prev_fd = -1;
 	cmd = cmd_list;
 	while (cmd)
@@ -112,9 +162,9 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				exit(EXIT_FAILURE);
 			}
 		}
-
 		// Initialize arguments
-		int i = 0, j = 0;
+		int i = 0;
+		int j = 0;
 		int arg_count = count_args_for_cmd(cmd->args);
 		if (arg_count > 0)
 		{
@@ -129,7 +179,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			cmd->args_for_cmd = NULL;
 		cmd->inputfile = NULL;
 		cmd->outfile = NULL;
-
 		// Parse arguments
 		while (cmd->args[i])
 		{
@@ -153,86 +202,69 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			i++;
 		}
 		cmd->args_for_cmd[j] = NULL;
-
 		// Apply redirections for built-ins before execution
-		int builtin_redir = 0;
 		if (cmd->cmd_type == TOKEN_BUILTIN)
 		{
-			builtin_redir = 1;
-			if (cmd->inputfile)
-				handle_input_redirection(cmd->inputfile);
-			if (cmd->outfile)
-				handle_redirection(cmd->outfile, cmd->append_fd);
+			// if (cmd->inputfile)
+			// 	handle_input_redirection(cmd->inputfile);
+			// if (cmd->outfile)
+			// 	handle_redirection(cmd->outfile, cmd->append_fd);
+			handle_builtin(cmd, ev, fd, &prev_fd);
 		}
-
-		// Handle built-ins directly in the parent process
-		if (cmd->cmd_type == TOKEN_BUILTIN)
+		else
 		{
-			handle_builtin(cmd, ev);
-			if (builtin_redir)
+			pid = fork();
+			if (pid == 0) // Child process
 			{
-				if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
+				if (cmd->inputfile)
+					handle_input_redirection(cmd->inputfile);
+
+				if (cmd->outfile)
 				{
-					perror("minishell: dup2 error");
-					exit(EXIT_FAILURE);
+					if (cmd->append_fd)
+						handle_redirection(cmd->outfile, 1);
+					else
+						handle_redirection(cmd->outfile, 0);
 				}
+
+				// Redirect previous command's output to current command's input
+				if (prev_fd != -1)
+				{
+					dup2(prev_fd, STDIN_FILENO);
+					close(prev_fd); // FIX: Close previous pipe read end in child
+				}
+
+				// Redirect current command's output to pipe
+				if (cmd->next)
+				{
+					dup2(fd[1], STDOUT_FILENO);
+					close(fd[1]); // FIX: Close write end of pipe in child
+					close(fd[0]); // FIX: Close read end of pipe in child
+				}
+
+				execute_command(cmd);
+				exit(EXIT_FAILURE); // Just in case
 			}
-			cmd = cmd->next;
-			continue;
-		}
-
-		// Fork for external commands
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork error.");
-			exit(EXIT_FAILURE);
-		}
-
-		if (pid == 0) // Child process
-		{
-			// Handle input redirection
-			if (cmd->inputfile)
-				handle_input_redirection(cmd->inputfile);
-
-			// Handle output redirection
-			if (cmd->outfile)
+			else if (pid == -1)
 			{
-				if (cmd->append_fd)
-					handle_redirection(cmd->outfile, 1);
-				else
-					handle_redirection(cmd->outfile, 0);
+				perror("fork error");
+				exit(EXIT_FAILURE);
 			}
-
-			// Pipe redirections
-			if (prev_fd != -1)
-			{
-				dup2(prev_fd, STDIN_FILENO);
-				close(prev_fd);
-			}
-			if (cmd->next)
-			{
-				dup2(fd[1], STDOUT_FILENO);
-				close(fd[1]);
-				close(fd[0]);
-			}
-			execute_command(cmd);
 		}
+		
 		// Parent process
 		if (prev_fd != -1)
-			close(prev_fd);
+			close(prev_fd); // Close previous read end in the parent
 		if (cmd->next)
 		{
-			close(fd[1]);
-			prev_fd = fd[0];
+			close(fd[1]); // Close write end in parent to signal EOF to next command
+			prev_fd = fd[0]; // Pass read end to next command
 		}
-
+		
 		cmd = cmd->next;
 	}
-
 	// Wait for all child processes
 	while (wait(&status) > 0);
-
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
 	{
