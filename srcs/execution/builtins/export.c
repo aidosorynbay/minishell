@@ -18,7 +18,7 @@ void	ft_export(t_env_data *env_list, char **args)
 {
 	int		i;
 	char	**split;
-	t_env	*env;
+	// t_env	*env = NULL;
 
 	if (!args[1])
 	{
@@ -49,7 +49,7 @@ void	ft_export(t_env_data *env_list, char **args)
 			i++;
 			continue;
 		}
-		env = env_list->env_list;
+		// env = env_list->env_list;
 		if (args[i] && ft_strchr(args[i], '=')) // Key=value case
 		{
 			add_env_node(&env_list->env_list, split[0], split[1] ? split[1] : "");

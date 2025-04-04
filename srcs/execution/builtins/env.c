@@ -14,9 +14,9 @@
 
 void ft_env(t_env *ev)
 {
-    int i;
+    // int i;
     
-    i  = 0;
+    // i  = 0;
     if (!ev)
     {
         perror("minishell: env: No environment variables found\n");

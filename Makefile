@@ -36,6 +36,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(BUILTINS_DIR)/pwd.c \
 		  $(BUILTINS_DIR)/exit.c \
 		  $(BUILTINS_DIR)/env.c \
+		  $(BUILTINS_DIR)/heredoc.c \
 		  $(TOKENS_DIR)/trimming.c \
 		  $(BUILTINS_DIR)/export.c \
 		  $(ENVIRONMENT_DIR)/env_init.c 
