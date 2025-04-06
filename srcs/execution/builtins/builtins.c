@@ -13,29 +13,6 @@
 #include "minishell.h"
 
 
-char *read_heredoc(char *delimiter)
-{
-    char *line;
-    char *heredoc = ft_strdup(""); // Initialize empty heredoc
-    if (!heredoc)
-        return (NULL);
-
-    while (1)
-    {
-        line = readline("> ");
-        if (!line || ft_strcmp(line, delimiter) == 0)
-        {
-            free(line);
-            break;
-        }
-        char *temp = ft_strjoin(heredoc, line);
-        free(heredoc);
-        free(line);
-        heredoc = ft_strjoin(temp, "\n");
-        free(temp);
-    }
-    return heredoc;
-}
 
 
 static int count_args_for_cmd(char **tokens)
@@ -71,20 +48,28 @@ void handle_redirection(char *outfile, int append)
 	}
 }
 
-void handle_input_redirection(char *infile, char *heredoc_content)
+static void handle_heredoc(char *heredoc_path)
 {
 	int fd;
 
-    if (heredoc_content)
+    if (heredoc_path)
 	{
-        fd = open(".heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (fd == -1)
-            return perror("heredoc error"), (void)0;
-        write(fd, heredoc_content, ft_strlen(heredoc_content));
-        close(fd);
-        fd = open(".heredoc_tmp", O_RDONLY);
-    }
-	else if (infile)
+		fd = open(heredoc_path, O_RDONLY);
+		if (fd == -1)
+		{
+			perror("open");
+			return;
+		}
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+
+}
+void handle_input_redirection(char *infile)
+{
+	int fd;
+
+	if (infile)
 	{
 		fd = open(infile, O_RDONLY);
 		if (fd == -1)
@@ -95,15 +80,15 @@ void handle_input_redirection(char *infile, char *heredoc_content)
 	}
 }
 
-static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
+static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 {
 	pid_t pid;
 
-	if (!cmd || !cmd->args || !cmd->args[0])
+	if (!(*cmd) || !(*cmd)->args || !(*cmd)->args[0])
 		return;
 	
 	// Always fork if part of a pipeline
-	if (cmd->next)
+	if ((*cmd)->next)
 	{
 		pid = fork();
 		if (pid == -1)
@@ -113,10 +98,12 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 		}
 		if (pid == 0) // Child process
 		{
-			if (cmd->inputfile)
-				handle_input_redirection(cmd->inputfile, cmd->heredoc_content);
-			if (cmd->outfile)
-				handle_redirection(cmd->outfile, cmd->append_fd);
+			if ((*cmd)->inputfile)
+				handle_input_redirection((*cmd)->inputfile);
+			else if ((*cmd)->heredoc_path)
+				handle_heredoc((*cmd)->heredoc_path);
+			if ((*cmd)->outfile)
+				handle_redirection((*cmd)->outfile, (*cmd)->append_fd);
 			
 			if (*prev_fd != -1)
 			{
@@ -125,27 +112,27 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			}
 
 			// Redirect current command's output to pipe
-			if (cmd->next)
+			if ((*cmd)->next)
 			{
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]); // FIX: Close write end of pipe in child
 				close(fd[0]); // FIX: Close read end of pipe in child
 			}
 			// Close unused pipe ends to prevent blocking
-			if (cmd->next)
+			if ((*cmd)->next)
 			{
 				close(fd[0]); // Close read end
 				close(fd[1]); // Close write end
 			}
 			// Execute the built-in
-			if (ft_strcmp(cmd->args[0], "echo") == 0)
-				ft_echo(cmd->args_for_cmd);
-			else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+			if (ft_strcmp((*cmd)->args[0], "echo") == 0)
+				ft_echo((*cmd)->args_for_cmd);
+			else if (ft_strcmp((*cmd)->args[0], "pwd") == 0)
 				ft_pwd();
-			else if (ft_strcmp(cmd->args[0], "env") == 0)
+			else if (ft_strcmp((*cmd)->args[0], "env") == 0)
 				ft_env(ev->env_list);
-			else if (ft_strcmp(cmd->args[0], "export") == 0)
-				ft_export(ev, cmd->args_for_cmd);
+			else if (ft_strcmp((*cmd)->args[0], "export") == 0)
+				ft_export(ev, (*cmd)->args_for_cmd);
 			exit(EXIT_SUCCESS);
 		}
 		waitpid(pid, NULL, 0); // Parent waits for child
@@ -154,14 +141,14 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	else
 	{
 			// Execute normally if not in a pipeline
-		if (ft_strcmp(cmd->args[0], "echo") == 0)
-			ft_echo(cmd->args_for_cmd);
-		else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+		if (ft_strcmp((*cmd)->args[0], "echo") == 0)
+			ft_echo((*cmd)->args_for_cmd);
+		else if (ft_strcmp((*cmd)->args[0], "pwd") == 0)
 			ft_pwd();
-		else if (ft_strcmp(cmd->args[0], "env") == 0)
+		else if (ft_strcmp((*cmd)->args[0], "env") == 0)
 			ft_env(ev->env_list);
-		else if (ft_strcmp(cmd->args[0], "export") == 0)
-			ft_export(ev, cmd->args_for_cmd);
+		else if (ft_strcmp((*cmd)->args[0], "export") == 0)
+			ft_export(ev, (*cmd)->args_for_cmd);
 	}
 	
 }
@@ -235,8 +222,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			}
 			else if (ft_strcmp(cmd->args[i], "<<") == 0)
 			{
-				cmd->heredoc_content = read_heredoc(cmd->args[i + 1]); // Read input until delimiter
-				if (!cmd->heredoc_content)
+				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
+				if (!cmd->heredoc_path)
 					exit(EXIT_FAILURE);
 				i++;
 			}
@@ -248,15 +235,16 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		
 		// Apply redirections for built-ins before execution
 		if (cmd->cmd_type == TOKEN_BUILTIN)
-			handle_builtin(cmd, ev, fd, &prev_fd);
+			handle_builtin(&cmd, ev, fd, &prev_fd);
 		else
 		{
 			pid = fork();
 			if (pid == 0) // Child process
 			{
 				if (cmd->inputfile)
-					handle_input_redirection(cmd->inputfile, cmd->heredoc_content);
-
+					handle_input_redirection(cmd->inputfile);
+				else if (cmd->heredoc_path)
+					handle_heredoc(cmd->heredoc_path);
 				if (cmd->outfile)
 				{
 					if (cmd->append_fd)

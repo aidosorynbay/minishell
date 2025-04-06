@@ -102,19 +102,6 @@ void	execute_command(t_cmd *cmd)
 			cmd->args_for_cmd[0]);
 		exit(127);
 	}
-	int fd;
-
-    if (cmd->heredoc)
-    {
-        fd = open(cmd->heredoc, O_RDONLY);
-        if (fd == -1)
-        {
-            perror("open");
-            return;
-        }
-        dup2(fd, STDIN_FILENO);
-        close(fd);
-    }
 	
 	if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
 	{

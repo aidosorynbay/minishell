@@ -55,7 +55,7 @@ typedef struct s_cmd {
 	int				append_fd;
 	char			**env;
 	char			*heredoc;
-	char 			*heredoc_content;
+	char 			*heredoc_path;
 	t_token_type	cmd_type;
 }	t_cmd;
 
@@ -142,6 +142,6 @@ int		find_char(char *str, char *charset);
 //environment
 t_env_data	*env_init(char **envp);
 void	add_env_node(t_env **head, char *key, char *value);
-char *ft_heredoc(char *limiter, t_list **heredoc_list);
+char *ft_heredoc(char *limiter);
 
 #endif

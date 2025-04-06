@@ -108,6 +108,7 @@ t_env_data *env_init(char **envp)
 			}
 			free(splits);
 		}
+		// free(splits);
 		i++;
 	}
 	return (env_data);

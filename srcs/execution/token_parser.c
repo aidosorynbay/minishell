@@ -54,15 +54,15 @@ t_cmd	*	parse_tokens(char **tokens)
 		while (tokens[i] && ft_strcmp(tokens[i], "|") != 0)
 			new_cmd->args[j++] = tokens[i++];
 		new_cmd->args[j] = NULL;
-		if (new_cmd->args[0] && (ft_strcmp(new_cmd->args[0], "echo") == 0
-				|| ft_strcmp(new_cmd->args[0], "cd") == 0
-				|| ft_strcmp(new_cmd->args[0], "exit") == 0
-				|| ft_strcmp(new_cmd->args[0], "pwd") == 0
-				|| ft_strcmp(new_cmd->args[0], "env") == 0
-				|| ft_strcmp(new_cmd->args[0], "export") == 0))
-			new_cmd->cmd_type = TOKEN_BUILTIN;
-		else
-			new_cmd->cmd_type = TOKEN_CMD;
+		// if (new_cmd->args[0] && (ft_strcmp(new_cmd->args[0], "echo") == 0
+		// 		|| ft_strcmp(new_cmd->args[0], "cd") == 0
+		// 		|| ft_strcmp(new_cmd->args[0], "exit") == 0
+		// 		|| ft_strcmp(new_cmd->args[0], "pwd") == 0
+		// 		|| ft_strcmp(new_cmd->args[0], "env") == 0
+		// 		|| ft_strcmp(new_cmd->args[0], "export") == 0))
+		// 	new_cmd->cmd_type = TOKEN_BUILTIN;
+		// else
+		// 	new_cmd->cmd_type = TOKEN_CMD;
 		// fprintf(stderr, "Command: %d\n", new_cmd->cmd_type);
 		if (!head)
 			head = new_cmd;
