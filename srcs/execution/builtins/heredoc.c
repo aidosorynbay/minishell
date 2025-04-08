@@ -1,5 +1,23 @@
 #include "minishell.h"
 
+void handle_heredoc(char *heredoc_path)
+{
+	int fd;
+
+    if (heredoc_path)
+	{
+		fd = open(heredoc_path, O_RDONLY);
+		if (fd == -1)
+		{
+			perror("open");
+			return;
+		}
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+
+}
+
 char *ft_heredoc(char *limiter)
 {
 	int		fd;

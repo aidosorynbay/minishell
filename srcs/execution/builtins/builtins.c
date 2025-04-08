@@ -12,9 +12,6 @@
 
 #include "minishell.h"
 
-
-
-
 static int count_args_for_cmd(char **tokens)
 {
 	int count = 0;
@@ -48,23 +45,6 @@ void handle_redirection(char *outfile, int append)
 	}
 }
 
-static void handle_heredoc(char *heredoc_path)
-{
-	int fd;
-
-    if (heredoc_path)
-	{
-		fd = open(heredoc_path, O_RDONLY);
-		if (fd == -1)
-		{
-			perror("open");
-			return;
-		}
-		dup2(fd, STDIN_FILENO);
-		close(fd);
-	}
-
-}
 void handle_input_redirection(char *infile)
 {
 	int fd;
@@ -78,6 +58,24 @@ void handle_input_redirection(char *infile)
 			return(perror("Dup2 got dupped\n"), (void)0);
 		close(fd);
 	}
+}
+
+static void	execute_builtin(t_cmd *cmd, t_env_data *ev)
+{
+	if (ft_strcmp(cmd->args[0], "echo") == 0)
+		ft_echo(cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+		ft_pwd();
+	else if (ft_strcmp(cmd->args[0], "env") == 0)
+		ft_env(ev->env_list);
+	else if (ft_strcmp(cmd->args[0], "export") == 0)
+		ft_export(ev, cmd->args_for_cmd);
+	// else if (ft_strcmp(cmd->args[0], "unset") == 0)
+	// 	ft_unset(ev, cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "exit") == 0)
+		ft_exit(cmd->args_for_cmd);
+	else
+		perror("minishell: command not found");
 }
 
 static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
@@ -118,42 +116,30 @@ static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 				close(fd[1]); // FIX: Close write end of pipe in child
 				close(fd[0]); // FIX: Close read end of pipe in child
 			}
-			// Close unused pipe ends to prevent blocking
-			if ((*cmd)->next)
-			{
-				close(fd[0]); // Close read end
-				close(fd[1]); // Close write end
-			}
-			// Execute the built-in
-			if (ft_strcmp((*cmd)->args[0], "echo") == 0)
-				ft_echo((*cmd)->args_for_cmd);
-			else if (ft_strcmp((*cmd)->args[0], "pwd") == 0)
-				ft_pwd();
-			else if (ft_strcmp((*cmd)->args[0], "env") == 0)
-				ft_env(ev->env_list);
-			else if (ft_strcmp((*cmd)->args[0], "export") == 0)
-				ft_export(ev, (*cmd)->args_for_cmd);
-			exit(EXIT_SUCCESS);
+			execute_builtin(*cmd, ev);
 		}
 		waitpid(pid, NULL, 0); // Parent waits for child
 		return;
 	}
 	else
 	{
-			// Execute normally if not in a pipeline
-		if (ft_strcmp((*cmd)->args[0], "echo") == 0)
-			ft_echo((*cmd)->args_for_cmd);
-		else if (ft_strcmp((*cmd)->args[0], "pwd") == 0)
-			ft_pwd();
-		else if (ft_strcmp((*cmd)->args[0], "env") == 0)
-			ft_env(ev->env_list);
-		else if (ft_strcmp((*cmd)->args[0], "export") == 0)
-			ft_export(ev, (*cmd)->args_for_cmd);
+		if ((*cmd)->inputfile)
+			handle_input_redirection((*cmd)->inputfile);
+		else if ((*cmd)->heredoc_path)
+			handle_heredoc((*cmd)->heredoc_path);
+		if ((*cmd)->outfile)
+			handle_redirection((*cmd)->outfile, (*cmd)->append_fd);
+		execute_builtin((*cmd), ev);
 	}
-	
 }
 
-
+void	free_args(char **args)
+{
+	int i = 0;
+	while (args && args[i])
+		free(args[i++]);
+	free(args);
+}
 
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
@@ -163,32 +149,32 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	int		status;
 	int		saved_stdout;
 	int		saved_stdin;
+	int		i;
+	int		j;
+	int		arg_count;
 	t_cmd	*cmd;
 
 	saved_stdout = dup(STDOUT_FILENO);
 	saved_stdin = dup(STDIN_FILENO);
+	prev_fd = -1;
+	cmd = cmd_list;
 	if (saved_stdout == -1 || saved_stdin == -1)
 	{
 		perror("minishell: dup error");
 		exit(EXIT_FAILURE);
 	}
-	prev_fd = -1;
-	cmd = cmd_list;
 	while (cmd)
 	{
 		// Handle pipes
-		if (cmd->next)
+		if (cmd->next && pipe(fd) == -1)
 		{
-			if (pipe(fd) == -1)
-			{
-				perror("pipe error");
-				exit(EXIT_FAILURE);
-			}
+			perror("pipe error");
+			exit(EXIT_FAILURE);
 		}
 		// Initialize arguments
-		int i = 0;
-		int j = 0;
-		int arg_count = count_args_for_cmd(cmd->args);
+		i = 0;
+		j = 0;
+		arg_count = count_args_for_cmd(cmd->args);
 		if (arg_count > 0)
 		{
 			cmd->args_for_cmd = malloc(sizeof(char *) * (arg_count + 1));
@@ -205,22 +191,22 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		// Parse arguments
 		while (cmd->args[i])
 		{
-			if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
+			if (!ft_strcmp(cmd->args[i], ">") || !ft_strcmp(cmd->args[i], ">>"))
 			{
 				cmd->outfile = strdup(cmd->args[i + 1]); // Saving output file
 				if (!cmd->outfile)
 					exit(EXIT_FAILURE);
-				cmd->append_fd = (ft_strcmp(cmd->args[i], ">>") == 0);
+				cmd->append_fd = (!ft_strcmp(cmd->args[i], ">>"));
 				i++;
 			}
-			else if (ft_strcmp(cmd->args[i], "<") == 0)
+			else if (!ft_strcmp(cmd->args[i], "<"))
 			{
 				cmd->inputfile = strdup(cmd->args[i + 1]); // Saving input file
 				if (!cmd->inputfile)
 					exit(EXIT_FAILURE);
 				i++;
 			}
-			else if (ft_strcmp(cmd->args[i], "<<") == 0)
+			else if (!ft_strcmp(cmd->args[i], "<<"))
 			{
 				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
 				if (!cmd->heredoc_path)
@@ -231,8 +217,9 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
 			i++;
 		}
-		cmd->args_for_cmd[j] = NULL;
-		
+		if (cmd->args_for_cmd)
+			cmd->args_for_cmd[j] = NULL;
+
 		// Apply redirections for built-ins before execution
 		if (cmd->cmd_type == TOKEN_BUILTIN)
 			handle_builtin(&cmd, ev, fd, &prev_fd);
@@ -271,9 +258,9 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				execute_command(cmd);
 				exit(EXIT_FAILURE); // Just in case
 			}
-			else if (pid == -1)
+			else if (pid < 0)
 			{
-				perror("fork error");
+				perror("minishell: fork");
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -286,7 +273,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			close(fd[1]); // Close write end in parent to signal EOF to next command
 			prev_fd = fd[0]; // Pass read end to next command
 		}
-		
+		free_args(cmd->args_for_cmd);
 		cmd = cmd->next;
 	}
 	// Wait for all child processes
