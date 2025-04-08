@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/08 19:25:27 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:20:34 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	// Wait for all child processes
 	while (wait(&status) > 0);
+	ev->last_exit = WEXITSTATUS(status);
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
 	{

@@ -71,7 +71,7 @@ typedef struct s_env_data
 {
 	t_env   *env_list;	// Env linked list
 	t_env	*env_export_list; // for export
-	char	**envp;
+	// char	**envp;
 	int     last_exit; // Store last exit status ($?)
 }   t_env_data;
 
@@ -142,6 +142,10 @@ char	**env_list_to_envp(t_env *env_list);
 
 //environment
 t_env_data	*env_init(char **envp);
-void	add_env_node(t_env **head, char *key, char *value);
+void		add_env_node(t_env **head, char *key, char *value);
+char		*get_env_value(t_env *env_list, char *key);
+void		expand_variables(t_token **tokens, t_env_data *env_data);
+char		*expand_variable(char *str, t_env_data *env_data);
+char		*ft_strjoin_chr(char *s, char c);
 
 #endif

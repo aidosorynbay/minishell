@@ -10,4 +10,7 @@ if there is a = after export, add =""
 handle expandables
 
 
-remove extern from commands
+unset
+
+
+exit

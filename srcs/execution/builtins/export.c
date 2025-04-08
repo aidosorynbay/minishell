@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char	*get_env_value(t_env *env_list, char *key)
+char	*get_env_value(t_env *env_list, char *key)
 {
 	t_env	*tmp;
 
@@ -18,11 +18,11 @@ void	ft_export(t_env_data *env_list, char **args)
 {
 	int		i;
 	char	**split;
-	t_env	*env;
+	t_env	*tmp;
 
 	if (!args[1])
 	{
-		t_env *tmp = env_list->env_export_list;
+		tmp = env_list->env_export_list;
 		while (tmp)
 		{
 			ft_putstr_fd("declare -x ", 1);
@@ -49,13 +49,20 @@ void	ft_export(t_env_data *env_list, char **args)
 			i++;
 			continue;
 		}
-		env = env_list->env_list;
-		if (args[i] && ft_strchr(args[i], '=')) // Key=value case
+		if (args[i] && ft_strchr(args[i], '='))
 		{
-			add_env_node(&env_list->env_list, split[0], split[1] ? split[1] : "");
-			add_env_node(&env_list->env_export_list, split[0], split[1] ? split[1] : "");
+			if (split[1])
+			{
+				add_env_node(&env_list->env_list, split[0], split[1]);
+				add_env_node(&env_list->env_export_list, split[0], split[1]);
+			}
+			else
+			{
+				add_env_node(&env_list->env_list, split[0], "");
+				add_env_node(&env_list->env_export_list, split[0], "");
+			}
 		}
-		else // Key without `=` → Add only to export list
+		else
 		{
 			if (!get_env_value(env_list->env_export_list, split[0]))
 				add_env_node(&env_list->env_export_list, split[0], "");
@@ -64,6 +71,7 @@ void	ft_export(t_env_data *env_list, char **args)
 		i++;
 	}
 }
+
 
 
 
