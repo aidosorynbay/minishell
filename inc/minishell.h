@@ -135,6 +135,7 @@ void ft_export(t_env_data *env_list, char **args);
 void	execute_command(t_cmd *cmd, char **environ);
 void    ft_strcpy(char *dst, const char *src);
 void	ft_strncpy(char *dst, const char *src, size_t len);
+void	ft_strcat(char *dst, const char *src);
 char	*find_command_path(char *cmd, char **envp);
 int		find_char(char *str, char *charset);
 char	**env_list_to_envp(t_env *env_list);
