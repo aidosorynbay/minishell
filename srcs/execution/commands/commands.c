@@ -6,13 +6,13 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/11 14:51:59 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:26:05 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char	**environ;
+// extern char	**environ;
 
 static char	*get_next_path(char *path, int *index)
 {
@@ -86,7 +86,7 @@ char	*find_command_path(char *cmd, char **envp)
 	return (NULL);
 }
 
-void	execute_command(t_cmd *cmd)
+void	execute_command(t_cmd *cmd, char **environ)
 {
 	char	*cmd_path;
 
@@ -111,5 +111,6 @@ void	execute_command(t_cmd *cmd)
 		else
 			exit(127);
 	}
+	// free environ
 	return ;
 }

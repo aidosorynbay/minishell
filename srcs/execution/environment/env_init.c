@@ -6,14 +6,11 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 00:52:24 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/24 14:04:11 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:18:39 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// t_env *g_env = NULL;
-
 
 static t_env *create_env_node(char *key, char *value)
 {

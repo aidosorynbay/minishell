@@ -62,17 +62,17 @@ typedef struct s_cmd {
 
 typedef struct s_env
 {
-    char            *key;   // Variable name (e.g., "PATH")
-    char            *value; // Variable value (e.g., "/usr/bin")
-    struct s_env    *next;
+	char            *key;   // Variable name (e.g., "PATH")
+	char            *value; // Variable value (e.g., "/usr/bin")
+	struct s_env    *next;
 }   t_env;
 
 typedef struct s_env_data
 {
-    t_env   *env_list;	// Env linked list
+	t_env   *env_list;	// Env linked list
 	t_env	*env_export_list; // for export
 	char	**envp;
-    int     last_exit; // Store last exit status ($?)
+	int     last_exit; // Store last exit status ($?)
 }   t_env_data;
 
 // tokenization
@@ -132,11 +132,12 @@ void ft_pwd();
 void ft_export(t_env_data *env_list, char **args);
 
 // commands
-void	execute_command(t_cmd *cmd);
+void	execute_command(t_cmd *cmd, char **environ);
 void    ft_strcpy(char *dst, const char *src);
 void	ft_strncpy(char *dst, const char *src, size_t len);
 char	*find_command_path(char *cmd, char **envp);
 int		find_char(char *str, char *charset);
+char	**env_list_to_envp(t_env *env_list);
 
 //environment
 t_env_data	*env_init(char **envp);

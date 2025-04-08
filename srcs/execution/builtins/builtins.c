@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/02 18:23:52 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:25:27 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	int		saved_stdout;
 	int		saved_stdin;
 	t_cmd	*cmd;
+	char	**envp;
 
 	saved_stdout = dup(STDOUT_FILENO);
 	saved_stdin = dup(STDIN_FILENO);
@@ -151,6 +152,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	prev_fd = -1;
 	cmd = cmd_list;
+	envp = env_list_to_envp(ev->env_list);
 	while (cmd)
 	{
 		// Handle pipes
@@ -242,7 +244,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					close(fd[0]); // FIX: Close read end of pipe in child
 				}
 
-				execute_command(cmd);
+				execute_command(cmd, envp);
 				exit(EXIT_FAILURE); // Just in case
 			}
 			else if (pid == -1)
@@ -250,6 +252,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
+			
 		}
 		
 		// Parent process
