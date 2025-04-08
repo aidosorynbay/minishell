@@ -6,70 +6,41 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 00:52:24 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/08 19:18:39 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:33:17 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_env *create_env_node(char *key, char *value)
-{
-	t_env *new;
-
-	new = malloc(sizeof(t_env));
-	if (new == NULL)
-		return (NULL);
-	new->key = strdup(key);
-	if (new->key == NULL)
-	{
-		free(new);
-		return (NULL);
-	}
-	if (value != NULL)
-		new->value = strdup(value);
-	else
-		new->value = strdup("");
-
-	if (new->value == NULL)
-	{
-		free(new->key);
-		free(new);
-		return (NULL);
-	}
-	new->next = NULL;
-	return (new);
-}
-
-void	add_env_node(t_env **head, char *key, char *value)
+void	add_env_node(t_env **env_list, char *key, char *value, int has_value)
 {
 	t_env	*new;
-	t_env	*temp;
+	t_env	*current;
 
-	if (!key || !head)
-		return ;
-	new = create_env_node(key, value);
-	if (!new)
-		return ;
-	if (!*head)
+	current = *env_list;
+	while (current)
 	{
-		*head = new;
-		return ;
-	}
-	temp = *head;
-	while (temp->next)
-	{
-		if (strcmp(temp->key, key) == 0) // Prevent duplicate keys
+		if (ft_strcmp(current->key, key) == 0)
 		{
-			free(temp->value);
-			temp->value = strdup(value);
-			free(new);
+			if (value)
+			{
+				free(current->value);
+				current->value = ft_strdup(value);
+			}
+			current->has_value = has_value;
 			return ;
 		}
-		temp = temp->next;
+		current = current->next;
 	}
-	temp->next = new;
+	new = malloc(sizeof(t_env));
+	if (!new)
+		return ;
+	new->key = ft_strdup(key);
+	new->value = value ? ft_strdup(value) : NULL;
+	new->has_value = has_value;
+	new->next = *env_list;
+	*env_list = new;
 }
-
 
 t_env_data *env_init(char **envp)
 {
@@ -94,13 +65,13 @@ t_env_data *env_init(char **envp)
 			{
 				if (splits[1] != NULL)
 				{
-					add_env_node(&env_data->env_list, splits[0], splits[1]);
-					add_env_node(&env_data->env_export_list, splits[0], splits[1]);
+					add_env_node(&env_data->env_list, splits[0], splits[1], 1);
+					add_env_node(&env_data->env_export_list, splits[0], splits[1], 1);
 				}
 				else
 				{
-					add_env_node(&env_data->env_list, splits[0], "");
-					add_env_node(&env_data->env_export_list, splits[0], "");
+					add_env_node(&env_data->env_list, splits[0], "", 1);
+					add_env_node(&env_data->env_export_list, splits[0], "", 1);
 				}
 			}
 			free(splits);

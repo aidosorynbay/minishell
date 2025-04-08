@@ -64,6 +64,7 @@ typedef struct s_env
 {
 	char            *key;   // Variable name (e.g., "PATH")
 	char            *value; // Variable value (e.g., "/usr/bin")
+	int				has_value;
 	struct s_env    *next;
 }   t_env;
 
@@ -142,7 +143,7 @@ char	**env_list_to_envp(t_env *env_list);
 
 //environment
 t_env_data	*env_init(char **envp);
-void		add_env_node(t_env **head, char *key, char *value);
+void		add_env_node(t_env **head, char *key, char *value, int has_value);
 char		*get_env_value(t_env *env_list, char *key);
 void		expand_variables(t_token **tokens, t_env_data *env_data);
 char		*expand_variable(char *str, t_env_data *env_data);
