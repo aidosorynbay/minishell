@@ -9,7 +9,7 @@ void handle_heredoc(char *heredoc_path)
 		fd = open(heredoc_path, O_RDONLY);
 		if (fd == -1)
 		{
-			perror("open");
+			perror("open crashed");
 			return;
 		}
 		dup2(fd, STDIN_FILENO);

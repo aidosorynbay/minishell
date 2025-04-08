@@ -132,6 +132,12 @@ void ft_env(t_env *ev);
 void ft_pwd();
 void ft_export(t_env_data *env_list, char **args);
 
+//builtins_utils
+int		count_args_for_cmd(char **tokens);
+void	handle_redirection(char *outfile, int append);
+void	handle_input_redirection(char *infile);
+void	execute_builtin(t_cmd *cmd, t_env_data *ev);
+
 // commands
 void	execute_command(t_cmd *cmd);
 void    ft_strcpy(char *dst, const char *src);

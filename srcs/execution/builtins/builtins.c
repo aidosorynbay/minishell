@@ -12,79 +12,21 @@
 
 #include "minishell.h"
 
-static int count_args_for_cmd(char **tokens)
+void	handler(t_cmd *cmd)
 {
-	int count = 0;
-	int start = 0;
-	while (tokens[start] && ft_strcmp(tokens[start], "|") != 0 && 
-	   ft_strcmp(tokens[start], ">") != 0 && 
-	   ft_strcmp(tokens[start], ">>") != 0 && 
-	   ft_strcmp(tokens[start], "<") != 0)
-	{
-		count++;
-		start++;
-	}
-	return count;
+	if (cmd->inputfile)
+		handle_input_redirection(cmd->inputfile);
+	else if (cmd->heredoc_path)
+		handle_heredoc(cmd->heredoc_path);
+	if (cmd->outfile)
+		handle_redirection(cmd->outfile, cmd->append_fd);
 }
-
-void handle_redirection(char *outfile, int append)
-{
-	int fd;
-
-	if (outfile)
-	{
-		if (append)
-			fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-			return(perror("minishell: redirection error"), (void)0);
-		if(dup2(fd, STDOUT_FILENO) == -1)
-			perror("DUP2 DUPPPED"); // Redirect stdout to file 
-		close(fd);
-	}
-}
-
-void handle_input_redirection(char *infile)
-{
-	int fd;
-
-	if (infile)
-	{
-		fd = open(infile, O_RDONLY);
-		if (fd == -1)
-			return(perror("minishell: input redirection error"), (void)0);
-		if (dup2(fd, STDIN_FILENO) == -1)
-			return(perror("Dup2 got dupped\n"), (void)0);
-		close(fd);
-	}
-}
-
-static void	execute_builtin(t_cmd *cmd, t_env_data *ev)
-{
-	if (ft_strcmp(cmd->args[0], "echo") == 0)
-		ft_echo(cmd->args_for_cmd);
-	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		ft_pwd();
-	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		ft_env(ev->env_list);
-	else if (ft_strcmp(cmd->args[0], "export") == 0)
-		ft_export(ev, cmd->args_for_cmd);
-	// else if (ft_strcmp(cmd->args[0], "unset") == 0)
-	// 	ft_unset(ev, cmd->args_for_cmd);
-	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		ft_exit(cmd->args_for_cmd);
-	else
-		perror("minishell: command not found");
-}
-
 static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 {
 	pid_t pid;
 
 	if (!(*cmd) || !(*cmd)->args || !(*cmd)->args[0])
 		return;
-	
 	// Always fork if part of a pipeline
 	if ((*cmd)->next)
 	{
@@ -96,13 +38,7 @@ static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 		}
 		if (pid == 0) // Child process
 		{
-			if ((*cmd)->inputfile)
-				handle_input_redirection((*cmd)->inputfile);
-			else if ((*cmd)->heredoc_path)
-				handle_heredoc((*cmd)->heredoc_path);
-			if ((*cmd)->outfile)
-				handle_redirection((*cmd)->outfile, (*cmd)->append_fd);
-			
+			handler(*cmd);
 			if (*prev_fd != -1)
 			{
 				dup2(*prev_fd, STDIN_FILENO);
@@ -123,26 +59,93 @@ static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	}
 	else
 	{
-		if ((*cmd)->inputfile)
-			handle_input_redirection((*cmd)->inputfile);
-		else if ((*cmd)->heredoc_path)
-			handle_heredoc((*cmd)->heredoc_path);
-		if ((*cmd)->outfile)
-			handle_redirection((*cmd)->outfile, (*cmd)->append_fd);
+		int tmp_stdin = dup(STDIN_FILENO);
+		int tmp_stdout = dup(STDOUT_FILENO);
+
+		handler(*cmd);
 		execute_builtin((*cmd), ev);
+
+		dup2(tmp_stdin, STDIN_FILENO);
+		dup2(tmp_stdout, STDOUT_FILENO);
+		close(tmp_stdin);
+		close(tmp_stdout);
 	}
 }
 
-void	free_args(char **args)
+void parse_arguments(t_cmd **cmd, int *i, int *j)
 {
-	int i = 0;
-	while (args && args[i])
-		free(args[i++]);
-	free(args);
+	while ((*cmd)->args[(*i)])
+	{
+		if (!ft_strcmp((*cmd)->args[(*i)], ">") || !ft_strcmp((*cmd)->args[(*i)], ">>"))
+		{
+			(*cmd)->outfile = strdup((*cmd)->args[(*i) + 1]); // Saving output file
+			if (!(*cmd)->outfile)
+				exit(EXIT_FAILURE);
+			(*cmd)->append_fd = (!ft_strcmp((*cmd)->args[(*i)], ">>"));
+			(*i)++;
+		}
+		else if (!ft_strcmp((*cmd)->args[(*i)], "<"))
+		{
+			(*cmd)->inputfile = strdup((*cmd)->args[(*i) + 1]); // Saving input file
+			if (!(*cmd)->inputfile)
+				exit(EXIT_FAILURE);
+			(*i)++;
+		}
+		else if (!ft_strcmp((*cmd)->args[(*i)], "<<"))
+		{
+		// 	(*cmd)->heredoc_path = ft_heredoc((*cmd)->args[(*i) + 1]);
+		// 	fprintf(stderr, "heredoc path: %s\n", (*cmd)->heredoc_path);
+		// 	if (!(*cmd)->heredoc_path)
+		// 		exit(EXIT_FAILURE);
+			(*i)++;
+		}
+		else
+			(*cmd)->args_for_cmd[(*j)++] = strdup((*cmd)->args[(*i)]);
+		(*i)++;
+	}
+	if ((*cmd)->args_for_cmd)
+		(*cmd)->args_for_cmd[*j] = NULL;
 }
+
+void process_all_heredocs(t_cmd *cmd_list)
+{
+	t_cmd *cmd;
+	int i;
+
+	cmd = cmd_list;
+	while (cmd)
+	{
+		i = 0;
+		while (cmd->args && cmd->args[i])
+		{
+			if (!ft_strcmp(cmd->args[i], "<<"))
+			{
+				if (cmd->args[i + 1] == NULL)
+				{
+					fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+					exit(EXIT_FAILURE);
+				}
+				// // Free previous heredoc path if set
+				// if (cmd->heredoc_path)
+				// 	free(cmd->heredoc_path);
+				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
+				if (!cmd->heredoc_path)
+				{
+					perror("heredoc processing failed");
+					exit(EXIT_FAILURE);
+				}
+				i++; // Skip delimiter
+			}
+			i++;
+		}
+		cmd = cmd->next;
+	}
+}
+
 
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
+	process_all_heredocs(cmd_list);
 	int		fd[2];
 	int		prev_fd;
 	int		pid;
@@ -188,37 +191,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			cmd->args_for_cmd = NULL;
 		cmd->inputfile = NULL;
 		cmd->outfile = NULL;
-		// Parse arguments
-		while (cmd->args[i])
-		{
-			if (!ft_strcmp(cmd->args[i], ">") || !ft_strcmp(cmd->args[i], ">>"))
-			{
-				cmd->outfile = strdup(cmd->args[i + 1]); // Saving output file
-				if (!cmd->outfile)
-					exit(EXIT_FAILURE);
-				cmd->append_fd = (!ft_strcmp(cmd->args[i], ">>"));
-				i++;
-			}
-			else if (!ft_strcmp(cmd->args[i], "<"))
-			{
-				cmd->inputfile = strdup(cmd->args[i + 1]); // Saving input file
-				if (!cmd->inputfile)
-					exit(EXIT_FAILURE);
-				i++;
-			}
-			else if (!ft_strcmp(cmd->args[i], "<<"))
-			{
-				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
-				if (!cmd->heredoc_path)
-					exit(EXIT_FAILURE);
-				i++;
-			}
-			else
-				cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
-			i++;
-		}
-		if (cmd->args_for_cmd)
-			cmd->args_for_cmd[j] = NULL;
+		parse_arguments(&cmd, &i, &j);
 
 		// Apply redirections for built-ins before execution
 		if (cmd->cmd_type == TOKEN_BUILTIN)
@@ -228,33 +201,20 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			pid = fork();
 			if (pid == 0) // Child process
 			{
-				if (cmd->inputfile)
-					handle_input_redirection(cmd->inputfile);
-				else if (cmd->heredoc_path)
-					handle_heredoc(cmd->heredoc_path);
-				if (cmd->outfile)
-				{
-					if (cmd->append_fd)
-						handle_redirection(cmd->outfile, 1);
-					else
-						handle_redirection(cmd->outfile, 0);
-				}
-
+				handler(cmd);
 				// Redirect previous command's output to current command's input
 				if (prev_fd != -1)
 				{
 					dup2(prev_fd, STDIN_FILENO);
 					close(prev_fd); // FIX: Close previous pipe read end in child
 				}
-
 				// Redirect current command's output to pipe
 				if (cmd->next)
-				{
+				{	
 					dup2(fd[1], STDOUT_FILENO);
 					close(fd[1]); // FIX: Close write end of pipe in child
 					close(fd[0]); // FIX: Close read end of pipe in child
 				}
-
 				execute_command(cmd);
 				exit(EXIT_FAILURE); // Just in case
 			}
@@ -264,7 +224,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				exit(EXIT_FAILURE);
 			}
 		}
-		
 		// Parent process
 		if (prev_fd != -1)
 			close(prev_fd); // Close previous read end in the parent
@@ -273,7 +232,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			close(fd[1]); // Close write end in parent to signal EOF to next command
 			prev_fd = fd[0]; // Pass read end to next command
 		}
-		free_args(cmd->args_for_cmd);
+		// free_args(cmd->args_for_cmd);
 		cmd = cmd->next;
 	}
 	// Wait for all child processes

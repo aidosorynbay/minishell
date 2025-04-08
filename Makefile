@@ -31,6 +31,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(COMMANDS_DIR)/commands.c \
 		  $(COMMANDS_DIR)/commands_utils.c \
 		  $(BUILTINS_DIR)/builtins.c \
+		  $(BUILTINS_DIR)/builtins_utils.c \
 		  $(BUILTINS_DIR)/cd.c \
 		  $(BUILTINS_DIR)/echo.c \
 		  $(BUILTINS_DIR)/pwd.c \
