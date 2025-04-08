@@ -59,16 +59,16 @@ static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	}
 	else
 	{
-		int tmp_stdin = dup(STDIN_FILENO);
-		int tmp_stdout = dup(STDOUT_FILENO);
+		// int tmp_stdin = dup(STDIN_FILENO);
+		// int tmp_stdout = dup(STDOUT_FILENO);
 
 		handler(*cmd);
 		execute_builtin((*cmd), ev);
 
-		dup2(tmp_stdin, STDIN_FILENO);
-		dup2(tmp_stdout, STDOUT_FILENO);
-		close(tmp_stdin);
-		close(tmp_stdout);
+		// dup2(tmp_stdin, STDIN_FILENO);
+		// dup2(tmp_stdout, STDOUT_FILENO);
+		// close(tmp_stdin);
+		// close(tmp_stdout);
 	}
 }
 
@@ -92,13 +92,7 @@ void parse_arguments(t_cmd **cmd, int *i, int *j)
 			(*i)++;
 		}
 		else if (!ft_strcmp((*cmd)->args[(*i)], "<<"))
-		{
-		// 	(*cmd)->heredoc_path = ft_heredoc((*cmd)->args[(*i) + 1]);
-		// 	fprintf(stderr, "heredoc path: %s\n", (*cmd)->heredoc_path);
-		// 	if (!(*cmd)->heredoc_path)
-		// 		exit(EXIT_FAILURE);
 			(*i)++;
-		}
 		else
 			(*cmd)->args_for_cmd[(*j)++] = strdup((*cmd)->args[(*i)]);
 		(*i)++;
@@ -140,6 +134,7 @@ void process_all_heredocs(t_cmd *cmd_list)
 		}
 		cmd = cmd->next;
 	}
+	// cmd->heredoc_path = NULL;
 }
 
 
@@ -161,6 +156,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	saved_stdin = dup(STDIN_FILENO);
 	prev_fd = -1;
 	cmd = cmd_list;
+	// cmd->args_for_cmd = NULL;
+	// cmd->heredoc_path = NULL;
 	if (saved_stdout == -1 || saved_stdin == -1)
 	{
 		perror("minishell: dup error");
