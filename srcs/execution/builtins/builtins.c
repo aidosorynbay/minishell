@@ -110,6 +110,7 @@ void process_all_heredocs(t_cmd *cmd_list)
 	while (cmd)
 	{
 		i = 0;
+		cmd->has_heredoc = 0;
 		while (cmd->args && cmd->args[i])
 		{
 			if (!ft_strcmp(cmd->args[i], "<<"))
@@ -121,20 +122,23 @@ void process_all_heredocs(t_cmd *cmd_list)
 				}
 				// // Free previous heredoc path if set
 				// if (cmd->heredoc_path)
+				// {
 				// 	free(cmd->heredoc_path);
+				// 	cmd->heredoc_path = NULL;
+				// }
 				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
 				if (!cmd->heredoc_path)
 				{
 					perror("heredoc processing failed");
 					exit(EXIT_FAILURE);
 				}
+				cmd->has_heredoc = 1;
 				i++; // Skip delimiter
 			}
 			i++;
 		}
 		cmd = cmd->next;
 	}
-	// cmd->heredoc_path = NULL;
 }
 
 
@@ -157,7 +161,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	prev_fd = -1;
 	cmd = cmd_list;
 	// cmd->args_for_cmd = NULL;
-	// cmd->heredoc_path = NULL;
+	cmd->heredoc_path = NULL;
 	if (saved_stdout == -1 || saved_stdin == -1)
 	{
 		perror("minishell: dup error");

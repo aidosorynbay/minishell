@@ -41,7 +41,10 @@ void handle_input_redirection(char *infile)
 	{
 		fd = open(infile, O_RDONLY);
 		if (fd == -1)
-			return(perror("minishell: input redirection error"), (void)0);
+		{
+			perror("minishell: input redirection error");
+			exit(EXIT_FAILURE);
+		}
 		if (dup2(fd, STDIN_FILENO) == -1)
 			return(perror("Dup2 got dupped\n"), (void)0);
 		close(fd);

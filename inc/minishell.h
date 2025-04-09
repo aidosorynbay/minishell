@@ -54,7 +54,7 @@ typedef struct s_cmd {
 	char			*inputfile;
 	int				append_fd;
 	char			**env;
-	char			*heredoc;
+	int				has_heredoc;
 	char 			*heredoc_path;
 	t_token_type	cmd_type;
 }	t_cmd;
