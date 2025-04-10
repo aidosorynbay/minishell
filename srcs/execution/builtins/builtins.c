@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/02 18:23:52 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/10 20:14:30 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,14 +162,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	saved_stdin = dup(STDIN_FILENO);
 	prev_fd = -1;
 	cmd = cmd_list;
-	bool found_final_heredoc = false;
-
-	// Scan to check if the final command has a heredoc
-	t_cmd *scan = cmd_list;
-	while (scan && scan->next)
-		scan = scan->next;
-	if (scan && scan->has_heredoc)
-		found_final_heredoc = true;
 
 	if (saved_stdout == -1 || saved_stdin == -1)
 	{
@@ -178,11 +170,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	while (cmd)
 	{
-		if (found_final_heredoc && !cmd->has_heredoc && cmd->next != NULL)
-		{
-			cmd = cmd->next;
-			continue;
-		}
 		// Handle pipes
 		if (cmd->next && pipe(fd) == -1)
 		{

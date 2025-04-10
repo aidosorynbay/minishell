@@ -18,7 +18,6 @@ int count_args_for_cmd(char **tokens)
 void handle_redirection(char *outfile, int append)
 {
 	int fd;
-
 	if (outfile)
 	{
 		if (append)
