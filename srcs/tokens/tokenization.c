@@ -90,6 +90,7 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	char	*copy;
 	int		i;
 	int		start;
+	t_cmd	*cmd;
 
 	i = 0;
 	start = 0;
@@ -100,7 +101,14 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	trim_quotes(&tokens);
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
+	char **args = convert_tokens_to_args(tokens);
+	// init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
+	cmd = parse_tokens(args);
+	free(args);
+	init_execution(cmd, ev);
+	free(cmd->args);
+	free(cmd);
+	// free(parse_tokens(convert_tokens_to_args(tokens)));
 	// print_tokens(tokens);
 	free(copy);
 	if (tokens)
