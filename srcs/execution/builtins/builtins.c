@@ -16,7 +16,7 @@ void	handler(t_cmd *cmd)
 {
 	if (cmd->inputfile)
 		handle_input_redirection(cmd->inputfile);
-	else if (cmd->heredoc_path)
+	else if (cmd-> has_heredoc && cmd->heredoc_path)
 		handle_heredoc(cmd->heredoc_path);
 	if (cmd->outfile)
 		handle_redirection(cmd->outfile, cmd->append_fd);
@@ -101,8 +101,6 @@ void parse_arguments(t_cmd **cmd, int *i, int *j)
 		(*cmd)->args_for_cmd[*j] = NULL;
 }
 
-#include "minishell.h"
-
 void process_all_heredocs(t_cmd *cmd_list)
 {
 	t_cmd	*cmd;
@@ -172,8 +170,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	if (scan && scan->has_heredoc)
 		found_final_heredoc = true;
 
-	// cmd->args_for_cmd = NULL;
-	// cmd->heredoc_path = NULL;
 	if (saved_stdout == -1 || saved_stdin == -1)
 	{
 		perror("minishell: dup error");
