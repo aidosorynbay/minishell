@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:56:08 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/25 19:24:01 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/10 20:24:17 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ t_cmd	*	parse_tokens(char **tokens)
 		if (new_cmd->args[0] && (ft_strcmp(new_cmd->args[0], "echo") == 0
 				|| ft_strcmp(new_cmd->args[0], "cd") == 0
 				|| ft_strcmp(new_cmd->args[0], "exit") == 0
+				|| ft_strcmp(new_cmd->args[0], "unset") == 0
 				|| ft_strcmp(new_cmd->args[0], "pwd") == 0
 				|| ft_strcmp(new_cmd->args[0], "env") == 0
 				|| ft_strcmp(new_cmd->args[0], "export") == 0))
