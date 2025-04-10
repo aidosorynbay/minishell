@@ -16,7 +16,7 @@ void	handler(t_cmd *cmd)
 {
 	if (cmd->inputfile)
 		handle_input_redirection(cmd->inputfile);
-	else if (cmd-> has_heredoc && cmd->heredoc_path)
+	else if (cmd->has_heredoc && cmd->heredoc_path)
 		handle_heredoc(cmd->heredoc_path);
 	if (cmd->outfile)
 		handle_redirection(cmd->outfile, cmd->append_fd);
@@ -59,16 +59,16 @@ static void handle_builtin(t_cmd **cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	}
 	else
 	{
-		// int tmp_stdin = dup(STDIN_FILENO);
-		// int tmp_stdout = dup(STDOUT_FILENO);
+		int tmp_stdin = dup(STDIN_FILENO);
+		int tmp_stdout = dup(STDOUT_FILENO);
 
 		handler(*cmd);
 		execute_builtin((*cmd), ev);
 
-		// dup2(tmp_stdin, STDIN_FILENO);
-		// dup2(tmp_stdout, STDOUT_FILENO);
-		// close(tmp_stdin);
-		// close(tmp_stdout);
+		dup2(tmp_stdin, STDIN_FILENO);
+		dup2(tmp_stdout, STDOUT_FILENO);
+		close(tmp_stdin);
+		close(tmp_stdout);
 	}
 }
 
@@ -107,6 +107,7 @@ void process_all_heredocs(t_cmd *cmd_list)
 	int		i;
 
 	cmd = cmd_list;
+	cmd->heredoc_path = NULL;
 	while (cmd)
 	{
 		cmd->has_heredoc = 0;

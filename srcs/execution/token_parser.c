@@ -37,6 +37,7 @@ t_cmd	*	parse_tokens(char **tokens)
 	head = NULL;
 	current = NULL;
 	i = 0;
+	new_cmd = NULL;
 	while (tokens[i])
 	{
 		new_cmd = malloc(sizeof(t_cmd));
