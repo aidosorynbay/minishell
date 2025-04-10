@@ -84,12 +84,43 @@ void	print_tokens(t_token *tokens)
 	fprintf(stderr, "%d\n", i);
 }
 
+void	free_cmd(t_cmd **cmd)
+{
+	int	i;
+
+	if (!cmd || !(*cmd))
+		return;
+	if ((*cmd)->args)
+	{
+		i = 0;
+		while ((*cmd)->args[i])
+		{
+			free((*cmd)->args[i]);
+			i++;
+		}
+		free((*cmd)->args);
+	}
+	if ((*cmd)->args_for_cmd)
+	{
+		i = 0;
+		while ((*cmd)->args_for_cmd[i])
+		{
+			free((*cmd)->args_for_cmd[i]);
+			i++;
+		}
+		free((*cmd)->args_for_cmd);
+	}
+	free(*cmd);
+	*cmd = NULL;
+}
+
 t_token	*tokenize_input(char *input, t_env_data *ev)
 {
 	t_token	*tokens;
 	char	*copy;
 	int		i;
 	int		start;
+	char	**args;
 	t_cmd	*cmd;
 
 	i = 0;
@@ -101,14 +132,11 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	trim_quotes(&tokens);
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	char **args = convert_tokens_to_args(tokens);
-	// init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
+	args = convert_tokens_to_args(tokens);
 	cmd = parse_tokens(args);
 	free(args);
 	init_execution(cmd, ev);
-	free(cmd->args);
-	free(cmd);
-	// free(parse_tokens(convert_tokens_to_args(tokens)));
+	free_cmd(&cmd);
 	// print_tokens(tokens);
 	free(copy);
 	if (tokens)
