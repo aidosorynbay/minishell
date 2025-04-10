@@ -124,13 +124,14 @@ void    clear_screen(void);
 t_cmd *parse_tokens(char **av);
 
 //builtins
-void init_execution(t_cmd *cmd_list, t_env_data *ev);
-int ft_echo(char **total_arg);
-int ft_exit(char **total_arg);
-int ft_cd(char **total_arg);
-void ft_env(t_env *ev);
-void ft_pwd();
-void ft_export(t_env_data *env_list, char **args);
+void	init_execution(t_cmd *cmd_list, t_env_data *ev);
+int		ft_echo(char **total_arg);
+int		ft_exit(char **total_arg);
+int		ft_cd(char **total_arg);
+void	ft_env(t_env *ev);
+void	ft_pwd();
+void	ft_export(t_env_data *env_list, char **args);
+void	ft_unset(t_env_data *env_list, char **args);
 
 // commands
 void	execute_command(t_cmd *cmd, char **environ);

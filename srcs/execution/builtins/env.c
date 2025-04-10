@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:53:56 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/03/24 13:03:22 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/10 08:22:26 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 void ft_env(t_env *ev)
 {
-    int i;
-    
-    i  = 0;
     if (!ev)
     {
         perror("minishell: env: No environment variables found\n");
