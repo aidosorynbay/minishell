@@ -12,7 +12,11 @@ void handle_heredoc(char *heredoc_path)
 			perror("open crashed");
 			return;
 		}
-		dup2(fd, STDIN_FILENO);
+		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2 heredoc");
+			exit(EXIT_FAILURE);
+		}
 		close(fd);
 	}
 

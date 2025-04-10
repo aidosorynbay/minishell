@@ -8,6 +8,7 @@
 # include "libft.h"
 # include <string.h>
 # include <fcntl.h>
+# include <stdbool.h>
 # include <unistd.h>
 # include <sys/wait.h>
 # include <errno.h> // can we have this????

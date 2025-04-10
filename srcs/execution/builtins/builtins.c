@@ -101,45 +101,48 @@ void parse_arguments(t_cmd **cmd, int *i, int *j)
 		(*cmd)->args_for_cmd[*j] = NULL;
 }
 
+#include "minishell.h"
+
 void process_all_heredocs(t_cmd *cmd_list)
 {
-	t_cmd *cmd;
-	int i;
+	t_cmd	*cmd;
+	int		i;
 
 	cmd = cmd_list;
 	while (cmd)
 	{
-		i = 0;
 		cmd->has_heredoc = 0;
+		i = 0;
 		while (cmd->args && cmd->args[i])
 		{
-			if (!ft_strcmp(cmd->args[i], "<<"))
+			if (ft_strcmp(cmd->args[i], "<<") == 0)
 			{
-				if (cmd->args[i + 1] == NULL)
+				if (!cmd->args[i + 1])
 				{
 					fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
 					exit(EXIT_FAILURE);
 				}
-				// // Free previous heredoc path if set
-				// if (cmd->heredoc_path)
-				// {
-				// 	free(cmd->heredoc_path);
-				// 	cmd->heredoc_path = NULL;
-				// }
+				// Clean up old heredoc path if it exists
+				if (cmd->heredoc_path)
+				{
+					free(cmd->heredoc_path);
+					cmd->heredoc_path = NULL;
+				}
 				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
 				if (!cmd->heredoc_path)
 				{
-					perror("heredoc processing failed");
+					perror("minishell: heredoc failed");
 					exit(EXIT_FAILURE);
 				}
 				cmd->has_heredoc = 1;
-				i++; // Skip delimiter
+				i++; // skip delimiter
 			}
 			i++;
 		}
 		cmd = cmd->next;
 	}
 }
+
 
 
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
@@ -160,8 +163,17 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	saved_stdin = dup(STDIN_FILENO);
 	prev_fd = -1;
 	cmd = cmd_list;
+	bool found_final_heredoc = false;
+
+	// Scan to check if the final command has a heredoc
+	t_cmd *scan = cmd_list;
+	while (scan && scan->next)
+		scan = scan->next;
+	if (scan && scan->has_heredoc)
+		found_final_heredoc = true;
+
 	// cmd->args_for_cmd = NULL;
-	cmd->heredoc_path = NULL;
+	// cmd->heredoc_path = NULL;
 	if (saved_stdout == -1 || saved_stdin == -1)
 	{
 		perror("minishell: dup error");
@@ -169,6 +181,11 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	while (cmd)
 	{
+		if (found_final_heredoc && !cmd->has_heredoc && cmd->next != NULL)
+		{
+			cmd = cmd->next;
+			continue;
+		}
 		// Handle pipes
 		if (cmd->next && pipe(fd) == -1)
 		{
