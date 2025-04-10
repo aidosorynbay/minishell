@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/10 20:14:30 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/10 20:15:17 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,9 @@ void process_all_heredocs(t_cmd *cmd_list)
 	int		i;
 
 	cmd = cmd_list;
-	cmd->heredoc_path = NULL;
 	while (cmd)
 	{
+		cmd->heredoc_path = NULL;
 		cmd->has_heredoc = 0;
 		i = 0;
 		while (cmd->args && cmd->args[i])
