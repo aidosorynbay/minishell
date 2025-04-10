@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/10 08:21:05 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:45:23 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 				ft_export(ev, cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "unset") == 0)
 				ft_unset(ev, cmd->args_for_cmd);
+			else if (ft_strcmp(cmd->args[0], "exit") == 0)
+				ft_exit(cmd->args_for_cmd);
 			exit(EXIT_SUCCESS);
 		}
 		waitpid(pid, NULL, 0); // Parent waits for child
@@ -130,6 +132,8 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			ft_export(ev, cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "unset") == 0)
 			ft_unset(ev, cmd->args_for_cmd);
+		else if (ft_strcmp(cmd->args[0], "exit") == 0)
+			ft_exit(cmd->args_for_cmd);
 	}
 }
 
