@@ -125,7 +125,7 @@ t_cmd *parse_tokens(char **av);
 
 //builtins
 void	init_execution(t_cmd *cmd_list, t_env_data *ev);
-int		ft_echo(char **args);
+int		ft_echo(t_env_data *env_list, char **args);
 int		ft_exit(char **args);
 int		ft_cd(char **total_arg);
 void	ft_env(t_env *ev);

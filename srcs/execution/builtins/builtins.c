@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/10 20:25:22 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/10 21:09:48 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,17 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			}
 			// Execute the built-in
 			if (ft_strcmp(cmd->args[0], "echo") == 0)
-				ft_echo(cmd->args_for_cmd);
+				ft_echo(ev, cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 				ft_pwd();
+			else if (ft_strcmp(cmd->args[0], "cd") == 0)
+				ft_cd(cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "env") == 0)
 				ft_env(ev->env_list);
 			else if (ft_strcmp(cmd->args[0], "export") == 0)
 				ft_export(ev, cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "unset") == 0)
 				ft_unset(ev, cmd->args_for_cmd);
-				
 			else if (ft_strcmp(cmd->args[0], "exit") == 0)
 				ft_exit(cmd->args_for_cmd);
 			exit(EXIT_SUCCESS);
@@ -124,9 +125,11 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	{
 			// Execute normally if not in a pipeline
 		if (ft_strcmp(cmd->args[0], "echo") == 0)
-			ft_echo(cmd->args_for_cmd);
+			ft_echo(ev, cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 			ft_pwd();
+		else if (ft_strcmp(cmd->args[0], "cd") == 0)
+			ft_cd(cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "env") == 0)
 			ft_env(ev->env_list);
 		else if (ft_strcmp(cmd->args[0], "export") == 0)
