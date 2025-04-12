@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:54:08 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/22 10:54:09 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/04/12 04:20:46 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@
 int ft_cd(char **args)
 {
     if (!args)
-        return 0;
+        return (1);
     if (!args[1])
     {
         chdir(getenv("HOME"));
-        return 1;
+        return (0);
     }
     else if (chdir(args[1]) == -1)
     {
         perror("cd");
-        return 0;
+        return 1;
     }
-    return 1;
+    return (0);
 }

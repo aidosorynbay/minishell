@@ -38,7 +38,7 @@ static void	remove_env_node(t_env **env_list, char *key)
 	}
 }
 
-void	ft_unset(t_env_data *env_list, char **args)
+int	ft_unset(t_env_data *env_list, char **args)
 {
 	int	i;
 
@@ -49,4 +49,5 @@ void	ft_unset(t_env_data *env_list, char **args)
 		remove_env_node(&env_list->env_export_list, args[i]);
 		i++;
 	}
+	return (0);
 }

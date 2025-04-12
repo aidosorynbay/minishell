@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/10 21:09:48 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/12 06:11:48 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ void handle_input_redirection(char *infile)
 
 static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 {
-	pid_t pid;
+	pid_t   pid;
+	int     status;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return;
@@ -103,41 +104,51 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			}
 			// Execute the built-in
 			if (ft_strcmp(cmd->args[0], "echo") == 0)
-				ft_echo(ev, cmd->args_for_cmd);
+				ev->last_exit = ft_echo(cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-				ft_pwd();
+				ev->last_exit = ft_pwd();
 			else if (ft_strcmp(cmd->args[0], "cd") == 0)
-				ft_cd(cmd->args_for_cmd);
+				ev->last_exit = ft_cd(cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "env") == 0)
-				ft_env(ev->env_list);
+				ev->last_exit = ft_env(ev->env_list);
 			else if (ft_strcmp(cmd->args[0], "export") == 0)
-				ft_export(ev, cmd->args_for_cmd);
+				ev->last_exit = ft_export(ev, cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "unset") == 0)
-				ft_unset(ev, cmd->args_for_cmd);
+				ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "exit") == 0)
-				ft_exit(cmd->args_for_cmd);
+			{
+				ev->last_exit = ft_exit(cmd->args_for_cmd);
+				exit(ev->last_exit); // Exit the shell
+			}
 			exit(EXIT_SUCCESS);
 		}
-		waitpid(pid, NULL, 0); // Parent waits for child
+		while (waitpid(-1, &status, 0) > 0)
+		{
+			if (WIFEXITED(status))
+				ev->last_exit = WEXITSTATUS(status); // Update exit code for the last command
+		}
 		return;
 	}
 	else
 	{
 			// Execute normally if not in a pipeline
 		if (ft_strcmp(cmd->args[0], "echo") == 0)
-			ft_echo(ev, cmd->args_for_cmd);
+			ev->last_exit = ft_echo(cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-			ft_pwd();
+			ev->last_exit = ft_pwd();
 		else if (ft_strcmp(cmd->args[0], "cd") == 0)
-			ft_cd(cmd->args_for_cmd);
+			ev->last_exit = ft_cd(cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "env") == 0)
-			ft_env(ev->env_list);
+			ev->last_exit = ft_env(ev->env_list);
 		else if (ft_strcmp(cmd->args[0], "export") == 0)
-			ft_export(ev, cmd->args_for_cmd);
+			ev->last_exit = ft_export(ev, cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "unset") == 0)
-			ft_unset(ev, cmd->args_for_cmd);
+			ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "exit") == 0)
-			ft_exit(cmd->args_for_cmd);
+		{
+			ev->last_exit = ft_exit(cmd->args_for_cmd);
+			exit(ev->last_exit); // Exit the shell
+		}
 	}
 }
 
@@ -274,12 +285,12 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			close(fd[1]); // Close write end in parent to signal EOF to next command
 			prev_fd = fd[0]; // Pass read end to next command
 		}
-		
 		cmd = cmd->next;
 	}
 	// Wait for all child processes
 	while (wait(&status) > 0);
-	ev->last_exit = WEXITSTATUS(status);
+	if (cmd_list->cmd_type != TOKEN_BUILTIN)
+		ev->last_exit = WEXITSTATUS(status);
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
 	{

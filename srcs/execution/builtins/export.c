@@ -14,12 +14,19 @@ char	*get_env_value(t_env *env_list, char *key)
 	return (NULL);
 }
 
-void	ft_export(t_env_data *env_list, char **args)
+int	ft_export(t_env_data *env_list, char **args)
 {
 	int		i;
 	char	**split;
 	t_env	*tmp;
+	int		exit_code;
 
+	exit_code = 0;
+	if (!args || !args[0])
+	{
+		perror("minishell: export: not a valid identifier");
+		return (1);
+	}
 	if (!args[1])
 	{
 		tmp = env_list->env_export_list;
@@ -37,7 +44,7 @@ void	ft_export(t_env_data *env_list, char **args)
 			ft_putstr_fd("\n", 1);
 			tmp = tmp->next;
 		}
-		return ;
+		return (exit_code);
 	}
 	i = 1;
 	while (args[i])
@@ -47,6 +54,7 @@ void	ft_export(t_env_data *env_list, char **args)
 		{
 			perror("minishell: export: not a valid identifier");
 			free(split);
+			exit_code = 1;
 			i++;
 			continue;
 		}
@@ -71,6 +79,7 @@ void	ft_export(t_env_data *env_list, char **args)
 		free(split);
 		i++;
 	}
+	return (exit_code);
 }
 
 
