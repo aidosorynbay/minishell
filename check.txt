@@ -6,3 +6,21 @@ conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
 
 valgrind
 
+
+				// // Redirect current command's output to pipe
+				// if (cmd->next)
+				// {
+				// 	dup2(fd[1], STDOUT_FILENO);
+				// 	close(fd[1]); // FIX: Close write end of pipe in child
+				// 	close(fd[0]); // FIX: Close read end of pipe in child
+				// }
+				// Only redirect to pipe if there is NO explicit file redirection
+
+                replaced with 
+
+                				if (cmd->next && !cmd->outfile && !(cmd->has_heredoc && cmd->heredoc_path))
+				{
+					dup2(fd[1], STDOUT_FILENO);
+				}
+				close(fd[1]);
+				close(fd[0]);

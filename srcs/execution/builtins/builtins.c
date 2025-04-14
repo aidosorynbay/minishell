@@ -27,7 +27,7 @@ static int count_args_for_cmd(char **tokens)
 	return count;
 }
 
-void handle_redirection(char *outfile, int append)
+int handle_redirection(char *outfile, int append)
 {
 	int fd;
 
@@ -38,11 +38,12 @@ void handle_redirection(char *outfile, int append)
 		else
 			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
-			return(perror("minishell: redirection error"), (void)0);
+			return(perror("minishell: redirection error"), 1);
 		if(dup2(fd, STDOUT_FILENO) == -1)
 			perror("DUP2 DUPPPED"); // Redirect stdout to file 
 		close(fd);
 	}
+	return(0);
 }
 
 void handle_input_redirection(char *infile)
@@ -131,6 +132,10 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	}
 	else
 	{
+		if (cmd->inputfile)
+			handle_input_redirection(cmd->inputfile);
+		if (cmd->outfile)
+			handle_redirection(cmd->outfile, cmd->append_fd);
 			// Execute normally if not in a pipeline
 		if (ft_strcmp(cmd->args[0], "echo") == 0)
 			ev->last_exit = ft_echo(cmd->args_for_cmd);
@@ -153,9 +158,50 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 }
 
 
+void process_all_heredocs(t_cmd *cmd_list)
+{
+	t_cmd	*cmd;
+	int		i;
+
+	cmd = cmd_list;
+	while (cmd)
+	{
+		cmd->heredoc_path = NULL;
+		cmd->has_heredoc = 0;
+		i = 0;
+		while (cmd->args && cmd->args[i])
+		{
+			if (ft_strcmp(cmd->args[i], "<<") == 0)
+			{
+				if (!cmd->args[i + 1])
+				{
+					fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+					exit(EXIT_FAILURE);
+				}
+				// Clean up old heredoc path if it exists
+				if (cmd->heredoc_path)
+				{
+					free(cmd->heredoc_path);
+					cmd->heredoc_path = NULL;
+				}
+				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
+				if (!cmd->heredoc_path)
+				{
+					perror("minishell: heredoc failed");
+					exit(EXIT_FAILURE);
+				}
+				cmd->has_heredoc = 1;
+				i++; // skip delimiter
+			}
+			i++;
+		}
+		cmd = cmd->next;
+	}
+}
 
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
+	process_all_heredocs(cmd_list);
 	int		fd[2];
 	int		prev_fd;
 	int		pid;
@@ -178,7 +224,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	while (cmd)
 	{
 		// Handle pipes
-		if (cmd->next)
+		if (cmd && cmd->next)
 		{
 			if (pipe(fd) == -1)
 			{
@@ -208,12 +254,32 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		{
 			if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
 			{
-				cmd->outfile = strdup(cmd->args[i + 1]); // Saving output file
-				if (!cmd->outfile)
-					exit(EXIT_FAILURE);
-				cmd->append_fd = (ft_strcmp(cmd->args[i], ">>") == 0);
+				int tmp_fd;
+				int is_append = ft_strcmp(cmd->args[i], ">>") == 0;
+
+				// tmp_fd = open(cmd->args[i + 1],
+				// 	O_WRONLY | O_CREAT | (is_append ? O_APPEND : O_TRUNC), 0644);
+				tmp_fd = handle_redirection(cmd->args[i + 1], is_append);
+				if (tmp_fd == 1)
+					perror("minishell: redirection error");
+				// else
+				// 	close(tmp_fd); // Just ensure file is created
+
+				// Store only the last redirection
+				if (cmd->outfile)
+					free(cmd->outfile);
+				cmd->outfile = strdup(cmd->args[i + 1]);
+				cmd->append_fd = is_append;
 				i++;
 			}
+			// if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
+			// {
+			// 	cmd->outfile = strdup(cmd->args[i + 1]); // Saving output file
+			// 	if (!cmd->outfile)
+			// 		exit(EXIT_FAILURE);
+			// 	cmd->append_fd = (ft_strcmp(cmd->args[i], ">>") == 0);
+			// 	i++;
+			// }
 			else if (ft_strcmp(cmd->args[i], "<") == 0)
 			{
 				cmd->inputfile = strdup(cmd->args[i + 1]); // Saving input file
@@ -221,6 +287,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					exit(EXIT_FAILURE);
 				i++;
 			}
+			else if (ft_strcmp(cmd->args[i], "<<") == 0)
+				i++;
 			else
 				cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
 			i++;
@@ -228,13 +296,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		cmd->args_for_cmd[j] = NULL;
 		// Apply redirections for built-ins before execution
 		if (cmd->cmd_type == TOKEN_BUILTIN)
-		{
-			// if (cmd->inputfile)
-			// 	handle_input_redirection(cmd->inputfile);
-			// if (cmd->outfile)
-			// 	handle_redirection(cmd->outfile, cmd->append_fd);
 			handle_builtin(cmd, ev, fd, &prev_fd);
-		}
 		else
 		{
 			pid = fork();
@@ -242,14 +304,10 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			{
 				if (cmd->inputfile)
 					handle_input_redirection(cmd->inputfile);
-
+				if (cmd->has_heredoc && cmd->heredoc_path)
+					handle_heredoc(cmd->heredoc_path);
 				if (cmd->outfile)
-				{
-					if (cmd->append_fd)
-						handle_redirection(cmd->outfile, 1);
-					else
-						handle_redirection(cmd->outfile, 0);
-				}
+					handle_redirection(cmd->outfile, cmd->append_fd);
 
 				// Redirect previous command's output to current command's input
 				if (prev_fd != -1)
@@ -259,12 +317,20 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				}
 
 				// Redirect current command's output to pipe
-				if (cmd->next)
+				// if (cmd->next)
+				// {
+				// 	dup2(fd[1], STDOUT_FILENO);
+				// 	close(fd[1]); // FIX: Close write end of pipe in child
+				// 	close(fd[0]); // FIX: Close read end of pipe in child
+				// }
+				// Only redirect to pipe if there is NO explicit file redirection
+				if (cmd->next && !cmd->outfile && !(cmd->has_heredoc && cmd->heredoc_path))
 				{
 					dup2(fd[1], STDOUT_FILENO);
-					close(fd[1]); // FIX: Close write end of pipe in child
-					close(fd[0]); // FIX: Close read end of pipe in child
+					close(fd[1]);
+					close(fd[0]);
 				}
+
 
 				execute_command(cmd, envp);
 				exit(EXIT_FAILURE); // Just in case
@@ -289,7 +355,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	// Wait for all child processes
 	while (wait(&status) > 0);
-	if (cmd_list->cmd_type != TOKEN_BUILTIN)
+	if (cmd && cmd_list->cmd_type != TOKEN_BUILTIN)
 		ev->last_exit = WEXITSTATUS(status);
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
