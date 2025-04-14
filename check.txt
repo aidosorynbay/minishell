@@ -42,3 +42,6 @@ root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# cat << 
 > aldsfj^C
 root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# echo $?
 130
+
+
+// 130 is the exit code for every ctrl+c
