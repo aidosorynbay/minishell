@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/12 06:11:48 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:34:49 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,8 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			else if (ft_strcmp(cmd->args[0], "exit") == 0)
 			{
 				ev->last_exit = ft_exit(cmd->args_for_cmd);
-				exit(ev->last_exit); // Exit the shell
+				if (ev->last_exit != 1)
+					exit(ev->last_exit); // Exit the shell
 			}
 			exit(EXIT_SUCCESS);
 		}
@@ -152,7 +153,8 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 		else if (ft_strcmp(cmd->args[0], "exit") == 0)
 		{
 			ev->last_exit = ft_exit(cmd->args_for_cmd);
-			exit(ev->last_exit); // Exit the shell
+			if (ev->last_exit != 1)
+					exit(ev->last_exit); // Exit the shell
 		}
 	}
 }

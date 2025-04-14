@@ -38,16 +38,6 @@ hello
 
 
 
-export INVALID-VAR=42   // check for special characters
-
-
-too many arguments in exit   // shouldnt exit, should print new line
-
-
-minishell$ echo '$NAME'    ||||     should not expand
-42
-
-
 root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# cat << eof
 > aldsfj^C
 root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# echo $?

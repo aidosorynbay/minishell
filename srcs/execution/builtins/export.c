@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/14 20:21:09 by aorynbay          #+#    #+#             */
+/*   Updated: 2025/04/14 20:21:17 by aorynbay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*get_env_value(t_env *env_list, char *key)
@@ -12,6 +24,22 @@ char	*get_env_value(t_env *env_list, char *key)
 		tmp = tmp->next;
 	}
 	return (NULL);
+}
+
+int	is_valid_identifier(const char *str)
+{
+	int	i;
+
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
+		return (0);
+	i = 1;
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int	ft_export(t_env_data *env_list, char **args)
@@ -50,9 +78,11 @@ int	ft_export(t_env_data *env_list, char **args)
 	while (args[i])
 	{
 		split = ft_split(args[i], '=');
-		if (!split || !split[0])
+		if (!split || !split[0] || !is_valid_identifier(split[0]))
 		{
-			perror("minishell: export: not a valid identifier");
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
 			free(split);
 			exit_code = 1;
 			i++;
