@@ -308,13 +308,19 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					handle_heredoc(cmd->heredoc_path);
 				if (cmd->outfile)
 					handle_redirection(cmd->outfile, cmd->append_fd);
-
-				// Redirect previous command's output to current command's input
-				if (prev_fd != -1)
+				
+				if (!cmd->inputfile && !(cmd->has_heredoc && cmd->heredoc_path) && prev_fd != -1)
 				{
 					dup2(prev_fd, STDIN_FILENO);
-					close(prev_fd); // FIX: Close previous pipe read end in child
+					close(prev_fd);
 				}
+					
+				// Redirect previous command's output to current command's input
+				// if (prev_fd != -1)
+				// {
+				// 	dup2(prev_fd, STDIN_FILENO);
+				// 	close(prev_fd); // FIX: Close previous pipe read end in child
+				// }
 
 				// Redirect current command's output to pipe
 				// if (cmd->next)
