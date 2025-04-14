@@ -6,3 +6,31 @@ conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
 
 valgrind
 
+cd ~
+
+
+export INVALID-VAR=42
+
+
+too many arguments in exit
+
+
+echo hello > file.txt
+
+
+minishell$ cat < file.txt > newfile.txt
+minishell: input redirection error: No such file or directory  |||   stuck
+
+
+minishell$ > out.txt echo hell
+Segmentation fault (core dumped)
+
+
+minishell$ echo hello > 
+exit: 258 syntax error near unexpected token `>': Success
+Segmentation fault (core dumped)
+
+
+
+minishell$ echo '$NAME'    ||||     should not expand
+42
