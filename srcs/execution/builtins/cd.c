@@ -12,19 +12,66 @@
 
 #include "minishell.h"
 
-int ft_cd(char **args)
+// int ft_cd(char **args)
+// {
+// 	if (!args)
+// 		return (1);
+// 	if (!args[1])
+// 	{
+// 		chdir(getenv("HOME"));
+// 		return (0);
+// 	}
+// 	else if (chdir(args[1]) == -1)
+// 	{
+// 		perror("cd");
+// 		return 1;
+// 	}
+// 	return (0);
+// }
+
+
+#include "minishell.h"
+
+int	ft_cd(char **args)
 {
-	if (!args)
-		return (1);
-	if (!args[1])
+	char	*home_path;
+	char	*new_path;
+
+	if (!args || !args[1])
 	{
-		chdir(getenv("HOME"));
+		home_path = getenv("HOME");
+		if (!home_path)
+			return (1);
+		if (chdir(home_path) == -1)
+		{
+			perror("cd");
+			return (1);
+		}
 		return (0);
 	}
-	else if (chdir(args[1]) == -1)
+	if (args[1][0] == '~')
+	{
+		home_path = getenv("HOME");
+		if (!home_path)
+			return (1);
+		new_path = malloc(strlen(home_path) + ft_strlen(args[1]));
+		if (!new_path)
+			return (1);
+		ft_strcpy(new_path, home_path);
+		ft_strcat(new_path, args[1] + 1); // skip the '~'
+		if (chdir(new_path) == -1)
+		{
+			perror("cd");
+			free(new_path);
+			return (1);
+		}
+		free(new_path);
+		return (0);
+	}
+	if (chdir(args[1]) == -1)
 	{
 		perror("cd");
-		return 1;
+		return (1);
 	}
 	return (0);
 }
