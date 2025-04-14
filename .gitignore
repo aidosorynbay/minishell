@@ -2,3 +2,4 @@ bin.supp
 leak-check.sh
 readline.supp
 .vscode
+minishell_tester
