@@ -7,20 +7,48 @@ conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
 valgrind
 
 
-				// // Redirect current command's output to pipe
-				// if (cmd->next)
-				// {
-				// 	dup2(fd[1], STDOUT_FILENO);
-				// 	close(fd[1]); // FIX: Close write end of pipe in child
-				// 	close(fd[0]); // FIX: Close read end of pipe in child
-				// }
-				// Only redirect to pipe if there is NO explicit file redirection
+cd ~
 
-                replaced with 
+minishell$ cat < file.txt > newfile.txt
+minishell: input redirection error: No such file or directory  |||   stuck
 
-                				if (cmd->next && !cmd->outfile && !(cmd->has_heredoc && cmd->heredoc_path))
-				{
-					dup2(fd[1], STDOUT_FILENO);
-				}
-				close(fd[1]);
-				close(fd[0]);
+
+minishell$ > out.txt echo hell
+Segmentation fault (core dumped)
+
+
+minishell$ cat << eof
+> ladskfj^C
+
+
+minishell$ cat << eof | echo hello
+> alsdf
+> eof
+hello
+alsdf
+
+
+minishell$ echo hello | cat << eof
+> aldsjf
+> eof
+hello
+
+
+
+
+
+
+export INVALID-VAR=42   // check for special characters
+
+
+too many arguments in exit   // shouldnt exit, should print new line
+
+
+minishell$ echo '$NAME'    ||||     should not expand
+42
+
+
+root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# cat << eof
+> aldsfj^C
+root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# echo $?
+130
