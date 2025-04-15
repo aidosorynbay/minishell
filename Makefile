@@ -1,6 +1,6 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
 CFLAGS += -Iinc
 READLINE    = -L/opt/vagrant/embedded/lib/ -lreadline
 

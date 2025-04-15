@@ -38,7 +38,14 @@ minishell$ echo hello | cat << eof
 > eof
 hello
 
+minishell$ > txt
+zsh: segmentation fault  ./minishell
 
+minishell$ < Makefile 
+zsh: segmentation fault  ./minishell
+
+minishell$ echo hi |  "|"
+zsh: segmentation fault  ./minishell
 
 
 false exit code should be 1
