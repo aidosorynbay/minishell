@@ -14,6 +14,8 @@
 
 # include <signal.h>
 
+extern int	g_exit_code;
+
 typedef enum e_token_type {
 	TOKEN_CMD, // commands
 	TOKEN_BUILTIN, // echo, cd, pwd, export etc.

@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+// int	g_exit_code;
+
 static int count_args_for_cmd(char **tokens)
 {
 	int count = 0;
@@ -122,12 +124,14 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 				if (ev->last_exit != 1)
 					exit(ev->last_exit); // Exit the shell
 			}
-			exit(EXIT_SUCCESS);
+			exit(ev->last_exit);
 		}
 		while (waitpid(-1, &status, 0) > 0)
 		{
 			if (WIFEXITED(status))
 				ev->last_exit = WEXITSTATUS(status); // Update exit code for the last command
+			else if (g_exit_code == 1)
+				ev->last_exit = g_exit_code;
 		}
 		return;
 	}
@@ -332,8 +336,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					close(fd[1]);
 					close(fd[0]);
 				}
-
-
 				execute_command(cmd, envp);
 				exit(EXIT_FAILURE); // Just in case
 			}
@@ -359,6 +361,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	while (wait(&status) > 0);
 	if (cmd && cmd_list->cmd_type != TOKEN_BUILTIN)
 		ev->last_exit = WEXITSTATUS(status);
+	else if (g_exit_code == 1)
+		ev->last_exit = g_exit_code;
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
 	{
@@ -368,6 +372,4 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	close(saved_stdout);
 	close(saved_stdin);
 }
-
-
 
