@@ -41,7 +41,7 @@ int	check_here_doc(t_token *tmp, t_token **tokens)
 
 int	error_syntaxcheck(t_token **tokens)
 {
-	perror("exit: 258 syntax error near unexpected token `|'");
+	ft_putstr_fd("exit: 258 syntax error near unexpected token `|'", 2);
 	token_clear(tokens);
 	return (258);
 }

@@ -60,3 +60,9 @@ extras
 
 
 false exit code should be 1
+
+
+
+
+
+replace perror with put_fd_str

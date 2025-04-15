@@ -30,7 +30,7 @@ static int	check_pipes(t_token *tmp, t_token **tokens, int i)
 {
 	if (ft_strcmp(tmp->value, "|") == 0 && i == 0)
 	{
-		perror("exit: 258 syntax error near unexpected token `|'");
+		ft_putstr_fd("exit: 258 syntax error near unexpected token `|'\n", 2);
 		token_clear(tokens);
 		return (258);
 	}
