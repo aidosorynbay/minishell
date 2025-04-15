@@ -16,6 +16,11 @@ minishell: input redirection error: No such file or directory  |||   stuck
 minishell$ > out.txt echo hell
 Segmentation fault (core dumped)
 
+minishell$ << eof
+> asldkjf
+> eof
+minishell: command not found
+
 
 minishell$ cat << eof
 > ladskfj^C
@@ -32,7 +37,6 @@ minishell$ echo hello | cat << eof
 > aldsjf
 > eof
 hello
-
 
 
 

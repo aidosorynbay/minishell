@@ -90,13 +90,23 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	char	*copy;
 	int		i;
 	int		start;
+	int		status;
 
 	i = 0;
 	start = 0;
 	tokens = NULL;
+	status = 0;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
-	check_syntax(&tokens);
+	status = check_syntax(&tokens);
+	if (status != 0)
+	{
+		ev->last_exit = status;
+		free(copy);
+		if (tokens)
+			token_clear(&tokens);
+		return NULL;
+	}
 	expand_variables(&tokens, ev);
 	trim_quotes(&tokens);
 	unknown_assign(&tokens);
