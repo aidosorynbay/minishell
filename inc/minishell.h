@@ -9,6 +9,8 @@
 # include <string.h>
 # include <fcntl.h>
 # include <unistd.h>
+#	include <sys/types.h>
+#include <string.h>
 # include <sys/wait.h>
 # include <errno.h> // can we have this????
 
@@ -154,6 +156,7 @@ char		*ft_strjoin_chr(char *s, char c);
 
 //heredoc.c
 void handle_heredoc(char *heredoc_path);
-char *ft_heredoc(char *limiter);
+// char *ft_heredoc(char *limiter);
+int create_heredoc(char *limiter, char **heredoc_path);
 
 #endif

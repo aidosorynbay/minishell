@@ -157,11 +157,11 @@ static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 	}
 }
 
-
-void process_all_heredocs(t_cmd *cmd_list)
+int process_all_heredocs(t_cmd *cmd_list)
 {
-	t_cmd	*cmd;
-	int		i;
+	t_cmd *cmd;
+	int i;
+	char *heredoc_file;
 
 	cmd = cmd_list;
 	while (cmd)
@@ -171,37 +171,73 @@ void process_all_heredocs(t_cmd *cmd_list)
 		i = 0;
 		while (cmd->args && cmd->args[i])
 		{
-			if (ft_strcmp(cmd->args[i], "<<") == 0)
+			if (!ft_strcmp(cmd->args[i], "<<") && cmd->args[i + 1])
 			{
-				if (!cmd->args[i + 1])
+				if (create_heredoc(cmd->args[i + 1], &heredoc_file))
 				{
-					fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-					exit(EXIT_FAILURE);
+					// heredoc failed (e.g., Ctrl+C)
+					return (1);
 				}
-				// Clean up old heredoc path if it exists
-				if (cmd->heredoc_path)
-				{
-					free(cmd->heredoc_path);
-					cmd->heredoc_path = NULL;
-				}
-				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
-				if (!cmd->heredoc_path)
-				{
-					perror("minishell: heredoc failed");
-					exit(EXIT_FAILURE);
-				}
+				cmd->heredoc_path = heredoc_file;
 				cmd->has_heredoc = 1;
-				i++; // skip delimiter
+				i++;
 			}
 			i++;
 		}
 		cmd = cmd->next;
 	}
+	return (0);
 }
+
+
+// void process_all_heredocs(t_cmd *cmd_list)
+// {
+// 	t_cmd	*cmd;
+// 	int		i;
+
+// 	cmd = cmd_list;
+// 	while (cmd)
+// 	{
+// 		cmd->heredoc_path = NULL;
+// 		cmd->has_heredoc = 0;
+// 		i = 0;
+// 		while (cmd->args && cmd->args[i])
+// 		{
+// 			if (ft_strcmp(cmd->args[i], "<<") == 0)
+// 			{
+// 				if (!cmd->args[i + 1])
+// 				{
+// 					fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+// 					exit(EXIT_FAILURE);
+// 				}
+// 				// Clean up old heredoc path if it exists
+// 				if (cmd->heredoc_path)
+// 				{
+// 					free(cmd->heredoc_path);
+// 					cmd->heredoc_path = NULL;
+// 				}
+// 				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
+// 				if (!cmd->heredoc_path)
+// 				{
+// 					perror("minishell: heredoc failed");
+// 					exit(EXIT_FAILURE);
+// 				}
+// 				cmd->has_heredoc = 1;
+// 				i++; // skip delimiter
+// 			}
+// 			i++;
+// 		}
+// 		cmd = cmd->next;
+// 	}
+// }
 
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
-	process_all_heredocs(cmd_list);
+	if(process_all_heredocs(cmd_list))
+	{
+		ev->last_exit = 1;
+		return;
+	}
 	int		fd[2];
 	int		prev_fd;
 	int		pid;
@@ -272,14 +308,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				cmd->append_fd = is_append;
 				i++;
 			}
-			// if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
-			// {
-			// 	cmd->outfile = strdup(cmd->args[i + 1]); // Saving output file
-			// 	if (!cmd->outfile)
-			// 		exit(EXIT_FAILURE);
-			// 	cmd->append_fd = (ft_strcmp(cmd->args[i], ">>") == 0);
-			// 	i++;
-			// }
 			else if (ft_strcmp(cmd->args[i], "<") == 0)
 			{
 				cmd->inputfile = strdup(cmd->args[i + 1]); // Saving input file
@@ -315,21 +343,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					close(prev_fd);
 				}
 					
-				// Redirect previous command's output to current command's input
-				// if (prev_fd != -1)
-				// {
-				// 	dup2(prev_fd, STDIN_FILENO);
-				// 	close(prev_fd); // FIX: Close previous pipe read end in child
-				// }
-
-				// Redirect current command's output to pipe
-				// if (cmd->next)
-				// {
-				// 	dup2(fd[1], STDOUT_FILENO);
-				// 	close(fd[1]); // FIX: Close write end of pipe in child
-				// 	close(fd[0]); // FIX: Close read end of pipe in child
-				// }
-				// Only redirect to pipe if there is NO explicit file redirection
 				if (cmd->next && !cmd->outfile && !(cmd->has_heredoc && cmd->heredoc_path))
 				{
 					dup2(fd[1], STDOUT_FILENO);
