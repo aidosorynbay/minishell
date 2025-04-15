@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 
 // int ft_cd(char **args)
 // {
@@ -28,8 +27,6 @@
 // 	}
 // 	return (0);
 // }
-
-
 #include "minishell.h"
 
 int	ft_cd(char **args)
@@ -58,7 +55,7 @@ int	ft_cd(char **args)
 		if (!new_path)
 			return (1);
 		ft_strcpy(new_path, home_path);
-		ft_strcat(new_path, args[1] + 1); // skip the '~'
+		ft_strcat(new_path, args[1] + 1);
 		if (chdir(new_path) == -1)
 		{
 			perror("cd");
