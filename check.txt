@@ -6,9 +6,6 @@ conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
 
 valgrind
 
-
-cd ~
-
 minishell$ cat < file.txt > newfile.txt
 minishell: input redirection error: No such file or directory  |||   stuck
 
@@ -26,29 +23,3 @@ minishell$ cat << eof | echo hello
 > eof
 hello
 alsdf
-
-
-minishell$ echo hello | cat << eof
-> aldsjf
-> eof
-hello
-
-
-
-
-
-
-export INVALID-VAR=42   // check for special characters
-
-
-too many arguments in exit   // shouldnt exit, should print new line
-
-
-minishell$ echo '$NAME'    ||||     should not expand
-42
-
-
-root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# cat << eof
-> aldsfj^C
-root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# echo $?
-130
