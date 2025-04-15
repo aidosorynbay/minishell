@@ -37,11 +37,4 @@ hello
 
 
 
-
-root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# cat << eof
-> aldsfj^C
-root@AidosAsusLaptop:/mnt/c/Users/Aidos Orynbay/Desktop/repos/minishell# echo $?
-130
-
-
-// 130 is the exit code for every ctrl+c
+false exit code should be 1
