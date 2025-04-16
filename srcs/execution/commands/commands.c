@@ -88,29 +88,51 @@ char	*find_command_path(char *cmd, char **envp)
 
 void	execute_command(t_cmd *cmd, char **environ)
 {
-	char	*cmd_path;
+    char	*cmd_path;
 
-	if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0])
-	{
-		fprintf(stderr, "minishell: command not found\n");
-		exit(127);
-	}
-	cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
-	if (!cmd_path)
-	{
-		fprintf(stderr, "minishell: %s: command not found\n",
-			cmd->args_for_cmd[0]);
-		exit(127);
-	}
-	if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
-	{
-		perror("execve error");
-		free(cmd_path);
-		if (errno == EACCES)
-			exit(126);
-		else
-			exit(127);
-	}
-	// free environ
-	return ;
+    if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0])
+    {
+        fprintf(stderr, "minishell: command not found\n");
+        exit(127); // Command not found
+    }
+
+    // Check if the command is an absolute or relative path
+    if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./", 2) == 0)
+    {
+        if (access(cmd->args_for_cmd[0], F_OK) == -1)
+        {
+            fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args_for_cmd[0]);
+            exit(127); // Command not found
+        }
+        if (access(cmd->args_for_cmd[0], X_OK) == -1)
+        {
+            fprintf(stderr, "minishell: %s: Permission denied\n", cmd->args_for_cmd[0]);
+            exit(126); // Command found but not executable
+        }
+        cmd_path = ft_strdup(cmd->args_for_cmd[0]);
+    }
+    else
+    {
+        // Search for the command in the PATH
+        cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
+        if (!cmd_path)
+        {
+            fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
+            exit(127); // Command not found
+        }
+    }
+
+    // Attempt to execute the command
+    if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
+    {
+        perror("execve error");
+        free(cmd_path);
+        if (errno == EACCES)
+            exit(126); // Command found but not executable
+        else
+            exit(127); // Command not found or other error
+    }
+
+    free(cmd_path);
+    return;
 }
