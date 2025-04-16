@@ -38,26 +38,39 @@ int handle_redirection(char *outfile, int append)
 		else
 			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
-			return(perror("minishell: redirection error"), 1);
+		{
+			// perror("minishell: redirection error");
+			return(1);
+		}
 		if(dup2(fd, STDOUT_FILENO) == -1)
+		{
 			perror("DUP2 DUPPPED"); // Redirect stdout to file 
+			return(1);
+		}
 		close(fd);
 	}
 	return(0);
 }
 
-void handle_input_redirection(char *infile)
+static int handle_input_redirection(char *infile)
 {
 	int fd;
 	if (infile)
 	{
 		fd = open(infile, O_RDONLY);
 		if (fd == -1)
-			return(perror("minishell: input redirection error"), (void)0);
+		{
+			// perror("minishell: input redirection error");
+			return(1);
+		}
 		if (dup2(fd, STDIN_FILENO) == -1)
-			return(perror("Dup2 got dupped\n"), (void)0);
+		{
+			perror("Dup2 got dupped\n");
+			return(1);
+		}
 		close(fd);
 	}
+	return(0);
 }
 
 static void handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
@@ -297,7 +310,10 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				// 	O_WRONLY | O_CREAT | (is_append ? O_APPEND : O_TRUNC), 0644);
 				tmp_fd = handle_redirection(cmd->args[i + 1], is_append);
 				if (tmp_fd == 1)
-					perror("minishell: redirection error");
+				{
+					perror("minishell: ");
+					exit(1);
+				}
 				// else
 				// 	close(tmp_fd); // Just ensure file is created
 
@@ -331,11 +347,23 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			if (pid == 0) // Child process
 			{
 				if (cmd->inputfile)
-					handle_input_redirection(cmd->inputfile);
+				{
+					if(handle_input_redirection(cmd->inputfile) == 1)
+					{
+						perror("minishell: ");
+						exit(EXIT_FAILURE);
+					}
+				}
 				if (cmd->has_heredoc && cmd->heredoc_path)
 					handle_heredoc(cmd->heredoc_path);
-				if (cmd->outfile)
-					handle_redirection(cmd->outfile, cmd->append_fd);
+				else if (cmd->outfile)
+				{
+					if(handle_redirection(cmd->outfile, cmd->append_fd) == 1)
+					{
+						perror("minishell: ");
+						exit(EXIT_FAILURE);
+					}
+				}
 				
 				if (!cmd->inputfile && !(cmd->has_heredoc && cmd->heredoc_path) && prev_fd != -1)
 				{
