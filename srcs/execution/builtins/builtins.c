@@ -265,6 +265,11 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				perror("malloc failed");
 				exit(EXIT_FAILURE);
 			}
+			if (cmd->has_heredoc && (!cmd->args_for_cmd || !cmd->args_for_cmd[0]))
+			{
+				cmd = cmd->next;
+				continue;
+			}
 		}
 		else
 			cmd->args_for_cmd = NULL;
@@ -304,18 +309,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				cmd->append_fd = is_append;
 				i++;
 			}
-			// else if (ft_strcmp(cmd->args[i], "<") == 0)
-			// {
-			// 	if (access(cmd->args[i + 1], F_OK) == -1)
-			// 	{
-			// 		fprintf(stderr, "minishell: %s: No such file or directory\n", tmp->next->value);
-			// 		exit (1);
-			// 	}
-			// 	cmd->inputfile = ft_strdup(cmd->args[i + 1]); // Saving input file
-			// 	if (!cmd->inputfile)
-			// 		exit(EXIT_FAILURE);
-			// 	i++;
-			// }
 			else if (ft_strcmp(cmd->args[i], "<<") == 0)
 				i++;
 			else
