@@ -11,22 +11,6 @@
 /* ************************************************************************** */
 
 
-// int ft_cd(char **args)
-// {
-// 	if (!args)
-// 		return (1);
-// 	if (!args[1])
-// 	{
-// 		chdir(getenv("HOME"));
-// 		return (0);
-// 	}
-// 	else if (chdir(args[1]) == -1)
-// 	{
-// 		perror("cd");
-// 		return 1;
-// 	}
-// 	return (0);
-// }
 #include "minishell.h"
 
 int	ft_cd(char **args)

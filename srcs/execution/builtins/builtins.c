@@ -39,7 +39,7 @@ int handle_redirection(char *outfile, int append)
 			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
 		{
-			// perror("minishell: redirection error");
+			// perror("minishell: redirection error");	
 			return(1);
 		}
 		if(dup2(fd, STDOUT_FILENO) == -1)
@@ -203,47 +203,6 @@ int process_all_heredocs(t_cmd *cmd_list)
 }
 
 
-// void process_all_heredocs(t_cmd *cmd_list)
-// {
-// 	t_cmd	*cmd;
-// 	int		i;
-
-// 	cmd = cmd_list;
-// 	while (cmd)
-// 	{
-// 		cmd->heredoc_path = NULL;
-// 		cmd->has_heredoc = 0;
-// 		i = 0;
-// 		while (cmd->args && cmd->args[i])
-// 		{
-// 			if (ft_strcmp(cmd->args[i], "<<") == 0)
-// 			{
-// 				if (!cmd->args[i + 1])
-// 				{
-// 					fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-// 					exit(EXIT_FAILURE);
-// 				}
-// 				// Clean up old heredoc path if it exists
-// 				if (cmd->heredoc_path)
-// 				{
-// 					free(cmd->heredoc_path);
-// 					cmd->heredoc_path = NULL;
-// 				}
-// 				cmd->heredoc_path = ft_heredoc(cmd->args[i + 1]);
-// 				if (!cmd->heredoc_path)
-// 				{
-// 					perror("minishell: heredoc failed");
-// 					exit(EXIT_FAILURE);
-// 				}
-// 				cmd->has_heredoc = 1;
-// 				i++; // skip delimiter
-// 			}
-// 			i++;
-// 		}
-// 		cmd = cmd->next;
-// 	}
-// }
-
 void init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
 	if(process_all_heredocs(cmd_list))
@@ -273,13 +232,10 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	while (cmd)
 	{
 		// Handle pipes
-		if (cmd && cmd->next)
+		if (cmd && cmd->next && pipe(fd) == -1)
 		{
-			if (pipe(fd) == -1)
-			{
-				perror("pipe error");
-				exit(EXIT_FAILURE);
-			}
+			perror("pipe error");
+			exit(EXIT_FAILURE);
 		}
 		// Initialize arguments
 		int i = 0;
@@ -298,7 +254,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			cmd->args_for_cmd = NULL;
 		cmd->inputfile = NULL;
 		cmd->outfile = NULL;
-		// Parse arguments
 		while (cmd->args[i])
 		{
 			if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
@@ -337,7 +292,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				cmd->args_for_cmd[j++] = strdup(cmd->args[i]);
 			i++;
 		}
-		cmd->args_for_cmd[j] = NULL;
+		if (cmd->args_for_cmd)
+			cmd->args_for_cmd[j] = NULL;
 		// Apply redirections for built-ins before execution
 		if (cmd->cmd_type == TOKEN_BUILTIN)
 			handle_builtin(cmd, ev, fd, &prev_fd);
@@ -346,7 +302,9 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			pid = fork();
 			if (pid == 0) // Child process
 			{
-				if (cmd->inputfile)
+				if (cmd->has_heredoc && cmd->heredoc_path)
+					handle_heredoc(cmd->heredoc_path);
+				else if (cmd->inputfile)
 				{
 					if(handle_input_redirection(cmd->inputfile) == 1)
 					{
@@ -354,9 +312,13 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 						exit(EXIT_FAILURE);
 					}
 				}
-				if (cmd->has_heredoc && cmd->heredoc_path)
-					handle_heredoc(cmd->heredoc_path);
-				else if (cmd->outfile)
+				else if (prev_fd != -1)
+				{
+					dup2(prev_fd, STDIN_FILENO);
+					close(prev_fd);
+				}
+
+				if (cmd->outfile)
 				{
 					if(handle_redirection(cmd->outfile, cmd->append_fd) == 1)
 					{
@@ -364,19 +326,25 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 						exit(EXIT_FAILURE);
 					}
 				}
-				
-				if (!cmd->inputfile && !(cmd->has_heredoc && cmd->heredoc_path) && prev_fd != -1)
-				{
-					dup2(prev_fd, STDIN_FILENO);
-					close(prev_fd);
-				}
-					
-				if (cmd->next && !cmd->outfile && !(cmd->has_heredoc && cmd->heredoc_path))
+				else if (cmd->next)
 				{
 					dup2(fd[1], STDOUT_FILENO);
 					close(fd[1]);
 					close(fd[0]);
 				}
+				
+				// if (!cmd->inputfile && !(cmd->has_heredoc && cmd->heredoc_path) && prev_fd != -1)
+				// {
+				// 	dup2(prev_fd, STDIN_FILENO);
+				// 	close(prev_fd);
+				// }
+					
+				// if (cmd->next && !cmd->outfile && !(cmd->has_heredoc && cmd->heredoc_path))
+				// {
+				// 	dup2(fd[1], STDOUT_FILENO);
+				// 	close(fd[1]);
+				// 	close(fd[0]);
+				// }
 
 
 				execute_command(cmd, envp);
