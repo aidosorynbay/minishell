@@ -122,6 +122,7 @@ char **convert_tokens_to_args(t_token *tokens);
 
 //utils
 void    clear_screen(void);
+int    check_file_existence(t_token **tokens);
 
 //execution
 t_cmd *parse_tokens(char **av);

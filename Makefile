@@ -1,6 +1,6 @@
 # Compiler and flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
+CFLAGS      = -Wall -Wextra -Werror -g3 -fsanitize=address -Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
 CFLAGS += -Iinc
 READLINE    = -L/opt/vagrant/embedded/lib/ -lreadline
 
@@ -31,6 +31,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(COMMANDS_DIR)/commands.c \
 		  $(COMMANDS_DIR)/commands_utils.c \
 		  $(BUILTINS_DIR)/builtins.c \
+		  $(BUILTINS_DIR)/builtins_utils.c \
 		  $(BUILTINS_DIR)/cd.c \
 		  $(BUILTINS_DIR)/echo.c \
 		  $(BUILTINS_DIR)/pwd.c \

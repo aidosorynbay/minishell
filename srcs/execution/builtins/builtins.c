@@ -266,6 +266,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			cmd->args_for_cmd = NULL;
 		cmd->inputfile = NULL;
 		cmd->outfile = NULL;
+		// check_file_existence(cmd->args, cmd->args_for_cmd);
 		while (cmd->args[i])
 		{
 			if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
@@ -340,6 +341,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 					close(fd[1]);
 					close(fd[0]);
 				}
+				if (!ft_strcmp(cmd->args[0], ">") || !ft_strcmp(cmd->args[0], ">>") || !ft_strcmp(cmd->args[0], "<"))
+					exit(1);
 				execute_command(cmd, envp);
 				// exit(ev->last_exit); // Just in case
 			}
