@@ -304,18 +304,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				cmd->append_fd = is_append;
 				i++;
 			}
-			// else if (ft_strcmp(cmd->args[i], "<") == 0)
-			// {
-			// 	if (access(cmd->args[i + 1], F_OK) == -1)
-			// 	{
-			// 		fprintf(stderr, "minishell: %s: No such file or directory\n", tmp->next->value);
-			// 		exit (1);
-			// 	}
-			// 	cmd->inputfile = ft_strdup(cmd->args[i + 1]); // Saving input file
-			// 	if (!cmd->inputfile)
-			// 		exit(EXIT_FAILURE);
-			// 	i++;
-			// }
 			else if (ft_strcmp(cmd->args[i], "<<") == 0)
 				i++;
 			else
@@ -373,16 +361,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
-			// else
-			// {
-			// 	waitpid(pid, &status, 0);
-			// 	if (WIFEXITED(status))
-			// 		ev->last_exit = WEXITSTATUS(status);
-			// 	else if (WIFSIGNALED(status))
-			// 		ev->last_exit = 128 + WTERMSIG(status);
-			// 	else if (g_exit_code == 1)
-			// 		ev->last_exit = g_exit_code;
-			// }
 		}
 		
 		// Parent process
@@ -396,14 +374,15 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		cmd = cmd->next;
 	}
 	// Wait for all child processes
-	while (wait(&status) > 0);
-	if (cmd && cmd_list->cmd_type != TOKEN_BUILTIN)
-		ev->last_exit = WEXITSTATUS(status);
-	else if (g_exit_code == 1)
-		ev->last_exit = g_exit_code;
-	if (g_exit_code == 1)
-		ev->last_exit = g_exit_code;
-	// Restore standard input and output
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			ev->last_exit = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			ev->last_exit = 128 + WTERMSIG(status);
+		else if (g_exit_code == 1)
+			ev->last_exit = g_exit_code;
+	}
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
 	{
 		perror("minishell: dup2 error");
