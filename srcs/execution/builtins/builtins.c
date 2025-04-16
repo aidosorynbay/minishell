@@ -273,7 +273,20 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		// check_file_existence(cmd->args, cmd->args_for_cmd);
 		while (cmd->args[i])
 		{
-			if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
+			if (ft_strcmp(cmd->args[i], "<") == 0)
+			{
+				if (access(cmd->args[i + 1], F_OK) == -1)
+				{
+					fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args[i + 1]);
+					ev->last_exit = 1;
+					return ;
+				}
+				cmd->inputfile = ft_strdup(cmd->args[i + 1]); // Saving input file
+				if (!cmd->inputfile)
+					exit(EXIT_FAILURE);
+				i++;
+			}
+			else if (ft_strcmp(cmd->args[i], ">") == 0 || ft_strcmp(cmd->args[i], ">>") == 0)
 			{
 				int tmp_fd;
 				int is_append = ft_strcmp(cmd->args[i], ">>") == 0;
@@ -291,13 +304,18 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				cmd->append_fd = is_append;
 				i++;
 			}
-			else if (ft_strcmp(cmd->args[i], "<") == 0)
-			{
-				cmd->inputfile = ft_strdup(cmd->args[i + 1]); // Saving input file
-				if (!cmd->inputfile)
-					exit(EXIT_FAILURE);
-				i++;
-			}
+			// else if (ft_strcmp(cmd->args[i], "<") == 0)
+			// {
+			// 	if (access(cmd->args[i + 1], F_OK) == -1)
+			// 	{
+			// 		fprintf(stderr, "minishell: %s: No such file or directory\n", tmp->next->value);
+			// 		exit (1);
+			// 	}
+			// 	cmd->inputfile = ft_strdup(cmd->args[i + 1]); // Saving input file
+			// 	if (!cmd->inputfile)
+			// 		exit(EXIT_FAILURE);
+			// 	i++;
+			// }
 			else if (ft_strcmp(cmd->args[i], "<<") == 0)
 				i++;
 			else
