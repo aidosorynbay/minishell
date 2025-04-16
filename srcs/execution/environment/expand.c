@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 20:48:31 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/08 21:08:59 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:39:33 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ char	*expand_variable(char *str, t_env_data *env_data)
 	char	*tmp;
 	char	*var_name;
 	char	*var_value;
+
+	if (str[0] == '\'' && str[ft_strlen(str) - 1] == '\'')
+		return (ft_substr(str, 1, ft_strlen(str) - 2));
 
 	result = ft_strdup("");
 	i = 0;

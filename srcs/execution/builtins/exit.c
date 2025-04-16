@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:55:20 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/12 05:49:02 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:32:37 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int ft_exit(char **args)
         exit(exit_code);
 
     // Check if the first argument is numeric
-    for (int i = 0; args[1][i]; i++)
+    int i = 0;
+    while (args[1][i])
     {
         if (!ft_isdigit(args[1][i]) && !(i == 0 && (args[1][i] == '-' || args[1][i] == '+')))
         {
@@ -33,6 +34,7 @@ int ft_exit(char **args)
             ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
             exit(255); // Exit with code 255 for invalid numeric argument
         }
+        i++;
     }
 
     // Convert the first argument to an integer
@@ -42,7 +44,7 @@ int ft_exit(char **args)
     if (args[2])
     {
         ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
-        return 1; // Return 1 but do not exit the shell
+        return (1); // Return 1 but do not exit the shell
     }
 
     // Exit with the parsed exit code

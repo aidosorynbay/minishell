@@ -6,11 +6,13 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:53:29 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/12 06:11:48 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:34:49 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// int	g_exit_code;
 
 static int count_args_for_cmd(char **tokens)
 {
@@ -127,14 +129,17 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			else if (ft_strcmp(cmd->args[0], "exit") == 0)
 			{
 				ev->last_exit = ft_exit(cmd->args_for_cmd);
-				exit(ev->last_exit); // Exit the shell
+				if (ev->last_exit != 1)
+					exit(ev->last_exit); // Exit the shell
 			}
-			exit(EXIT_SUCCESS);
+			exit(ev->last_exit);
 		}
 		while (waitpid(-1, &status, 0) > 0)
 		{
 			if (WIFEXITED(status))
 				ev->last_exit = WEXITSTATUS(status); // Update exit code for the last command
+			else if (g_exit_code == 1)
+				ev->last_exit = g_exit_code;
 		}
 		return 1;
 	}
@@ -173,7 +178,8 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 		else if (ft_strcmp(cmd->args[0], "exit") == 0)
 		{
 			ev->last_exit = ft_exit(cmd->args_for_cmd);
-			exit(ev->last_exit); // Exit the shell
+			if (ev->last_exit != 1)
+					exit(ev->last_exit); // Exit the shell
 		}
 		else
 		{
@@ -368,7 +374,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	while (wait(&status) > 0);
 	if (cmd && cmd_list->cmd_type != TOKEN_BUILTIN)
 		ev->last_exit = WEXITSTATUS(status);
-	// fprintf(stderr, "Last exit code: %d\n", ev->last_exit);
+	else if (g_exit_code == 1)
+		ev->last_exit = g_exit_code;
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
 	{
@@ -379,6 +386,4 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	close(saved_stdin);
 	return ;
 }
-
-
 

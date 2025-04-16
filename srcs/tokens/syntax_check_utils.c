@@ -21,7 +21,7 @@ int	checker(t_token *tmp, t_token **tokens)
 	{
 		perror("syntax error near unexpected token `>'");
 		token_clear(tokens);
-		return (1);
+		return (258);
 	}
 	return (0);
 }
@@ -32,18 +32,18 @@ int	check_here_doc(t_token *tmp, t_token **tokens)
 	{
 		perror("exit: 258 syntax error near unexpected token `<'");
 		token_clear(tokens);
-		return (1);
+		return (258);
 	}
-	else if (checker(tmp, tokens) == 1)
-		return (1);
+	else if (checker(tmp, tokens) == 258)
+		return (258);
 	return (0);
 }
 
 int	error_syntaxcheck(t_token **tokens)
 {
-	perror("exit: 258 syntax error near unexpected token `|'");
+	ft_putstr_fd("exit: 258 syntax error near unexpected token `|'", 2);
 	token_clear(tokens);
-	return (1);
+	return (258);
 }
 
 int	check_lesser(t_token *tmp, t_token **tokens)
@@ -52,9 +52,9 @@ int	check_lesser(t_token *tmp, t_token **tokens)
 	{
 		perror("exit: 258 exit: 258 syntax error near unexpected token `<'");
 		token_clear(tokens);
-		return (1);
+		return (258);
 	}
-	else if (checker(tmp, tokens) == 1)
-		return (1);
+	else if (checker(tmp, tokens) == 258)
+		return (258);
 	return (0);
 }

@@ -18,6 +18,11 @@ minishell: command not found
 minishell$ > out.txt echo hell
 Segmentation fault (core dumped)
 
+minishell$ << eof
+> asldkjf
+> eof
+minishell: command not found
+
 
 
 

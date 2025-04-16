@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int	g_exit_code = 0;
+
 void	return_tokens(t_token *tokens)
 {
 	(void)tokens;
@@ -25,6 +27,7 @@ void	signal_handle(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	g_exit_code = 1;
 }
 
 int main(int ac, char **av, char **envp)
@@ -47,6 +50,12 @@ int main(int ac, char **av, char **envp)
 			perror("signal");
 		if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
 			perror("signal");
+		if (g_exit_code == 1)
+		{
+			fprintf(stderr, "g_exit_code: %d\n", g_exit_code);
+			fprintf(stderr, "last_exit: %d\n", data->last_exit);
+			// g_exit_code = 0;
+		}
 		input = readline("minishell$ ");
 		if (input == NULL)
 			break;
@@ -57,4 +66,5 @@ int main(int ac, char **av, char **envp)
 		if (tokens != NULL)
 			return_tokens(tokens);
 	}
+	exit(g_exit_code);
 }
