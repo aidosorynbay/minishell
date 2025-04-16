@@ -98,6 +98,8 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	status = 0;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
+	expand_variables(&tokens, ev);
+	trim_quotes(&tokens);
 	status = check_syntax(&tokens);
 	if (status != 0)
 	{
@@ -107,16 +109,14 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 			token_clear(&tokens);
 		return NULL;
 	}
-	expand_variables(&tokens, ev);
-	trim_quotes(&tokens);
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	if (check_file_existence(&tokens) == -1)
-	{
-		token_clear(&tokens);
-		free(copy);
-		return (NULL);
-	}
+	// if (check_file_existence(&tokens) == -1)
+	// {
+	// 	token_clear(&tokens);
+	// 	free(copy);
+	// 	return (NULL);
+	// }
 	init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
 	// print_tokens(tokens);
 	free(copy);

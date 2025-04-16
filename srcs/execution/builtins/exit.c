@@ -32,7 +32,7 @@ int ft_exit(char **args)
             ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
             ft_putstr_fd(args[1], STDERR_FILENO);
             ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-            exit(255); // Exit with code 255 for invalid numeric argument
+            exit(2); // Exit with code 2 for invalid numeric argument
         }
         i++;
     }

@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// int	g_exit_code;
-
 static int count_args_for_cmd(char **tokens)
 {
 	int count = 0;
@@ -357,7 +355,16 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				perror("fork error");
 				exit(EXIT_FAILURE);
 			}
-			
+			// else
+			// {
+			// 	waitpid(pid, &status, 0);
+			// 	if (WIFEXITED(status))
+			// 		ev->last_exit = WEXITSTATUS(status);
+			// 	else if (WIFSIGNALED(status))
+			// 		ev->last_exit = 128 + WTERMSIG(status);
+			// 	else if (g_exit_code == 1)
+			// 		ev->last_exit = g_exit_code;
+			// }
 		}
 		
 		// Parent process
@@ -375,6 +382,8 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	if (cmd && cmd_list->cmd_type != TOKEN_BUILTIN)
 		ev->last_exit = WEXITSTATUS(status);
 	else if (g_exit_code == 1)
+		ev->last_exit = g_exit_code;
+	if (g_exit_code == 1)
 		ev->last_exit = g_exit_code;
 	// Restore standard input and output
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
