@@ -14,14 +14,17 @@
 
 int ft_exit(char **args)
 {
-    int exit_code;
-    int i;
-    
-    exit_code = 0;
+    int exit_code = 0;
+
+    // Print exit message
     ft_putstr_fd("exit\n", 2);
+
+    // No arguments: exit with code 0
     if (!args[1])
-        return(exit_code);
-    i = 0;
+        exit(exit_code);
+
+    // Check if the first argument is numeric
+    int i = 0;
     while (args[1][i])
     {
         if (!ft_isdigit(args[1][i]) && !(i == 0 && (args[1][i] == '-' || args[1][i] == '+')))
@@ -29,15 +32,21 @@ int ft_exit(char **args)
             ft_putstr_fd("minishell: exit: ", 2);
             ft_putstr_fd(args[1], 2);
             ft_putstr_fd(": numeric argument required\n", 2);
-            return(255);
+            exit(255); // Exit with code 255 for invalid numeric argument
         }
         i++;
     }
+
+    // Convert the first argument to an integer
     exit_code = ft_atoi(args[1]);
+
+    // Check for multiple arguments
     if (args[2])
     {
         ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-        return (1);
+        return (1); // Return 1 but do not exit the shell
     }
-    return(exit_code);
+
+    // Exit with the parsed exit code
+    exit(exit_code);
 }
