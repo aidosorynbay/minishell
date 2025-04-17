@@ -6,8 +6,6 @@ conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
 
 valgrind
 
-minishell$ > out.txt echo hell
-Segmentation fault (core dumped)
 
 
 
