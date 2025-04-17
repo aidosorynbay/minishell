@@ -90,7 +90,7 @@ void	execute_command(t_cmd *cmd, char **environ)
 {
     char	*cmd_path;
 
-    if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0])
+    if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0] || !cmd->args_for_cmd[0][0])
     {
         fprintf(stderr, "minishell: command not found\n");
         exit(127); // Command not found
