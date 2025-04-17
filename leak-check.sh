@@ -17,3 +17,10 @@ valgrind --leak-check=full --leak-resolution=high -s --track-origins=yes \
          --malloc-fill=0x41 --free-fill=0x42 --read-var-info=yes --keep-debuginfo=yes \
 	 --suppressions=bin.supp --suppressions=readline.supp \
          "$EXECUTABLE" "$@"
+# valgrind --leak-check=full --leak-resolution=high -s --track-origins=yes \
+#           --show-mismatched-frees=yes --show-leak-kinds=all \
+#          --track-fds=yes --trace-children=yes --gen-suppressions=no \
+#          --error-limit=no --undef-value-errors=yes --expensive-definedness-checks=yes \
+#          --malloc-fill=0x41 --free-fill=0x42 --read-var-info=yes --keep-debuginfo=yes \
+# 	 --suppressions=bin.supp --suppressions=readline.supp \
+#          "$EXECUTABLE" "$@"

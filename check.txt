@@ -6,34 +6,8 @@ conver_tokens_to_args LEAKS WHEN THERE IS NO COMMAND AND ARGUMENT ONLY
 
 valgrind
 
-
-minishell$ << eof
-> asldkjf
-> eof
-minishell: command not found
-
-
 minishell$ > out.txt echo hell
 Segmentation fault (core dumped)
 
-minishell$ << eof
-> asldkjf
-> eof
-minishell: command not found
 
 
-
-
-redirects
-
-
-
-
-
-
-pipes
-
-extras
-
-
-false exit code should be 1

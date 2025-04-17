@@ -77,24 +77,25 @@ static int	*find_quotes(char *str)
 
 void	trim_quotes(t_token **tokens)
 {
-	t_token	*tmp;
-	int		*quote_loc;
-	char	*trimmed_value;
+    t_token	*tmp;
+    int		*quote_loc;
 
-	tmp = *tokens;
-	while (tmp)
-	{
-		quote_loc = find_quotes(tmp->value);
-		if (!quote_loc)
-			exit(EXIT_FAILURE);
-		trimmed_value = malloc(sizeof(char) * (ft_strlen(tmp->value) + 1)); // allocates more memory than needed
-		if (!trimmed_value)
-		{
-			free(quote_loc);
-			exit(EXIT_FAILURE);
-		}
-		assign_new_value(tmp, trimmed_value, quote_loc);
-		free(quote_loc);
-		tmp = tmp->next;
-	}
+    tmp = *tokens;
+    while (tmp)
+    {
+        quote_loc = find_quotes(tmp->value);
+        if (!quote_loc)
+            exit(EXIT_FAILURE);
+
+        // Allocate only the required memory for trimmed_value
+        char *trimmed_value = malloc(sizeof(char) * (ft_strlen(tmp->value) - 2 + 1)); // -2 for the quotes, +1 for '\0'
+        if (!trimmed_value)
+        {
+            free(quote_loc);
+            exit(EXIT_FAILURE);
+        }
+        assign_new_value(tmp, trimmed_value, quote_loc);
+        free(quote_loc);
+        tmp = tmp->next;
+    }
 }

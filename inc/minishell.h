@@ -119,7 +119,7 @@ void	handle_comman_file(t_token *tmp, t_token **tokens, int *expect_file, int *e
 void	trim_quotes(t_token **tokens);
 
 //converter
-char **convert_tokens_to_args(t_token *tokens);
+char **convert_tokens_to_args(t_token **tokens);
 
 
 //utils
@@ -159,6 +159,7 @@ char		*ft_strjoin_chr(char *s, char c);
 
 //heredoc.c
 void handle_heredoc(char *heredoc_path);
+int process_all_heredocs(t_cmd *cmd_list);
 // char *ft_heredoc(char *limiter);
 int create_heredoc(char *limiter, char **heredoc_path);
 

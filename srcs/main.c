@@ -50,12 +50,6 @@ int main(int ac, char **av, char **envp)
 			perror("signal");
 		if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
 			perror("signal");
-		if (g_exit_code == 1)
-		{
-			fprintf(stderr, "g_exit_code: %d\n", g_exit_code);
-			fprintf(stderr, "last_exit: %d\n", data->last_exit);
-			// g_exit_code = 0;
-		}
 		input = readline("minishell$ ");
 		if (input == NULL)
 			break;

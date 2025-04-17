@@ -22,6 +22,35 @@ void handle_heredoc(char *heredoc_path)
 
 }
 
+int process_all_heredocs(t_cmd *cmd_list)
+{
+	t_cmd *cmd;
+	int i;
+	char *heredoc_file;
+
+	cmd = cmd_list;
+	while (cmd)
+	{
+		cmd->heredoc_path = NULL;
+		cmd->has_heredoc = 0;
+		i = 0;
+		while (cmd->args && cmd->args[i])
+		{
+			if (!ft_strcmp(cmd->args[i], "<<") && cmd->args[i + 1])
+			{
+				if (create_heredoc(cmd->args[i + 1], &heredoc_file))
+					return (1);
+				cmd->heredoc_path = heredoc_file;
+				cmd->has_heredoc = 1;
+				i++;
+			}
+			i++;
+		}
+		cmd = cmd->next;
+	}
+	return (0);
+}
+
 int create_heredoc(char *limiter, char **heredoc_path)
 {
     int pipe_fd[2];

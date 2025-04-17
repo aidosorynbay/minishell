@@ -53,8 +53,7 @@ t_env_data *env_init(char **envp)
 		return (NULL);
 	env_data->env_list = NULL;
 	env_data->env_export_list = NULL;
-	if (!env_data->last_exit)
-		env_data->last_exit = 0;
+	env_data->last_exit = 0;
 	i = 0;
 	while (envp[i] != NULL)
 	{

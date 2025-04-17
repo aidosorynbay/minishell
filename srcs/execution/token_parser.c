@@ -64,7 +64,6 @@ t_cmd	*	parse_tokens(char **tokens)
 			new_cmd->cmd_type = TOKEN_BUILTIN;
 		else
 			new_cmd->cmd_type = TOKEN_CMD;
-		// fprintf(stderr, "Command: %d\n", new_cmd->cmd_type);
 		if (!head)
 			head = new_cmd;
 		else

@@ -87,9 +87,9 @@ void	print_tokens(t_token *tokens)
 t_token	*tokenize_input(char *input, t_env_data *ev)
 {
 	t_token	*tokens;
-	char	*copy;
 	int		i;
 	int		start;
+	char	*copy;
 	int		status;
 
 	i = 0;
@@ -98,28 +98,20 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	status = 0;
 	copy = ft_strdup(input);
 	tokenization(&tokens, copy, i, start);
+	free(copy);
 	expand_variables(&tokens, ev);
 	trim_quotes(&tokens);
 	status = check_syntax(&tokens);
 	if (status != 0)
 	{
 		ev->last_exit = status;
-		free(copy);
 		if (tokens)
 			token_clear(&tokens);
 		return NULL;
 	}
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	// if (check_file_existence(&tokens) == -1)
-	// {
-	// 	token_clear(&tokens);
-	// 	free(copy);
-	// 	return (NULL);
-	// }
-	init_execution(parse_tokens(convert_tokens_to_args(tokens)), ev);
-	// print_tokens(tokens);
-	free(copy);
+	init_execution(parse_tokens(convert_tokens_to_args(&tokens)), ev);
 	if (tokens)
 		token_clear(&tokens);
 	return (tokens);
