@@ -51,6 +51,22 @@ int handle_redirection(char *outfile, int append)
 	}
 	return(0);
 }
+int open_fds(char *outfile, int append)
+{
+	int fd;
+
+	if (outfile)
+	{
+		if (append)
+			fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd == -1)
+			return(1);
+		close(fd);
+	}
+	return(0);
+}
 
 static int handle_input_redirection(char *infile)
 {
@@ -104,13 +120,13 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 				dup2(*prev_fd, STDIN_FILENO);
 				close(*prev_fd); // FIX: Close previous pipe read end in child
 			}
-			// Redirect current command's output to pipe
-			if (cmd->next)
+			if (cmd->next && !cmd->outfile)
 			{
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]); // FIX: Close write end of pipe in child
 				close(fd[0]); // FIX: Close read end of pipe in child
 			}
+			// Redirect current command's output to pipe
 			// Execute the built-in
 			if (ft_strcmp(cmd->args[0], "echo") == 0)
 				ev->last_exit = ft_echo(cmd->args_for_cmd);
@@ -129,6 +145,12 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 				ev->last_exit = ft_exit(cmd->args_for_cmd);
 				if (ev->last_exit != 1)
 					exit(ev->last_exit); // Exit the shell
+			}
+			if (cmd->next)
+			{
+				dup2(fd[1], STDOUT_FILENO);
+				close(fd[1]); // FIX: Close write end of pipe in child
+				close(fd[0]); // FIX: Close read end of pipe in child
 			}
 			exit(ev->last_exit);
 		}
@@ -246,6 +268,11 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 	envp = env_list_to_envp(ev->env_list);
 	while (cmd)
 	{
+		if (ft_strcmp(cmd->args[0], "<<") == 0)
+		{
+			cmd = cmd->next;
+			continue;
+		}
 		// Handle pipes
 		if (cmd && cmd->next && pipe(fd) == -1)
 		{
@@ -265,11 +292,6 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 				perror("malloc failed");
 				exit(EXIT_FAILURE);
 			}
-			if (cmd->has_heredoc && (!cmd->args_for_cmd || !cmd->args_for_cmd[0]))
-			{
-				cmd = cmd->next;
-				continue;
-			}
 		}
 		else
 			cmd->args_for_cmd = NULL;
@@ -280,7 +302,7 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 		{
 			if (ft_strcmp(cmd->args[i], "<") == 0)
 			{
-				if (access(cmd->args[i + 1], F_OK) == -1)
+				if (access(cmd->args[i + 1], F_OK) == -1 && !cmd->next)
 				{
 					fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args[i + 1]);
 					ev->last_exit = 1;
@@ -295,13 +317,13 @@ void init_execution(t_cmd *cmd_list, t_env_data *ev)
 			{
 				int tmp_fd;
 				int is_append = ft_strcmp(cmd->args[i], ">>") == 0;
-
-				tmp_fd = handle_redirection(cmd->args[i + 1], is_append);
+				
+				tmp_fd = open_fds(cmd->args[i + 1], is_append);
 				if (tmp_fd == 1)
 				{
 					perror("minishell: hello byeee");
 					ev->last_exit = 1;
-					exit(ev->last_exit);
+					return ;
 				}
 				if (cmd->outfile)
 					free(cmd->outfile);
