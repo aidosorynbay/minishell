@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:56:08 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/10 20:24:17 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/18 16:19:33 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ t_cmd	*	parse_tokens(char **tokens)
 	{
 		new_cmd = malloc(sizeof(t_cmd));
 		if (!new_cmd)
+		{
+			// free_tokens(tokens);
 			return (NULL);
+		}
 		new_cmd->input_fd = STDIN_FILENO;
 		new_cmd->output_fd = STDOUT_FILENO;
 		new_cmd->cmd_type = TOKEN_UNKNOWN;
@@ -49,7 +52,10 @@ t_cmd	*	parse_tokens(char **tokens)
 		arg_count = count_args(tokens, i);
 		new_cmd->args = (char **)malloc(sizeof(char *) * (arg_count + 1));
 		if (!new_cmd->args)
+		{
+			// free_tokens(tokens);
 			return (NULL);
+		}
 		j = 0;
 		while (tokens[i] && ft_strcmp(tokens[i], "|") != 0)
 			new_cmd->args[j++] = tokens[i++];
@@ -72,5 +78,6 @@ t_cmd	*	parse_tokens(char **tokens)
 		if (tokens[i] && ft_strcmp(tokens[i], "|") == 0)
 			i++;
 	}
+	// free_tokens(tokens);
 	return (head);
 }
