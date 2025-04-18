@@ -12,6 +12,22 @@
 
 #include "minishell.h"
 
+void	free_cmd(t_cmd *cmd)
+{
+	int	i;
+
+	if (!cmd)
+		return;
+	if (cmd->args)
+	{
+		i = 0;
+		while (cmd->args[i])
+			free(cmd->args[i++]); // Only if you strdup args
+		free(cmd->args);
+	}
+	free(cmd);
+}
+
 int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
 {
     int exit_code = 0;
@@ -25,7 +41,7 @@ int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
     {
         free_env_data(ev);
         free_args_for_cmd(args);
-        // free_cmd_list(cmd);
+        free_cmd(cmd);
         exit(exit_code);
     }
 

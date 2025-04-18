@@ -53,12 +53,12 @@ t_cmd	*	parse_tokens(char **tokens)
 		new_cmd->args = (char **)malloc(sizeof(char *) * (arg_count + 1));
 		if (!new_cmd->args)
 		{
-			// free_tokens(tokens);
+			free_tokens(tokens);
 			return (NULL);
 		}
 		j = 0;
 		while (tokens[i] && ft_strcmp(tokens[i], "|") != 0)
-			new_cmd->args[j++] = tokens[i++];
+			new_cmd->args[j++] = ft_strdup(tokens[i++]);
 		new_cmd->args[j] = NULL;
 		if (new_cmd->args[0] && (ft_strcmp(new_cmd->args[0], "echo") == 0
 				|| ft_strcmp(new_cmd->args[0], "cd") == 0
@@ -78,6 +78,6 @@ t_cmd	*	parse_tokens(char **tokens)
 		if (tokens[i] && ft_strcmp(tokens[i], "|") == 0)
 			i++;
 	}
-	// free_tokens(tokens);
+	free_tokens(tokens);
 	return (head);
 }
