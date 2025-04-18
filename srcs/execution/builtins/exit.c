@@ -25,6 +25,8 @@ void	free_cmd(t_cmd *cmd)
 			free(cmd->args[i++]); // Only if you strdup args
 		free(cmd->args);
 	}
+    if(cmd->args_for_cmd)
+        free_args_for_cmd(cmd->args_for_cmd);
     if(cmd->envp)
     {
         i = 0;
@@ -47,7 +49,6 @@ int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
     if (!args[1])
     {
         free_env_data(ev);
-        free_args_for_cmd(args);
         free_cmd(cmd);
         exit(exit_code);
     }
@@ -62,7 +63,6 @@ int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
             ft_putstr_fd(args[1], 2);
             ft_putstr_fd(": numeric argument required\n", 2);
             free_env_data(ev);
-            free_args_for_cmd(args);
             free_cmd(cmd);
             exit(255); // Exit with code 255 for invalid numeric argument
         }
@@ -79,7 +79,6 @@ int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
         return (1); // Return 1 but do not exit the shell
     }
     free_env_data(ev);
-    free_args_for_cmd(args);
     free_cmd(cmd);
     // Exit with the parsed exit code
     exit(exit_code);
