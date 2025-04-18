@@ -25,6 +25,13 @@ void	free_cmd(t_cmd *cmd)
 			free(cmd->args[i++]); // Only if you strdup args
 		free(cmd->args);
 	}
+    if(cmd->envp)
+    {
+        i = 0;
+        while (cmd->envp[i])
+            free(cmd->envp[i++]);
+        free(cmd->envp);
+    }
 	free(cmd);
 }
 

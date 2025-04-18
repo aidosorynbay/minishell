@@ -237,6 +237,8 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	prev_fd = -1;
 	cmd = cmd_list;
 	envp = env_list_to_envp(ev->env_list);
+	if (cmd)
+		cmd->envp = envp;
 	while (cmd)
 	{
 		if (ft_strcmp(cmd->args[0], "<<") == 0)

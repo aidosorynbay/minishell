@@ -60,6 +60,7 @@ typedef struct s_cmd {
 	char			**env;
 	int				has_heredoc;
 	char 			*heredoc_path;
+	char 			**envp;
 	t_token_type	cmd_type;
 }	t_cmd;
 

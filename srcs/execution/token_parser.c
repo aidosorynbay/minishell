@@ -48,6 +48,7 @@ t_cmd	*	parse_tokens(char **tokens)
 		new_cmd->input_fd = STDIN_FILENO;
 		new_cmd->output_fd = STDOUT_FILENO;
 		new_cmd->cmd_type = TOKEN_UNKNOWN;
+		new_cmd->envp = NULL;
 		new_cmd->next = NULL;
 		arg_count = count_args(tokens, i);
 		new_cmd->args = (char **)malloc(sizeof(char *) * (arg_count + 1));
