@@ -6,7 +6,7 @@
 /*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 00:52:24 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/08 21:33:17 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/18 13:25:24 by aorynbay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	add_env_node(t_env **env_list, char *key, char *value, int has_value)
 	if (!new)
 		return ;
 	new->key = ft_strdup(key);
-	new->value = value ? ft_strdup(value) : NULL;
+	if (value)
+    	new->value = ft_strdup(value);
+	else
+		new->value = NULL;
 	new->has_value = has_value;
 	new->next = *env_list;
 	*env_list = new;
@@ -47,6 +50,7 @@ t_env_data *env_init(char **envp)
 	t_env_data *env_data;
 	int i;
 	char **splits;
+	int	j;
 
 	env_data = malloc(sizeof(t_env_data));
 	if (env_data == NULL)
@@ -72,6 +76,12 @@ t_env_data *env_init(char **envp)
 					add_env_node(&env_data->env_list, splits[0], "", 1);
 					add_env_node(&env_data->env_export_list, splits[0], "", 1);
 				}
+			}
+			j = 0;
+			while (splits[j] != NULL)
+			{
+				free(splits[j]);
+				j++;
 			}
 			free(splits);
 		}
