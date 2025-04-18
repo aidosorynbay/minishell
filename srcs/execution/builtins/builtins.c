@@ -381,7 +381,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	close(saved_stdout);
 	close(saved_stdin);
-	// free_cmd_list(cmd_list);
+	free_cmd_list(cmd_list);
 	return ;
 }
 

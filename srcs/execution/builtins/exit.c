@@ -31,7 +31,7 @@ void	free_cmd(t_cmd *cmd)
 int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
 {
     int exit_code = 0;
-    (void)(cmd); // remove
+    // (void)(cmd); // remove
 
     // Print exit message
     ft_putstr_fd("exit\n", 2);

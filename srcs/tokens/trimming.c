@@ -87,14 +87,17 @@ void	trim_quotes(t_token **tokens)
         if (!quote_loc)
             exit(EXIT_FAILURE);
 
-        // Allocate only the required memory for trimmed_value
-        char *trimmed_value = malloc(sizeof(char) * (ft_strlen(tmp->value) - 2 + 1)); // -2 for the quotes, +1 for '\0'
-        if (!trimmed_value)
-        {
-            free(quote_loc);
-            exit(EXIT_FAILURE);
-        }
-        assign_new_value(tmp, trimmed_value, quote_loc);
+		if (quote_loc[0] >= 0 && quote_loc[1] > quote_loc[0])
+		{
+			int new_len = ft_strlen(tmp->value) - 2; // length without the quotes
+			char *trimmed_value = malloc(sizeof(char) * (new_len + 1));
+			if (!trimmed_value)
+			{
+				free(quote_loc);
+				exit(EXIT_FAILURE);
+			}
+			assign_new_value(tmp, trimmed_value, quote_loc);
+		}
         free(quote_loc);
         tmp = tmp->next;
     }

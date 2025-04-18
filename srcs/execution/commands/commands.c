@@ -54,8 +54,7 @@ static char	*build_command_path(const char *dir, const char *cmd)
 
 char	*find_command_path(char *cmd, char **envp)
 {
-	int		i;
-	int		index;
+	int		i[2]; // merged i and index // i is i[0] && i[1] is index
 	char	*path;
 	char	*dir;
 	char	*full_path;
@@ -64,14 +63,14 @@ char	*find_command_path(char *cmd, char **envp)
 		return (NULL);
 	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-	i = 0;
-	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
-		i++;
-	if (!envp[i])
+	i[0] = 0;
+	while (envp[i[0]] && ft_strncmp(envp[i[0]], "PATH=", 5) != 0)
+		i[0]++;
+	if (!envp[i[0]])
 		return (NULL);
-	path = envp[i] + 5;
-	index = 0;
-	dir = get_next_path(path, &index);
+	path = envp[i[0]] + 5;
+	i[1] = 0;
+	dir = get_next_path(path, &i[1]);
 	while (dir)
 	{
 		full_path = build_command_path(dir, cmd);
@@ -81,7 +80,7 @@ char	*find_command_path(char *cmd, char **envp)
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
 		free(full_path);
-		dir = get_next_path(path, &index);
+		dir = get_next_path(path, &i[1]);
 	}
 	return (NULL);
 }
@@ -93,46 +92,40 @@ void	execute_command(t_cmd *cmd, char **environ)
     if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0] || !cmd->args_for_cmd[0][0])
     {
         fprintf(stderr, "minishell: command not found\n");
-        exit(127); // Command not found
+        exit(127);
     }
-
-    // Check if the command is an absolute or relative path
     if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./", 2) == 0)
     {
         if (access(cmd->args_for_cmd[0], F_OK) == -1)
         {
             fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args_for_cmd[0]);
-            exit(127); // Command not found
+            exit(127);
         }
         if (access(cmd->args_for_cmd[0], X_OK) == -1)
         {
             fprintf(stderr, "minishell: %s: Permission denied\n", cmd->args_for_cmd[0]);
-            exit(126); // Command found but not executable
+            exit(126);
         }
         cmd_path = ft_strdup(cmd->args_for_cmd[0]);
     }
     else
     {
-        // Search for the command in the PATH
         cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
         if (!cmd_path)
         {
             fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
-            exit(127); // Command not found
+            exit(127);
         }
     }
-
-    // Attempt to execute the command
     if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
     {
         perror("execve error");
         free(cmd_path);
         if (errno == EACCES)
-            exit(126); // Command found but not executable
+            exit(126);
         else
-            exit(127); // Command not found or other error
+            exit(127);
     }
-
     free(cmd_path);
     return;
 }

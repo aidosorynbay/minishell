@@ -17,16 +17,8 @@ int	ft_cd(char **args)
 {
 	char	*home_path;
 	char	*new_path;
-	// int i;
 
-	// i = 0;
-	// while(args[i])
-	// 	i++;
-	// if (i > 2)
-	// {
-	// 	ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
-	// 	return (1);
-	// }
+	
 	if (!args || !args[1])
 	{
 		home_path = getenv("HOME");
