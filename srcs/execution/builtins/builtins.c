@@ -92,7 +92,7 @@ static int handle_input_redirection(char *infile)
 	return(0);
 }
 
-static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
+static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 {
 	pid_t   pid;
 	int     status;
@@ -141,7 +141,7 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 				ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
 			else if (ft_strcmp(cmd->args[0], "exit") == 0)
 			{
-				ev->last_exit = ft_exit(cmd->args_for_cmd, ev, cmd);
+				ev->last_exit = ft_exit(ev, cmd, fd);
 				free_cmd_list(cmd);
 				if (ev->last_exit != 1)
 					exit(ev->last_exit);
@@ -196,7 +196,7 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 			ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
 		else if (ft_strcmp(cmd->args[0], "exit") == 0)
 		{
-			ev->last_exit = ft_exit(cmd->args_for_cmd, ev, cmd);
+			ev->last_exit = ft_exit(ev, cmd, fd);
 			if (ev->last_exit != 1)
 					exit(ev->last_exit);
 		}
@@ -217,18 +217,16 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 		ev->last_exit = 1;
 		return;
 	}
-	int		fd[2];
+	int		fd[4]; //fd[2] - saved_stdout, fd[3] - saved_stdin
 	int		prev_fd;
 	int		pid;
 	int		status;
-	int		saved_stdout;
-	int		saved_stdin;
 	t_cmd	*cmd;
 	char	**envp;
 
-	saved_stdout = dup(STDOUT_FILENO);
-	saved_stdin = dup(STDIN_FILENO);
-	if (saved_stdout == -1 || saved_stdin == -1)
+	fd[2] = dup(STDOUT_FILENO);
+	fd[3] = dup(STDIN_FILENO);
+	if (fd[2] == -1 || fd[3] == -1)
 	{
 		perror("minishell: dup error");
 		exit(EXIT_FAILURE);
@@ -375,13 +373,13 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 		else if (g_exit_code == 1)
 			ev->last_exit = g_exit_code;
 	}
-	if (dup2(saved_stdout, STDOUT_FILENO) == -1 || dup2(saved_stdin, STDIN_FILENO) == -1)
+	if (dup2(fd[2], STDOUT_FILENO) == -1 || dup2(fd[3], STDIN_FILENO) == -1)
 	{
 		perror("minishell: dup2 error");
 		exit(EXIT_FAILURE);
 	}
-	close(saved_stdout);
-	close(saved_stdin);
+	close(fd[2]);
+	close(fd[3]);
 	free_cmd_list(cmd_list);
 	return ;
 }

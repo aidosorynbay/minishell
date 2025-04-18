@@ -133,7 +133,7 @@ t_cmd *parse_tokens(char **av);
 //builtins
 void	init_execution(t_cmd *cmd_list, t_env_data *ev);
 int		ft_echo(char **args);
-int		ft_exit(char **args, t_env_data *ev, t_cmd *cmd);
+int		ft_exit(t_env_data *ev, t_cmd *cmd, int fd[4]);
 int		ft_cd(char **total_arg);
 int 	ft_env(t_env *ev);
 int		ft_pwd(void);
