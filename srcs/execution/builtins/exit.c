@@ -63,7 +63,7 @@ int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
             ft_putstr_fd(": numeric argument required\n", 2);
             free_env_data(ev);
             free_args_for_cmd(args);
-            // free_cmd_list(cmd);
+            free_cmd(cmd);
             exit(255); // Exit with code 255 for invalid numeric argument
         }
         i++;
@@ -76,14 +76,11 @@ int ft_exit(char **args, t_env_data *ev, t_cmd *cmd)
     if (args[2])
     {
         ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-        // free_env_data(ev);
-        // free_args_for_cmd(args);
-        // free_cmd_list(cmd);
         return (1); // Return 1 but do not exit the shell
     }
     free_env_data(ev);
     free_args_for_cmd(args);
-    // free_cmd_list(cmd);
+    free_cmd(cmd);
     // Exit with the parsed exit code
     exit(exit_code);
 }

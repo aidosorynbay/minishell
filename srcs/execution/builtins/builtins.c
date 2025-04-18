@@ -197,7 +197,6 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[2], int *prev_fd)
 		else if (ft_strcmp(cmd->args[0], "exit") == 0)
 		{
 			ev->last_exit = ft_exit(cmd->args_for_cmd, ev, cmd);
-			free_cmd_list(cmd);
 			if (ev->last_exit != 1)
 					exit(ev->last_exit);
 		}
