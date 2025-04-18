@@ -34,64 +34,32 @@ static int count_args_for_cmd(char **tokens)
 	}
 	return count;
 }
-
-
-int handle_redirection(char *outfile, int append)
+void	execute_builtins(t_cmd *cmd, t_env_data *ev, int fd[4])
 {
-	int fd;
-
-	if (outfile)
+	if (ft_strcmp(cmd->args[0], "echo") == 0)
+		ev->last_exit = ft_echo(cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+		ev->last_exit = ft_pwd();
+	else if (ft_strcmp(cmd->args[0], "cd") == 0)
+		ev->last_exit = ft_cd(cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "env") == 0)
+		ev->last_exit = ft_env(ev->env_list);
+	else if (ft_strcmp(cmd->args[0], "export") == 0)
+		ev->last_exit = ft_export(ev, cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "unset") == 0)
+		ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
+	else if (ft_strcmp(cmd->args[0], "exit") == 0)
 	{
-		if (append)
-			fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-			return (1);
-		if(dup2(fd, STDOUT_FILENO) == -1)
-		{
-			perror("DUP2 DUPPPED"); 
-			return(1);
-		}
-		close(fd);
+		ev->last_exit = ft_exit(ev, cmd, fd);
+		if (ev->last_exit != 1)
+			exit(ev->last_exit);
 	}
-	return(0);
-}
-int open_fds(char *outfile, int append)
-{
-	int fd;
-
-	if (outfile)
+	else
 	{
-		if (append)
-			fd = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-			return(1);
-		close(fd);
+		ev->last_exit = 1;
+		ft_putstr_fd("minishell: command not found\n", STDERR_FILENO);
 	}
-	return(0);
 }
-
-static int handle_input_redirection(char *infile)
-{
-	int fd;
-	if (infile)
-	{
-		fd = open(infile, O_RDONLY);
-		if (fd == -1)
-			return (1);
-		if (dup2(fd, STDIN_FILENO) == -1)
-		{
-			perror("Dup2 got dupped\n");
-			return(1);
-		}
-		close(fd);
-	}
-	return(0);
-}
-
 static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 {
 	pid_t   pid;
@@ -127,25 +95,7 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 				close(fd[1]);
 				close(fd[0]);
 			}
-			if (ft_strcmp(cmd->args[0], "echo") == 0)
-				ev->last_exit = ft_echo(cmd->args_for_cmd);
-			else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-				ev->last_exit = ft_pwd();
-			else if (ft_strcmp(cmd->args[0], "cd") == 0)
-				ev->last_exit = ft_cd(cmd->args_for_cmd);
-			else if (ft_strcmp(cmd->args[0], "env") == 0)
-				ev->last_exit = ft_env(ev->env_list);
-			else if (ft_strcmp(cmd->args[0], "export") == 0)
-				ev->last_exit = ft_export(ev, cmd->args_for_cmd);
-			else if (ft_strcmp(cmd->args[0], "unset") == 0)
-				ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
-			else if (ft_strcmp(cmd->args[0], "exit") == 0)
-			{
-				ev->last_exit = ft_exit(ev, cmd, fd);
-				free_cmd_list(cmd);
-				if (ev->last_exit != 1)
-					exit(ev->last_exit);
-			}
+			execute_builtins(cmd, ev, fd);
 			if (cmd->next)
 			{
 				dup2(fd[1], STDOUT_FILENO);
@@ -165,46 +115,17 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 	}
 	else
 	{
-		if (cmd->inputfile)
+		if (cmd->inputfile && handle_input_redirection(cmd->inputfile) == 1)
 		{
-			if (handle_input_redirection(cmd->inputfile) == 1)
-			{
 				perror("minishell: ");
 				return (ev->last_exit = 1);
-			}
-	
 		}
-		if (cmd->outfile)
+		if (cmd->outfile && handle_redirection(cmd->outfile, cmd->append_fd) == 1)
 		{
-			if (handle_redirection(cmd->outfile, cmd->append_fd) == 1)
-			{
-				perror("minishell: hello hi ");
+				perror("minishell: ");
 				return(ev->last_exit = 1);
-			}
 		}
-		if (ft_strcmp(cmd->args[0], "echo") == 0)
-			ev->last_exit = ft_echo(cmd->args_for_cmd);
-		else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-			ev->last_exit = ft_pwd();
-		else if (ft_strcmp(cmd->args[0], "cd") == 0)
-			ev->last_exit = ft_cd(cmd->args_for_cmd);
-		else if (ft_strcmp(cmd->args[0], "env") == 0)
-			ev->last_exit = ft_env(ev->env_list);
-		else if (ft_strcmp(cmd->args[0], "export") == 0)
-			ev->last_exit = ft_export(ev, cmd->args_for_cmd);
-		else if (ft_strcmp(cmd->args[0], "unset") == 0)
-			ev->last_exit = ft_unset(ev, cmd->args_for_cmd);
-		else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		{
-			ev->last_exit = ft_exit(ev, cmd, fd);
-			if (ev->last_exit != 1)
-					exit(ev->last_exit);
-		}
-		else
-		{
-			ev->last_exit = 1;
-			ft_putstr_fd("minishell: command not found\n", STDERR_FILENO);
-		}
+		execute_builtins(cmd, ev, fd);
 	}
 	return 0;
 }

@@ -171,4 +171,9 @@ void	free_args_for_cmd(char **args);
 void	free_cmd_list(t_cmd *cmd_list);
 void	free_tokens(char **tokens);
 
+//redirections
+int handle_input_redirection(char *infile);
+int open_fds(char *outfile, int append);
+int handle_redirection(char *outfile, int append);
+
 #endif
