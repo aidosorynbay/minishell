@@ -43,6 +43,10 @@ void free_cmd_list(t_cmd *cmd_list)
             free(temp->inputfile);
         if (temp->outfile)
             free(temp->outfile);
+        
+        // Free heredoc_path if it exists
+        if (temp->heredoc_path)
+            free(temp->heredoc_path);
 
         // Free args_for_cmd
         if (temp->args_for_cmd)

@@ -22,8 +22,12 @@ void	free_cmd(t_cmd *cmd, int fd[4])
 	{
 		i = 0;
 		while (cmd->args[i])
-			free(cmd->args[i++]); // Only if you strdup args
+        {
+			free(cmd->args[i]);
+            i++;
+        } // Only if you strdup args
 		free(cmd->args);
+        cmd->args = NULL;
 	}
     if(cmd->args_for_cmd)
         free_args_for_cmd(cmd->args_for_cmd);
@@ -34,6 +38,12 @@ void	free_cmd(t_cmd *cmd, int fd[4])
             free(cmd->envp[i++]);
         free(cmd->envp);
     }
+    if (cmd->inputfile)
+        free(cmd->inputfile);
+    if (cmd->outfile)
+        free(cmd->outfile);
+    if (cmd->heredoc_path)
+        free(cmd->heredoc_path);
     close(fd[2]);
     close(fd[3]);
 	free(cmd);

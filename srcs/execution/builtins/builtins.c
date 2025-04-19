@@ -66,6 +66,8 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 {
 	pid_t   pid;
 	int     status;
+	int		exit_code;
+	exit_code = 0;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return 1;
@@ -104,7 +106,47 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 				close(fd[1]);
 				close(fd[0]);
 			}
-			exit(ev->last_exit);
+			exit_code = ev->last_exit;
+			// free_cmd(cmd, fd);
+			if (cmd->args_for_cmd)
+			{
+				int i = 0;
+				while (cmd->args_for_cmd[i])
+				{
+					free(cmd->args_for_cmd[i]);
+					i++;
+				}
+				free(cmd->args_for_cmd);
+				cmd->args_for_cmd = NULL;
+			}
+			if (cmd->inputfile)
+				free(cmd->inputfile);
+			if (cmd->outfile)
+				free(cmd->outfile);
+			if (cmd->heredoc_path)
+				free(cmd->heredoc_path);
+			if (cmd->args)
+			{
+				int i = 0;
+				while (cmd->args[i])
+				{
+					free(cmd->args[i]);
+					i++;
+				}
+				free(cmd->args);
+				cmd->args = NULL;
+			}
+			if (cmd->envp)
+			{
+				int i = 0;
+				while (cmd->envp[i])
+					free(cmd->envp[i++]);
+				free(cmd->envp);
+			}
+			close(fd[2]);
+			close(fd[3]);
+			free_env_data(ev);
+			exit(exit_code);
 		}
 		while (waitpid(-1, &status, 0) > 0)
 		{
@@ -251,7 +293,6 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 					dup2(prev_fd, STDIN_FILENO);
 					close(prev_fd);
 				}
-
 				if (cmd->outfile)
 				{
 					if(handle_redirection(cmd->outfile, cmd->append_fd) == 1)
@@ -270,6 +311,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 				if (!ft_strcmp(cmd->args[0], ">") || !ft_strcmp(cmd->args[0], ">>") || !ft_strcmp(cmd->args[0], "<"))
 					exit(1);
 				execute_command(cmd, envp);
+				free_cmd(cmd, fd);
 			}
 			else if (pid == -1)
 			{
@@ -279,10 +321,20 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 		}
 		if (prev_fd != -1)
 			close(prev_fd);
-		if (cmd->next)
+		// close(fd[0]);
+		// close(fd[1]);
+		// close(fd[2]);
+		// close(fd[3]);
+		if (cmd && cmd->next)
 		{
 			close(fd[1]);
 			prev_fd = fd[0];
+		}
+		else if (cmd) // Add this for the last command
+		{
+			// Close both ends of the pipe if this is the last command
+			close(fd[0]);
+			close(fd[1]);
 		}
 		cmd = cmd->next;
 	}
@@ -312,6 +364,8 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 		}
 		free(envp);
 	}
-	free_cmd_list(cmd_list);
+	if (cmd)
+		free_cmd(cmd, NULL);
+	// free_env_data(ev);
 	return ;
 }

@@ -47,17 +47,14 @@ typedef struct s_token {
 }	t_token;
 
 typedef struct s_cmd {
-	char			*cmd;
 	char			**args;
 	char			**args_for_cmd;
-	int				argc;
 	struct s_cmd	*next;
 	int				input_fd;
 	int				output_fd;
 	char			*outfile;
 	char			*inputfile;
 	int				append_fd;
-	char			**env;
 	int				has_heredoc;
 	char 			*heredoc_path;
 	char 			**envp;

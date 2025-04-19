@@ -126,6 +126,8 @@ void	execute_command(t_cmd *cmd, char **environ)
         else
             exit(127);
     }
+	// free_envp(environ);
+	free_cmd(cmd, NULL);
     free(cmd_path);
     return;
 }

@@ -91,6 +91,7 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	int		start;
 	char	*copy;
 	int		status;
+	t_cmd	*cmd_list;
 
 	i = 0;
 	start = 0;
@@ -111,7 +112,11 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	}
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
-	init_execution(parse_tokens(convert_tokens_to_args(&tokens)), ev);
+	
+	cmd_list = parse_tokens(convert_tokens_to_args(&tokens));
+	init_execution(cmd_list, ev);
+	free_cmd_list(cmd_list);
+	
 	if (tokens)
 		token_clear(&tokens);
 	return (tokens);
