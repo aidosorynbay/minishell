@@ -158,5 +158,6 @@ int main(int ac, char **av, char **envp)
 		if (tokens != NULL)
 			return_tokens(tokens);
 	}
+    free_env_data(data);
 	exit(g_exit_code);
 }

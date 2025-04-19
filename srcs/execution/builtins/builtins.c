@@ -34,6 +34,7 @@ static int count_args_for_cmd(char **tokens)
 	}
 	return count;
 }
+
 void	execute_builtins(t_cmd *cmd, t_env_data *ev, int fd[4])
 {
 	if (ft_strcmp(cmd->args[0], "echo") == 0)
@@ -60,6 +61,7 @@ void	execute_builtins(t_cmd *cmd, t_env_data *ev, int fd[4])
 		ft_putstr_fd("minishell: command not found\n", STDERR_FILENO);
 	}
 }
+
 static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 {
 	pid_t   pid;
@@ -129,7 +131,6 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 	}
 	return 0;
 }
-
 
 void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 {
@@ -301,7 +302,16 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	close(fd[2]);
 	close(fd[3]);
+	if (envp)
+	{
+		int i = 0;
+		while (envp[i])
+		{
+			free(envp[i]);
+			i++;
+		}
+		free(envp);
+	}
 	free_cmd_list(cmd_list);
 	return ;
 }
-

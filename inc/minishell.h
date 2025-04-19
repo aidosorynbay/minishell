@@ -170,6 +170,7 @@ void	free_env_data(t_env_data *env_data);
 void	free_args_for_cmd(char **args);
 void	free_cmd_list(t_cmd *cmd_list);
 void	free_tokens(char **tokens);
+void	free_cmd(t_cmd *cmd, int fd[4]);
 
 //redirections
 int handle_input_redirection(char *infile);
