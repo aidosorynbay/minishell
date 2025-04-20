@@ -25,13 +25,6 @@ void free_cmd_list(t_cmd *cmd_list)
         temp = cmd_list;
         cmd_list = cmd_list->next;
 
-        // Free inputfile and outfile
-        // if (temp->inputfile)
-        //     free(temp->inputfile);
-        // if (temp->outfile)
-        //     free(temp->outfile);
-
-        // Free args_for_cmd
         if (temp->args_for_cmd)
         {
             int i = 0;
@@ -107,23 +100,30 @@ void	free_env_data(t_env_data *env_data)
 
 void free_cmd_data(t_cmd *cmd, t_env_data *ev)
 {
+    t_cmd *temp;
     if (!cmd)
         return;
-    if (cmd->envp)
+    while (cmd)
     {
-        free_args(cmd->envp);
-        cmd->envp = NULL;
+        temp = cmd;
+        cmd = cmd->next;
+        if (temp->envp)
+        {
+            free_args(temp->envp);
+            temp->envp = NULL;
+        }
+        free(temp->inputfile);
+        temp->inputfile = NULL;
+        free(temp->outfile);
+        temp->outfile = NULL;
+        free(temp->heredoc_path);
+        temp->heredoc_path = NULL;
+        free_args(temp->args_for_cmd);
+        temp->args_for_cmd = NULL;
+        free_args(temp->args);
+        temp->args = NULL;
+        free(temp);
     }
-    free(cmd->inputfile);
-    cmd->inputfile = NULL;
-    free(cmd->outfile);
-    cmd->outfile = NULL;
-    free(cmd->heredoc_path);
-    cmd->heredoc_path = NULL;
-    free_args(cmd->args_for_cmd);
-    cmd->args_for_cmd = NULL;
-    free_args(cmd->args);
-    cmd->args = NULL;
     if (ev)
     {
         free_env_data(ev);

@@ -197,6 +197,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 				{
 					fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args[i + 1]);
 					ev->last_exit = 1;
+					free_cmd_data(cmd, ev);
 					return ;
 				}
 				cmd->inputfile = ft_strdup(cmd->args[i + 1]);
@@ -245,6 +246,8 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 					if(handle_input_redirection(cmd->inputfile) == 1)
 					{
 						perror("minishell: hello bye ");
+						free_cmd_data(cmd, ev);
+						// free(cmd);
 						exit(1);
 					}
 				}
@@ -253,16 +256,22 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 					dup2(prev_fd, STDIN_FILENO);
 					close(prev_fd);
 				}
-
-				if (cmd->outfile)
+				if (cmd->outfile && handle_redirection(cmd->outfile, cmd->append_fd) == 1)
 				{
-					if(handle_redirection(cmd->outfile, cmd->append_fd) == 1)
-					{
-						perror("minishell: bye");
-						ev->last_exit = 1;
-						exit(ev->last_exit);
-					}
+					perror("minishell: hello bye ");
+					free_cmd_data(cmd, ev);
+					free(cmd->inputfile);
+					cmd->inputfile = NULL;
+					free(cmd->outfile);
+					cmd->outfile = NULL;
+					// free(cmd);
+					exit(1);
 				}
+				// {
+				// 	perror("minishell: bye");
+				// 	ev->last_exit = 1;
+				// 	exit(ev->last_exit);
+				// }
 				else if (cmd->next)
 				{
 					dup2(fd[1], STDOUT_FILENO);
@@ -315,5 +324,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 		free(envp);
 	}
 	free_cmd_list(cmd_list);
+	// free_cmd_data(cmd, ev);
+	// free(cmd);
 	return ;
 }

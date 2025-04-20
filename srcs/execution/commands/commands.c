@@ -101,7 +101,7 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
         fprintf(stderr, "minishell: command not found\n");
 		free_args(environ);
 		free_cmd_data(cmd, ev);
-		free(cmd);
+		// free(cmd);
         exit(127);
     }
     if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./", 2) == 0)
@@ -111,7 +111,7 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
             fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args_for_cmd[0]);
 			free_args(environ);
 			free_cmd_data(cmd, ev);
-			free(cmd);
+			// free(cmd);
             exit(127);
         }
         if (access(cmd->args_for_cmd[0], X_OK) == -1)
@@ -119,7 +119,7 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 			fprintf(stderr, "minishell: %s: Permission denied\n", cmd->args_for_cmd[0]);
 			free_args(environ);
 			free_cmd_data(cmd, ev);
-			free(cmd);
+			// free(cmd);
             exit(126);
         }
         cmd_path = ft_strdup(cmd->args_for_cmd[0]);
@@ -132,7 +132,7 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
             fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
 			free_args(environ);
 			free_cmd_data(cmd, ev);
-			free(cmd);
+			// free(cmd);
             exit(127);
         }
     }
@@ -141,7 +141,7 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 	{
 		fprintf(stderr, "minishell: %s: Is a directory\n", cmd_path);
 		free_cmd_data(cmd, ev);
-		free(cmd);
+		// free(cmd);
 		free(cmd_path);
 		exit(126);
 	}
