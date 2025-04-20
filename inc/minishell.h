@@ -164,10 +164,11 @@ int create_heredoc(char *limiter, char **heredoc_path);
 
 void	free_env_list(t_env *env_list);
 void	free_env_data(t_env_data *env_data);
-void	free_args_for_cmd(char **args);
+void	free_args(char **args);
 void	free_cmd_list(t_cmd *cmd_list);
 void	free_tokens(char **tokens);
 void	free_cmd(t_cmd *cmd, int fd[4]);
+void free_cmd_data(t_cmd *cmd, t_env_data *ev);
 
 //redirections
 int handle_input_redirection(char *infile);

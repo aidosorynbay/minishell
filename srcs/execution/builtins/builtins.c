@@ -104,16 +104,8 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 				close(fd[1]);
 				close(fd[0]);
 			}
-			// free_args_for_cmd(environ);
 			int last_exit = ev->last_exit;
-			free_args_for_cmd(cmd->args_for_cmd);
-			free_args_for_cmd(cmd->args);
-			free_args_for_cmd(cmd->envp);
-			free_env_data(ev);
-			ev = NULL;
-			// free_cmd_list(cmd);
-			// free(cmd);
-			// if (cmd)
+			free_cmd_data(cmd, ev);
 			exit(last_exit);
 		}
 		while (waitpid(-1, &status, 0) > 0)

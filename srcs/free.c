@@ -60,7 +60,7 @@ void free_cmd_list(t_cmd *cmd_list)
     }
 }
 
-void free_args_for_cmd(char **args)
+void free_args(char **args)
 {
     int i = 0;
 
@@ -96,7 +96,7 @@ void	free_env_list(t_env *env_list)
 void	free_env_data(t_env_data *env_data)
 {
     if (!env_data)
-        return;
+    return;
     free_env_list(env_data->env_list);
     env_data->env_list = NULL;
     free_env_list(env_data->env_export_list);
@@ -104,6 +104,33 @@ void	free_env_data(t_env_data *env_data)
     free(env_data);
     env_data = NULL;
 }
+
+void free_cmd_data(t_cmd *cmd, t_env_data *ev)
+{
+    if (!cmd)
+        return;
+    if (cmd->envp)
+    {
+        free_args(cmd->envp);
+        cmd->envp = NULL;
+    }
+    free(cmd->inputfile);
+    cmd->inputfile = NULL;
+    free(cmd->outfile);
+    cmd->outfile = NULL;
+    free(cmd->heredoc_path);
+    cmd->heredoc_path = NULL;
+    free_args(cmd->args_for_cmd);
+    cmd->args_for_cmd = NULL;
+    free_args(cmd->args);
+    cmd->args = NULL;
+    if (ev)
+    {
+        free_env_data(ev);
+        ev = NULL;
+    }
+}
+
 void	free_cmd(t_cmd *cmd, int fd[4])
 {
 	int	i;
@@ -118,7 +145,7 @@ void	free_cmd(t_cmd *cmd, int fd[4])
 		free(cmd->args);
 	}
     if(cmd->args_for_cmd)
-        free_args_for_cmd(cmd->args_for_cmd);
+        free_args(cmd->args_for_cmd);
     if(cmd->envp)
     {
         i = 0;

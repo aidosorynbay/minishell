@@ -62,8 +62,6 @@ char	*find_command_path(char *cmd, char **envp)
 
 	if (!cmd || !envp)
 		return (NULL);
-
-	// If command contains a slash, it's a path - don't search PATH
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) == 0)
@@ -71,17 +69,14 @@ char	*find_command_path(char *cmd, char **envp)
 		else
 			return (NULL);
 	}
-
 	i[0] = 0;
 	while (envp[i[0]] && ft_strncmp(envp[i[0]], "PATH=", 5) != 0)
 		i[0]++;
 	if (!envp[i[0]])
 		return (NULL);
-
 	path = envp[i[0]] + 5;
 	i[1] = 0;
 	dir = get_next_path(path, &i[1]);
-
 	while (dir)
 	{
 		full_path = build_command_path(dir, cmd);
@@ -104,6 +99,9 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
     if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0] || !cmd->args_for_cmd[0][0])
     {
         fprintf(stderr, "minishell: command not found\n");
+		free_args(environ);
+		free_cmd_data(cmd, ev);
+		free(cmd);
         exit(127);
     }
     if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./", 2) == 0)
@@ -111,26 +109,16 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
         if (access(cmd->args_for_cmd[0], F_OK) == -1)
         {
             fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args_for_cmd[0]);
-			free_args_for_cmd(environ);
-			free_args_for_cmd(cmd->args_for_cmd);
-			cmd->args_for_cmd = NULL;
-			free_args_for_cmd(cmd->args);
-			cmd->args = NULL;
-			free_env_data(ev);
-			ev = NULL;
+			free_args(environ);
+			free_cmd_data(cmd, ev);
 			free(cmd);
             exit(127);
         }
         if (access(cmd->args_for_cmd[0], X_OK) == -1)
         {
 			fprintf(stderr, "minishell: %s: Permission denied\n", cmd->args_for_cmd[0]);
-			free_args_for_cmd(environ);
-			free_args_for_cmd(cmd->args_for_cmd);
-			cmd->args_for_cmd = NULL;
-			free_args_for_cmd(cmd->args);
-			cmd->args = NULL;
-			free_env_data(ev);
-			ev = NULL;
+			free_args(environ);
+			free_cmd_data(cmd, ev);
 			free(cmd);
             exit(126);
         }
@@ -142,14 +130,9 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
         if (!cmd_path)
         {
             fprintf(stderr, "minishell: %s: command not found\n", cmd->args_for_cmd[0]);
-			free_args_for_cmd(environ);
-			free_args_for_cmd(cmd->args_for_cmd);
-			cmd->args_for_cmd = NULL;
-			free_args_for_cmd(cmd->args);
-			cmd->args = NULL;
-			free_env_data(ev);
-			ev = NULL;
-			// free(cmd);
+			free_args(environ);
+			free_cmd_data(cmd, ev);
+			free(cmd);
             exit(127);
         }
     }
@@ -157,16 +140,8 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 	if (!stat(cmd_path, &st) && S_ISDIR(st.st_mode))
 	{
 		fprintf(stderr, "minishell: %s: Is a directory\n", cmd_path);
-		free_args_for_cmd(environ);
-		free_args_for_cmd(cmd->args_for_cmd);
-		cmd->args_for_cmd = NULL;
-		free_args_for_cmd(cmd->args);
-		cmd->args = NULL;
-		free_env_data(ev);
-		ev = NULL;
+		free_cmd_data(cmd, ev);
 		free(cmd);
-		// free_cmd_list(cmd);
-		// free_args_for_cmd(cmd->envp);
 		free(cmd_path);
 		exit(126);
 	}
