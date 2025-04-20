@@ -47,21 +47,18 @@ typedef struct s_token {
 }	t_token;
 
 typedef struct s_cmd {
-	char			*cmd;
 	char			**args;
 	char			**args_for_cmd;
-	int				argc;
-	struct s_cmd	*next;
 	int				input_fd;
 	int				output_fd;
 	char			*outfile;
 	char			*inputfile;
 	int				append_fd;
-	char			**env;
 	int				has_heredoc;
 	char 			*heredoc_path;
 	char 			**envp;
 	t_token_type	cmd_type;
+	struct s_cmd	*next;
 }	t_cmd;
 
 //env
@@ -141,7 +138,7 @@ int		ft_export(t_env_data *env_list, char **args);
 int		ft_unset(t_env_data *env_list, char **args);
 
 // commands
-void	execute_command(t_cmd *cmd, char **environ);
+void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev);
 void    ft_strcpy(char *dst, const char *src);
 void	ft_strncpy(char *dst, const char *src, size_t len);
 void	ft_strcat(char *dst, const char *src);

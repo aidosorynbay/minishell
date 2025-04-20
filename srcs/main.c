@@ -27,6 +27,7 @@ void	free_tokens(char **tokens)
         i++;
     }
     free(tokens);
+    tokens = NULL;
 }
 
 void free_cmd_list(t_cmd *cmd_list)
@@ -39,10 +40,10 @@ void free_cmd_list(t_cmd *cmd_list)
         cmd_list = cmd_list->next;
 
         // Free inputfile and outfile
-        if (temp->inputfile)
-            free(temp->inputfile);
-        if (temp->outfile)
-            free(temp->outfile);
+        // if (temp->inputfile)
+        //     free(temp->inputfile);
+        // if (temp->outfile)
+        //     free(temp->outfile);
 
         // Free args_for_cmd
         if (temp->args_for_cmd)
@@ -86,6 +87,7 @@ void free_args_for_cmd(char **args)
         i++;
     }
     free(args);
+    args = NULL;
 }
 
 void	free_env_list(t_env *env_list)
@@ -97,8 +99,11 @@ void	free_env_list(t_env *env_list)
 		temp = env_list;
 		env_list = env_list->next;
 		free(temp->key);
+        temp->key = NULL;
 		free(temp->value);
+        temp->value = NULL;
 		free(temp);
+        temp = NULL;
 	}
 }
 
@@ -107,8 +112,11 @@ void	free_env_data(t_env_data *env_data)
     if (!env_data)
         return;
     free_env_list(env_data->env_list);
+    env_data->env_list = NULL;
     free_env_list(env_data->env_export_list);
+    env_data->env_export_list = NULL;
     free(env_data);
+    env_data = NULL;
 }
 
 
@@ -155,6 +163,7 @@ int main(int ac, char **av, char **envp)
 			add_history(input);
 		tokens = tokenize_input(input, data);
 		free(input);
+        input = NULL;
 		if (tokens != NULL)
 			return_tokens(tokens);
 	}

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <sys/stat.h>
 
 // extern char	**environ;
 
@@ -54,23 +55,33 @@ static char	*build_command_path(const char *dir, const char *cmd)
 
 char	*find_command_path(char *cmd, char **envp)
 {
-	int		i[2]; // merged i and index // i is i[0] && i[1] is index
+	int		i[2];
 	char	*path;
 	char	*dir;
 	char	*full_path;
 
 	if (!cmd || !envp)
 		return (NULL);
-	if (access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
+
+	// If command contains a slash, it's a path - don't search PATH
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return (ft_strdup(cmd));
+		else
+			return (NULL);
+	}
+
 	i[0] = 0;
 	while (envp[i[0]] && ft_strncmp(envp[i[0]], "PATH=", 5) != 0)
 		i[0]++;
 	if (!envp[i[0]])
 		return (NULL);
+
 	path = envp[i[0]] + 5;
 	i[1] = 0;
 	dir = get_next_path(path, &i[1]);
+
 	while (dir)
 	{
 		full_path = build_command_path(dir, cmd);
@@ -85,7 +96,8 @@ char	*find_command_path(char *cmd, char **envp)
 	return (NULL);
 }
 
-void	execute_command(t_cmd *cmd, char **environ)
+
+void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 {
     char	*cmd_path;
 
@@ -117,6 +129,23 @@ void	execute_command(t_cmd *cmd, char **environ)
             exit(127);
         }
     }
+	struct stat st;
+	if (!stat(cmd_path, &st) && S_ISDIR(st.st_mode))
+	{
+		fprintf(stderr, "minishell: %s: Is a directory\n", cmd_path);
+		free_args_for_cmd(environ);
+		free_args_for_cmd(cmd->args_for_cmd);
+		cmd->args_for_cmd = NULL;
+		free_args_for_cmd(cmd->args);
+		cmd->args = NULL;
+		free_env_data(ev);
+		ev = NULL;
+		free(cmd);
+		// free_cmd_list(cmd);
+		// free_args_for_cmd(cmd->envp);
+		free(cmd_path);
+		exit(126);
+	}
     if (execve(cmd_path, cmd->args_for_cmd, environ) == -1)
     {
         perror("execve error");
