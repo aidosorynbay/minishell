@@ -107,10 +107,8 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 			// free_args_for_cmd(environ);
 			int last_exit = ev->last_exit;
 			free_args_for_cmd(cmd->args_for_cmd);
-			// cmd->args_for_cmd = NULL;
 			free_args_for_cmd(cmd->args);
 			free_args_for_cmd(cmd->envp);
-			// cmd->args = NULL;
 			free_env_data(ev);
 			ev = NULL;
 			// free_cmd_list(cmd);

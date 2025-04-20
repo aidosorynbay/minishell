@@ -19,6 +19,7 @@ ENVIRONMENT_DIR  = $(EXECUTION_DIR)/environment
 # Files and output
 NAME        = minishell
 SRCS        = $(SRCS_DIR)/main.c \
+				$(SRCS_DIR)/free.c \
               $(TOKENS_DIR)/tokenization.c \
               $(TOKENS_DIR)/token_utils.c \
               $(TOKENS_DIR)/syntax_check.c \
