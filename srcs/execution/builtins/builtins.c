@@ -197,7 +197,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 				{
 					fprintf(stderr, "minishell: %s: No such file or directory\n", cmd->args[i + 1]);
 					ev->last_exit = 1;
-					free_cmd_data(cmd, ev);
+					// free_cmd_data(cmd, ev);
 					return ;
 				}
 				cmd->inputfile = ft_strdup(cmd->args[i + 1]);
@@ -313,16 +313,16 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	close(fd[2]);
 	close(fd[3]);
-	if (envp)
-	{
-		int i = 0;
-		while (envp[i])
-		{
-			free(envp[i]);
-			i++;
-		}
-		free(envp);
-	}
+	// if (envp)
+	// {
+	// 	int i = 0;
+	// 	while (envp[i])
+	// 	{
+	// 		free(envp[i]);
+	// 		i++;
+	// 	}
+	// 	free(envp);
+	// }
 	free_cmd_list(cmd_list);
 	// free_cmd_data(cmd, ev);
 	// free(cmd);
