@@ -2,71 +2,70 @@
 
 void	free_tokens(char **tokens)
 {
-    int i = 0;
+	int i = 0;
 
-    if (!tokens)
-        return;
+	if (!tokens)
+		return;
 
-    while (tokens[i])
-    {
-        free(tokens[i]);
-        i++;
-    }
-    free(tokens);
-    tokens = NULL;
+	while (tokens[i])
+	{
+		free(tokens[i]);
+		i++;
+	}
+	free(tokens);
+	tokens = NULL;
 }
 
 void free_cmd_list(t_cmd *cmd_list)
 {
-    t_cmd *temp;
+	t_cmd *temp;
 
-    while (cmd_list)
-    {
-        temp = cmd_list;
-        cmd_list = cmd_list->next;
+	while (cmd_list)
+	{
+		temp = cmd_list;
+		cmd_list = cmd_list->next;
 
-        if (temp->args_for_cmd)
-        {
-            int i = 0;
-            while (temp->args_for_cmd[i])
-            {
-                free(temp->args_for_cmd[i]);
-                i++;
-            }
-            free(temp->args_for_cmd);
-        }
+		if (temp->args_for_cmd)
+		{
+			int i = 0;
+			while (temp->args_for_cmd[i])
+			{
+				free(temp->args_for_cmd[i]);
+				i++;
+			}
+			free(temp->args_for_cmd);
+		}
 
-        // Free args
-        if (temp->args)
-        {
-            int i = 0;
-            while (temp->args[i])
-            {
-                free(temp->args[i]);
-                i++;
-            }
-            free(temp->args);
-        }
-
-        // Free the command node itself
-        free(temp);
-    }
+		// Free args
+		if (temp->args)
+		{
+			int i = 0;
+			while (temp->args[i])
+			{
+				free(temp->args[i]);
+				i++;
+			}
+			free(temp->args);
+		}
+		// Free the command node itself
+		free(temp);
+	}
 }
 
 void free_args(char **args)
 {
-    int i = 0;
+	int i = 0;
 
-    if (!args)
-        return;
+	if (!args)
+		return;
 
-    while (args[i])
-    {
-        free(args[i]);
-        i++;
-    }
-    free(args);
-    args = NULL;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+	args = NULL;
 }
 
 void	free_env_list(t_env *env_list)
@@ -78,57 +77,57 @@ void	free_env_list(t_env *env_list)
 		temp = env_list;
 		env_list = env_list->next;
 		free(temp->key);
-        temp->key = NULL;
+		temp->key = NULL;
 		free(temp->value);
-        temp->value = NULL;
+		temp->value = NULL;
 		free(temp);
-        temp = NULL;
+		temp = NULL;
 	}
 }
 
 void	free_env_data(t_env_data *env_data)
 {
-    if (!env_data)
-    return;
-    free_env_list(env_data->env_list);
-    env_data->env_list = NULL;
-    free_env_list(env_data->env_export_list);
-    env_data->env_export_list = NULL;
-    free(env_data);
-    env_data = NULL;
+	if (!env_data)
+	return;
+	free_env_list(env_data->env_list);
+	env_data->env_list = NULL;
+	free_env_list(env_data->env_export_list);
+	env_data->env_export_list = NULL;
+	free(env_data);
+	env_data = NULL;
 }
 
 void free_cmd_data(t_cmd *cmd, t_env_data *ev)
 {
-    t_cmd *temp;
-    if (!cmd)
-        return;
-    while (cmd)
-    {
-        temp = cmd;
-        cmd = cmd->next;
-        if (temp->envp)
-        {
-            free_args(temp->envp);
-            temp->envp = NULL;
-        }
-        free(temp->inputfile);
-        temp->inputfile = NULL;
-        free(temp->outfile);
-        temp->outfile = NULL;
-        free(temp->heredoc_path);
-        temp->heredoc_path = NULL;
-        free_args(temp->args_for_cmd);
-        temp->args_for_cmd = NULL;
-        free_args(temp->args);
-        temp->args = NULL;
-        free(temp);
-    }
-    if (ev)
-    {
-        free_env_data(ev);
-        ev = NULL;
-    }
+	t_cmd *temp;
+	if (!cmd)
+		return;
+	while (cmd)
+	{
+		temp = cmd;
+		if (temp->envp)
+		{
+			free_args(temp->envp);
+			temp->envp = NULL;
+		}
+		free(temp->inputfile);
+		temp->inputfile = NULL;
+		free(temp->outfile);
+		temp->outfile = NULL;
+		free(temp->heredoc_path);
+		temp->heredoc_path = NULL;
+		free_args(temp->args_for_cmd);
+		temp->args_for_cmd = NULL;
+		free_args(temp->args);
+		temp->args = NULL;
+		cmd = cmd->next;
+		free(temp);
+	}
+	if (ev)
+	{
+		free_env_data(ev);
+		ev = NULL;
+	}
 }
 
 void	free_cmd(t_cmd *cmd, int fd[4])
@@ -144,16 +143,16 @@ void	free_cmd(t_cmd *cmd, int fd[4])
 			free(cmd->args[i++]); // Only if you strdup args
 		free(cmd->args);
 	}
-    if(cmd->args_for_cmd)
-        free_args(cmd->args_for_cmd);
-    if(cmd->envp)
-    {
-        i = 0;
-        while (cmd->envp[i])
-            free(cmd->envp[i++]);
-        free(cmd->envp);
-    }
-    close(fd[2]);
-    close(fd[3]);
+	if(cmd->args_for_cmd)
+		free_args(cmd->args_for_cmd);
+	if(cmd->envp)
+	{
+		i = 0;
+		while (cmd->envp[i])
+			free(cmd->envp[i++]);
+		free(cmd->envp);
+	}
+	close(fd[2]);
+	close(fd[3]);
 	free(cmd);
 }

@@ -247,7 +247,6 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 					{
 						perror("minishell: hello bye ");
 						free_cmd_data(cmd, ev);
-						// free(cmd);
 						exit(1);
 					}
 				}
@@ -264,23 +263,39 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 					cmd->inputfile = NULL;
 					free(cmd->outfile);
 					cmd->outfile = NULL;
-					// free(cmd);
 					exit(1);
 				}
-				// {
-				// 	perror("minishell: bye");
-				// 	ev->last_exit = 1;
-				// 	exit(ev->last_exit);
-				// }
 				else if (cmd->next)
 				{
 					dup2(fd[1], STDOUT_FILENO);
 					close(fd[1]);
 					close(fd[0]);
 				}
-				if (!ft_strcmp(cmd->args[0], ">") || !ft_strcmp(cmd->args[0], ">>") || !ft_strcmp(cmd->args[0], "<"))
-					exit(1);
+				// Close saved stdout/stdin in child - the child doesn't need these
+				close(fd[2]);
+				close(fd[3]);
+
+				// Close prev_fd after using it
+				if (prev_fd != -1)
+				{
+					close(prev_fd);
+				}
+
+				// If you have a pipe and you're redirecting output
+				if (cmd->next && !cmd->outfile)
+				{
+					close(fd[1]);
+					close(fd[0]);
+				}
+				else if (cmd->next)
+				{
+					close(fd[0]);
+					close(fd[1]);
+				}
+
+				// Execute command and exit
 				execute_command(cmd, envp, ev);
+				exit(EXIT_FAILURE);
 			}
 			else if (pid == -1)
 			{
@@ -313,18 +328,16 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	}
 	close(fd[2]);
 	close(fd[3]);
-	// if (envp)
-	// {
-	// 	int i = 0;
-	// 	while (envp[i])
-	// 	{
-	// 		free(envp[i]);
-	// 		i++;
-	// 	}
-	// 	free(envp);
-	// }
+	if (envp)
+	{
+		int j = 0;
+		while (envp[j])
+		{
+			free(envp[j]);
+			j++;
+		}
+		free(envp);
+	}
 	free_cmd_list(cmd_list);
-	// free_cmd_data(cmd, ev);
-	// free(cmd);
 	return ;
 }
