@@ -98,12 +98,20 @@ static int handle_builtin(t_cmd *cmd, t_env_data *ev, int fd[4], int *prev_fd)
 				close(fd[0]);
 			}
 			execute_builtins(cmd, ev, fd);
-			if (cmd->next)
-			{
-				dup2(fd[1], STDOUT_FILENO);
-				close(fd[1]);
-				close(fd[0]);
-			}
+
+			// Close ALL file descriptors before exiting
+			if (*prev_fd != -1)
+				close(*prev_fd);
+				
+			// Close pipe file descriptors
+			close(fd[0]);
+			close(fd[1]);
+			
+			// Close saved standard streams
+			close(fd[2]);
+			close(fd[3]);
+			
+			// Exit with the appropriate status
 			int last_exit = ev->last_exit;
 			free_cmd_data(cmd, ev);
 			exit(last_exit);
