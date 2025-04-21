@@ -6,7 +6,7 @@
 /*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:47:28 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/21 19:13:01 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:22:24 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	free_exit(char *cmd_path, t_env_data *ev, t_cmd *cmd)
 {
-	fprintf(stderr, "minishell: %s: Is a directory\n", cmd_path);
+	ft_putstr_fd("minishell:", 2);
+	ft_putstr_fd(cmd_path, 2);
+	ft_putstr_fd(": Is a directory\n", 2);
 	free_cmd_data(cmd, ev);
 	free(cmd_path);
 	exit(126);
