@@ -9,11 +9,10 @@
 # include <string.h>
 # include <fcntl.h>
 # include <unistd.h>
-#	include <sys/types.h>
-#include <string.h>
+# include <sys/types.h>
+# include <string.h>
 # include <sys/wait.h>
 # include <errno.h> // can we have this????
-
 # include <signal.h>
 
 extern int	g_exit_code;
@@ -49,6 +48,7 @@ typedef struct s_token {
 typedef struct s_cmd {
 	char			**args;
 	char			**args_for_cmd;
+	int				count_cmd;
 	int				input_fd;
 	int				output_fd;
 	char			*outfile;
@@ -60,8 +60,6 @@ typedef struct s_cmd {
 	t_token_type	cmd_type;
 	struct s_cmd	*next;
 }	t_cmd;
-
-//env
 
 typedef struct s_env
 {
@@ -75,7 +73,6 @@ typedef struct s_env_data
 {
 	t_env   *env_list;	// Env linked list
 	t_env	*env_export_list; // for export
-	// char	**envp;
 	int     last_exit; // Store last exit status ($?)
 }   t_env_data;
 
@@ -83,12 +80,14 @@ typedef struct s_env_data
 t_token	*tokenize_input(char *input, t_env_data *ev);
 void	tokenization(t_token **tokens, char *input, int i, int start);
 void	create_token(t_token *curr, char *str, int len);
+
 // token_utils
 void	token_add_back(t_token **lst, t_token *new);
 char	*two_char_op(char *str, int i);
 void	token_clear(t_token **tokens);
 void	single_operator(int *start, char *copy, int *i, t_token **tokens);
 void	double_operator(int *start, char *copy, int *i, t_token **tokens);
+
 // more_utils
 void	quote_error(t_quote_status quote, t_token **tokens);
 void	assign_quote(char *copy, int *i, t_quote_status *quote);
@@ -96,12 +95,12 @@ void	create_and_add_token(t_token **tokens, char *copy, int start, int end);
 
 // syntax_check
 int 	check_syntax(t_token **tokens);
+
 // syntax_check_utils
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
 int		check_lesser(t_token *tmp, t_token **tokens);
 int		check_redirection(t_token *tmp, t_token **tokens);
-// int		checker_pipe(t_token *tmp, t_token **tokens);
 int		error_syntaxcheck(t_token **tokens);
 
 // assign type
@@ -117,15 +116,16 @@ void	handle_comman_file(t_token *tmp, t_token **tokens, int *expect_file, int *e
 void	trim_quotes(t_token **tokens);
 
 //converter
-char **convert_tokens_to_args(t_token **tokens);
-
+char	**convert_tokens_to_args(t_token **tokens);
 
 //utils
-void    clear_screen(void);
-int    check_file_existence(t_token **tokens);
+void	clear_screen(void);
+int		check_file_existence(t_token **tokens);
 
 //execution
-t_cmd *parse_tokens(char **av);
+t_cmd	*parse_tokens(char **av);
+void	allocate_args_for_cmd(t_cmd *cmd);
+int		count_args_for_cmd(char **tokens);
 
 //builtins
 void	init_execution(t_cmd *cmd_list, t_env_data *ev);
@@ -156,18 +156,14 @@ char		*expand_variable(char *str, t_env_data *env_data);
 char		*ft_strjoin_chr(char *s, char c);
 
 // expand_utils
-
 char	*strjoin_char_and_free(char *s, char c);
 char	*strjoin_and_free(char *s1, char *s2);
 char	*get_value(t_env *env_list, char *key);
 
-
 //heredoc.c
 void handle_heredoc(char *heredoc_path);
 int process_all_heredocs(t_cmd *cmd_list);
-// char *ft_heredoc(char *limiter);
 int create_heredoc(char *limiter, char **heredoc_path);
-
 
 void	free_env_list(t_env *env_list);
 void	free_env_data(t_env_data *env_data);

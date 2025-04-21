@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-int handle_redirection(char *outfile, int append)
+int	handle_redirection(char *outfile, int append)
 {
-	int fd;
+	int	fd;
 
 	if (outfile)
 	{
@@ -12,18 +12,19 @@ int handle_redirection(char *outfile, int append)
 			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
 			return (1);
-		if(dup2(fd, STDOUT_FILENO) == -1)
+		if (dup2(fd, STDOUT_FILENO) == -1)
 		{
-			perror("DUP2 DUPPPED"); 
-			return(1);
+			perror("DUP2 DUPPPED");
+			return (1);
 		}
 		close(fd);
 	}
-	return(0);
+	return (0);
 }
-int open_fds(char *outfile, int append)
+
+int	open_fds(char *outfile, int append)
 {
-	int fd;
+	int	fd;
 
 	if (outfile)
 	{
@@ -32,15 +33,16 @@ int open_fds(char *outfile, int append)
 		else
 			fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
-			return(1);
+			return (1);
 		close(fd);
 	}
-	return(0);
+	return (0);
 }
 
-int handle_input_redirection(char *infile)
+int	handle_input_redirection(char *infile)
 {
-	int fd;
+	int	fd;
+
 	if (infile)
 	{
 		fd = open(infile, O_RDONLY);
@@ -49,9 +51,9 @@ int handle_input_redirection(char *infile)
 		if (dup2(fd, STDIN_FILENO) == -1)
 		{
 			perror("Dup2 got dupped\n");
-			return(1);
+			return (1);
 		}
 		close(fd);
 	}
-	return(0);
+	return (0);
 }

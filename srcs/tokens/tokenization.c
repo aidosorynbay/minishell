@@ -49,24 +49,22 @@ void	tokenization(t_token **tokens, char *copy, int i, int start)
 t_token	*tokenize_input(char *input, t_env_data *ev)
 {
 	t_token	*tokens;
-	int		i;
-	int		start;
 	char	*copy;
-	int		status;
+	int		i[3];
 
-	i = 0;
-	start = 0;
+	i[0] = 0;
+	i[1] = 0;
 	tokens = NULL;
-	status = 0;
+	i[2] = 0;
 	copy = ft_strdup(input);
-	tokenization(&tokens, copy, i, start);
+	tokenization(&tokens, copy, i[0], i[1]);
 	free(copy);
 	expand_variables(&tokens, ev);
 	trim_quotes(&tokens);
-	status = check_syntax(&tokens);
-	if (status != 0)
+	i[2] = check_syntax(&tokens);
+	if (i[2] != 0)
 	{
-		ev->last_exit = status;
+		ev->last_exit = i[2];
 		if (tokens)
 			token_clear(&tokens);
 		return (NULL);
@@ -74,7 +72,5 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
 	init_execution(parse_tokens(convert_tokens_to_args(&tokens)), ev);
-	if (tokens)
-		token_clear(&tokens);
 	return (tokens);
 }

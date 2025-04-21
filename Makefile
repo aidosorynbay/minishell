@@ -19,7 +19,8 @@ ENVIRONMENT_DIR  = $(EXECUTION_DIR)/environment
 # Files and output
 NAME        = minishell
 SRCS        = $(SRCS_DIR)/main.c \
-				$(SRCS_DIR)/free.c \
+			  $(SRCS_DIR)/free.c \
+			  $(SRCS_DIR)/free_utils.c \
               $(TOKENS_DIR)/tokenization.c \
               $(TOKENS_DIR)/token_utils.c \
               $(TOKENS_DIR)/syntax_check.c \
@@ -34,6 +35,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(COMMANDS_DIR)/commands_utils.c \
 		  $(COMMANDS_DIR)/commands_utils_2.c \
 		  $(BUILTINS_DIR)/builtins.c \
+		  $(BUILTINS_DIR)/builtins_utils.c \
 		  $(BUILTINS_DIR)/cd.c \
 		  $(BUILTINS_DIR)/echo.c \
 		  $(BUILTINS_DIR)/pwd.c \

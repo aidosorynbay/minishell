@@ -45,6 +45,7 @@ int	is_valid_identifier(const char *str)
 int	ft_export(t_env_data *env_list, char **args)
 {
 	int		i;
+	int		j;
 	char	**split;
 	t_env	*tmp;
 	int		exit_code;
@@ -103,7 +104,7 @@ int	ft_export(t_env_data *env_list, char **args)
 			if (!get_env_value(env_list->env_export_list, split[0]))
 				add_env_node(&env_list->env_export_list, split[0], NULL, 0);
 		}
-		int j = 0;
+		j = 0;
 		while (split && split[j])
 		{
 			free(split[j]);

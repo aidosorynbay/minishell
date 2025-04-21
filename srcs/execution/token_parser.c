@@ -39,6 +39,7 @@ static void	initialize_cmd(t_cmd *new_cmd)
 	new_cmd->append_fd = 0;
 	new_cmd->has_heredoc = 0;
 	new_cmd->heredoc_path = NULL;
+	new_cmd->count_cmd = 0;
 }
 
 static void	assign_new_cmd_type(t_cmd *new_cmd)

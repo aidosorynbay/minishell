@@ -12,21 +12,21 @@
 
 #include "minishell.h"
 
-int ft_pwd(void)
+int	ft_pwd(void)
 {
-    char *cwd;
-    int alloc;
+	char	*cwd;
+	int		alloc;
 
-    alloc = 1;
-    cwd = getcwd(NULL, 0);
-    if (!cwd)
-    {
-        cwd = getenv("PWD");
-        alloc = 0;
-    }
-    if (cwd)
-        ft_putendl_fd(cwd, 1);
-    if (alloc)  
-        free(cwd);
-    return (0);
+	alloc = 1;
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		cwd = getenv("PWD");
+		alloc = 0;
+	}
+	if (cwd)
+		ft_putendl_fd(cwd, 1);
+	if (alloc)
+		free(cwd);
+	return (0);
 }
