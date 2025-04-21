@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/10 19:49:02 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:46:45 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,29 +98,35 @@ char	*find_command_path(char *cmd, char **envp)
 	return (find_executable_in_path(cmd, path));
 }
 
+static char	*handle_absolute_or_relative_path(t_cmd *cmd, t_env_data *ev)
+{
+	char	*cmd_path;
+
+	if (access(cmd->args_for_cmd[0], F_OK) == -1)
+	{
+		fprintf(stderr, "minishell: %s: No such file or directory\n",
+			cmd->args_for_cmd[0]);
+		free_cmd_data(cmd, ev);
+		exit(127);
+	}
+	if (access(cmd->args_for_cmd[0], X_OK) == -1)
+	{
+		fprintf(stderr, "minishell: %s: Permission denied\n",
+			cmd->args_for_cmd[0]);
+		free_cmd_data(cmd, ev);
+		exit(126);
+	}
+	cmd_path = ft_strdup(cmd->args_for_cmd[0]);
+	return (cmd_path);
+}
+
 static char	*handle_command_path(t_cmd *cmd, t_env_data *ev, char **environ)
 {
 	char	*cmd_path;
 
 	if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./",
 			2) == 0)
-	{
-		if (access(cmd->args_for_cmd[0], F_OK) == -1)
-		{
-			fprintf(stderr, "minishell: %s: No such file or directory\n",
-				cmd->args_for_cmd[0]);
-			free_cmd_data(cmd, ev);
-			exit(127);
-		}
-		if (access(cmd->args_for_cmd[0], X_OK) == -1)
-		{
-			fprintf(stderr, "minishell: %s: Permission denied\n",
-				cmd->args_for_cmd[0]);
-			free_cmd_data(cmd, ev);
-			exit(126);
-		}
-		cmd_path = ft_strdup(cmd->args_for_cmd[0]);
-	}
+		cmd_path = handle_absolute_or_relative_path(cmd, ev);
 	else
 	{
 		cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
