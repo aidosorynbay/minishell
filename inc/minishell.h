@@ -174,7 +174,7 @@ void		execute_child_process(t_cmd *cmd, t_env_data *ev, int fd[6],
 int			process_redirection_tokens(t_cmd *cmd, t_env_data *ev, int fd[6],
 				int nums[2]);
 void		implement_redir(t_cmd *cmd);
-void		setup_redirections(int fd[6], t_cmd *cmd);
+void		setup_redirections(int fd[4], t_cmd *cmd);
 void		single_builtin(t_cmd *cmd, t_env_data *ev, int fd[4]);
 
 // commands
@@ -204,7 +204,7 @@ char		*strjoin_and_free(char *s1, char *s2);
 char		*get_value(t_env *env_list, char *key);
 
 // heredoc.c
-void		handle_heredoc(char *heredoc_path);
+void		handle_heredoc(char **heredoc_path);
 int			process_all_heredocs(t_cmd *cmd_list, t_env_data *ev, int *fd);
 int			create_heredoc(char *limiter, char **heredoc_path, t_env_data *ev, int *fd);
 

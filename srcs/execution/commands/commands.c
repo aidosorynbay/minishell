@@ -96,7 +96,7 @@ static char	*handle_command_path(t_cmd *cmd, t_env_data *ev, char **environ)
 			ft_putstr_fd("minishell:", 2);
 			ft_putstr_fd(cmd->args_for_cmd[0], 2);
 			ft_putstr_fd(": command not found\n", 2);
-			free_cmd_data(cmd, ev);
+			free_cmd_data(ev->cmd_list, ev);
 			exit(127);
 		}
 	}
@@ -114,7 +114,7 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 		ft_putstr_fd("minishell:", 2);
 		ft_putstr_fd(cmd->args_for_cmd[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
-		free_cmd_data(cmd, ev);
+		free_cmd_data(ev->cmd_list, ev);
 		exit(127);
 	}
 	cmd_path = handle_command_path(cmd, ev, environ);

@@ -24,6 +24,21 @@ void	free_cmd_list(t_cmd *cmd_list)
 			free_args(temp->args_for_cmd);
 		if (temp->args)
 			free_args(temp->args);
+		if (temp->heredoc_path)
+		{
+			free(temp->heredoc_path);
+			temp->heredoc_path = NULL;
+		}
+		if (temp->inputfile)
+		{
+			free(temp->inputfile);
+			temp->inputfile = NULL;
+		}
+		if (temp->outfile)
+		{
+			free(temp->outfile);
+			temp->outfile = NULL;
+		}
 		free(temp);
 	}
 }
@@ -69,25 +84,25 @@ void	free_cmd_data(t_cmd *cmd, t_env_data *ev)
 		if (temp->envp)
 		{
 			free_args(temp->envp);
-			temp->envp = NULL;
+			// temp->envp = NULL;
 		}
 		free(temp->inputfile);
-		temp->inputfile = NULL;
+		// temp->inputfile = NULL;
 		free(temp->outfile);
-		temp->outfile = NULL;
+		// temp->outfile = NULL;
 		free(temp->heredoc_path);
-		temp->heredoc_path = NULL;
+		// temp->heredoc_path = NULL;
 		free_args(temp->args_for_cmd);
-		temp->args_for_cmd = NULL;
+		// temp->args_for_cmd = NULL;
 		free_args(temp->args);
-		temp->args = NULL;
+		// temp->args = NULL;
 		cmd = cmd->next;
 		free(temp);
 	}
 	if (ev)
 	{
 		free_env_data(ev);
-		ev = NULL;
+		// ev = NULL;
 	}
 }
 

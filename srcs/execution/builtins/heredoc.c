@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-void	handle_heredoc(char *heredoc_path)
+void	handle_heredoc(char **heredoc_path)
 {
 	int	fd;
 
-	if (heredoc_path)
+	if (*heredoc_path)
 	{
-		fd = open(heredoc_path, O_RDONLY);
+		fd = open(*heredoc_path, O_RDONLY);
 		if (fd == -1)
 		{
 			perror("open crashed");
@@ -30,6 +30,8 @@ void	handle_heredoc(char *heredoc_path)
 			exit(EXIT_FAILURE);
 		}
 		close(fd);
+		free(*heredoc_path);
+		*heredoc_path = NULL;
 	}
 	return ;
 }
@@ -76,7 +78,7 @@ static void	write_heredoc_to_file(int pipe_fd[2], char *limiter)
 		free(line);
 	}
 	close(fd);
-	write(pipe_fd[1], filename, strlen(filename) + 1);
+	write(pipe_fd[1], filename, ft_strlen(filename) + 1);
 	close(pipe_fd[1]);
 }
 
@@ -121,9 +123,13 @@ int	process_all_heredocs(t_cmd *cmd_list ,t_env_data *ev, int *fd)
 			if (!ft_strcmp(cmd->args[i], "<<") && cmd->args[i + 1])
 			{
 				if (create_heredoc(cmd->args[i + 1], &heredoc_file, ev, fd))
+				{
+					perror("heredoc error");
+					free_cmd_data(cmd, ev);
 					return (1);
-				cmd->heredoc_path = heredoc_file;
-				// free(heredoc_file);
+				}
+				cmd->heredoc_path = ft_strdup(heredoc_file);
+				free(heredoc_file);
 				cmd->has_heredoc = 1;
 				i++;
 			}

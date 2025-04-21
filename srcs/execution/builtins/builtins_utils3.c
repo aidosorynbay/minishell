@@ -32,7 +32,7 @@ void	execute_child_process(t_cmd *cmd, t_env_data *ev, int fd[6],
 		char **envp)
 {
 	if (cmd->has_heredoc && cmd->heredoc_path)
-		handle_heredoc(cmd->heredoc_path);
+		handle_heredoc(&(cmd->heredoc_path));
 	else if (cmd->inputfile)
 	{
 		if (handle_input_redirection(cmd->inputfile) == 1)
@@ -98,7 +98,7 @@ void	implement_redir(t_cmd *cmd)
 	}
 }
 
-void	setup_redirections(int fd[6], t_cmd *cmd)
+void	setup_redirections(int fd[4], t_cmd *cmd)
 {
 	if (fd[4] != -1)
 	{

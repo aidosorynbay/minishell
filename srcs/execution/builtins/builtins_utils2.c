@@ -22,11 +22,6 @@ void	restore_and_cleanup(int fd[6], char **envp, t_cmd *cmd_list)
 	close(fd[2]);
 	close(fd[3]);
 	free_args(envp);
-	if (cmd_list->heredoc_path)
-	{
-		free(cmd_list->heredoc_path);
-		cmd_list->heredoc_path = NULL;
-	}
 	free_cmd_list(cmd_list);
 }
 
