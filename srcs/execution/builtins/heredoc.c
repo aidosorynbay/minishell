@@ -36,12 +36,11 @@ void	handle_heredoc(char **heredoc_path)
 	return ;
 }
 
-
 static int	read_heredoc_path(int pipe_fd[2], char **heredoc_path)
 {
 	char	buffer[256];
 	ssize_t	n;
-	
+
 	waitpid(-1, NULL, 0);
 	close(pipe_fd[1]);
 	n = read(pipe_fd[0], buffer, sizeof(buffer));
@@ -61,7 +60,7 @@ static void	write_heredoc_to_file(int pipe_fd[2], char *limiter)
 	char	*filename;
 	int		fd;
 	char	*line;
-	
+
 	filename = "/tmp/.minishell_heredoc_tmp";
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 0)
@@ -88,10 +87,10 @@ int	create_heredoc(char *limiter, char **heredoc_path, t_env_data *ev, int *fd)
 	pid_t	pid;
 
 	if (pipe(pipe_fd) == -1)
-	return (perror("pipe"), -1);
+		return (perror("pipe"), -1);
 	pid = fork();
 	if (pid == -1)
-	return (perror("fork"), -1);
+		return (perror("fork"), -1);
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
@@ -106,7 +105,7 @@ int	create_heredoc(char *limiter, char **heredoc_path, t_env_data *ev, int *fd)
 		return (read_heredoc_path(pipe_fd, heredoc_path));
 }
 
-int	process_all_heredocs(t_cmd *cmd_list ,t_env_data *ev, int *fd)
+int	process_all_heredocs(t_cmd *cmd_list, t_env_data *ev, int *fd)
 {
 	t_cmd	*cmd;
 	int		i;

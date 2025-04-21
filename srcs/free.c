@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void cmd_list_free_utils(t_cmd *cmd_list)
+static	void	cmd_list_free_utils(t_cmd *cmd_list)
 {
 	if (cmd_list->heredoc_path)
 	{
@@ -48,7 +48,7 @@ void	free_cmd_list(t_cmd *cmd_list)
 		{
 			free_args(temp->args);
 			temp->args = NULL;
-		}	
+		}
 		cmd_list_free_utils(temp);
 		free(temp);
 	}
@@ -97,7 +97,7 @@ void	free_cmd_data(t_cmd *cmd, t_env_data *ev)
 		free(temp->inputfile);
 		free(temp->outfile);
 		free(temp->heredoc_path);
-		free_args(temp->args_for_cmd);;
+		free_args(temp->args_for_cmd);
 		free_args(temp->args);
 		cmd = cmd->next;
 		free(temp);

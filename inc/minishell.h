@@ -206,7 +206,8 @@ char		*get_value(t_env *env_list, char *key);
 // heredoc.c
 void		handle_heredoc(char **heredoc_path);
 int			process_all_heredocs(t_cmd *cmd_list, t_env_data *ev, int *fd);
-int			create_heredoc(char *limiter, char **heredoc_path, t_env_data *ev, int *fd);
+int			create_heredoc(char *limiter, char **heredoc_path,
+				t_env_data *ev, int *fd);
 
 void		free_env_list(t_env *env_list);
 void		free_env_data(t_env_data *env_data);
