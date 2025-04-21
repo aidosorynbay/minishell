@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+void	free_cmd(t_cmd *cmd, int fd[4])
+{
+	if (!cmd)
+		return ;
+	if (cmd->args)
+		free_args(cmd->args);
+	if (cmd->args_for_cmd)
+		free_args(cmd->args_for_cmd);
+	if (cmd->envp)
+		free_args(cmd->envp);
+	close(fd[2]);
+	close(fd[3]);
+	free(cmd);
+}
+
 void	check_numeric_args(t_cmd *cmd, t_env_data *ev, int fd[4])
 {
 	int	i;

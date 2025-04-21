@@ -12,6 +12,25 @@
 
 #include "minishell.h"
 
+static void cmd_list_free_utils(t_cmd *cmd_list)
+{
+	if (cmd_list->heredoc_path)
+	{
+		free(cmd_list->heredoc_path);
+		cmd_list->heredoc_path = NULL;
+	}
+	if (cmd_list->inputfile)
+	{
+		free(cmd_list->inputfile);
+		cmd_list->inputfile = NULL;
+	}
+	if (cmd_list->outfile)
+	{
+		free(cmd_list->outfile);
+		cmd_list->outfile = NULL;
+	}
+}
+
 void	free_cmd_list(t_cmd *cmd_list)
 {
 	t_cmd	*temp;
@@ -21,24 +40,16 @@ void	free_cmd_list(t_cmd *cmd_list)
 		temp = cmd_list;
 		cmd_list = cmd_list->next;
 		if (temp->args_for_cmd)
+		{
 			free_args(temp->args_for_cmd);
+			temp->args_for_cmd = NULL;
+		}
 		if (temp->args)
+		{
 			free_args(temp->args);
-		if (temp->heredoc_path)
-		{
-			free(temp->heredoc_path);
-			temp->heredoc_path = NULL;
-		}
-		if (temp->inputfile)
-		{
-			free(temp->inputfile);
-			temp->inputfile = NULL;
-		}
-		if (temp->outfile)
-		{
-			free(temp->outfile);
-			temp->outfile = NULL;
-		}
+			temp->args = NULL;
+		}	
+		cmd_list_free_utils(temp);
 		free(temp);
 	}
 }
@@ -82,41 +93,15 @@ void	free_cmd_data(t_cmd *cmd, t_env_data *ev)
 	{
 		temp = cmd;
 		if (temp->envp)
-		{
 			free_args(temp->envp);
-			// temp->envp = NULL;
-		}
 		free(temp->inputfile);
-		// temp->inputfile = NULL;
 		free(temp->outfile);
-		// temp->outfile = NULL;
 		free(temp->heredoc_path);
-		// temp->heredoc_path = NULL;
-		free_args(temp->args_for_cmd);
-		// temp->args_for_cmd = NULL;
+		free_args(temp->args_for_cmd);;
 		free_args(temp->args);
-		// temp->args = NULL;
 		cmd = cmd->next;
 		free(temp);
 	}
 	if (ev)
-	{
 		free_env_data(ev);
-		// ev = NULL;
-	}
-}
-
-void	free_cmd(t_cmd *cmd, int fd[4])
-{
-	if (!cmd)
-		return ;
-	if (cmd->args)
-		free_args(cmd->args);
-	if (cmd->args_for_cmd)
-		free_args(cmd->args_for_cmd);
-	if (cmd->envp)
-		free_args(cmd->envp);
-	close(fd[2]);
-	close(fd[3]);
-	free(cmd);
 }

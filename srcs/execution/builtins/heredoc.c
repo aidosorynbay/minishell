@@ -123,13 +123,8 @@ int	process_all_heredocs(t_cmd *cmd_list ,t_env_data *ev, int *fd)
 			if (!ft_strcmp(cmd->args[i], "<<") && cmd->args[i + 1])
 			{
 				if (create_heredoc(cmd->args[i + 1], &heredoc_file, ev, fd))
-				{
-					perror("heredoc error");
-					free_cmd_data(cmd, ev);
 					return (1);
-				}
-				cmd->heredoc_path = ft_strdup(heredoc_file);
-				free(heredoc_file);
+				cmd->heredoc_path = heredoc_file;
 				cmd->has_heredoc = 1;
 				i++;
 			}
