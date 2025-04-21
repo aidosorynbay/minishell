@@ -90,10 +90,11 @@ typedef struct s_env_data
 	t_env	*env_list;	// Env linked list
 	t_env	*env_export_list;	// for export
 	int		last_exit;	// Store last exit status ($?)
+	t_cmd	*cmd_list;	// List of commands
 }	t_env_data;
 
 // tokenization
-t_token		*tokenize_input(char *input, t_env_data *ev);
+void		tokenize_input(char *input, t_env_data *ev);
 void		tokenization(t_token **tokens, char *input, int i, int start);
 void		create_token(t_token *curr, char *str, int len);
 
@@ -204,8 +205,8 @@ char		*get_value(t_env *env_list, char *key);
 
 // heredoc.c
 void		handle_heredoc(char *heredoc_path);
-int			process_all_heredocs(t_cmd *cmd_list);
-int			create_heredoc(char *limiter, char **heredoc_path);
+int			process_all_heredocs(t_cmd *cmd_list, t_env_data *ev, int *fd);
+int			create_heredoc(char *limiter, char **heredoc_path, t_env_data *ev, int *fd);
 
 void		free_env_list(t_env *env_list);
 void		free_env_data(t_env_data *env_data);

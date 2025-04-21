@@ -49,6 +49,11 @@ void	execute_child_process(t_cmd *cmd, t_env_data *ev, int fd[6],
 	}
 	handle_output_redir(cmd, ev, fd);
 	cleanup_fds(fd, cmd);
+	if (cmd->heredoc_path)
+	{
+		free(cmd->heredoc_path);
+		cmd->heredoc_path = NULL;
+	}
 	execute_command(cmd, envp, ev);
 	exit(EXIT_FAILURE);
 }

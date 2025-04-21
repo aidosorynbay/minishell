@@ -27,7 +27,6 @@ void	signal_handle(int sig)
 int	main(int ac, char **av, char **envp)
 {
 	char		*input;
-	t_token		*tokens;
 	t_env_data	*data;
 
 	(void)ac;
@@ -44,9 +43,14 @@ int	main(int ac, char **av, char **envp)
 		input = readline("minishell$ ");
 		if (input == NULL)
 			break ;
+		if (*input == '\0')
+		{
+			free(input);
+			continue ;
+		}
 		if (*input != '\0')
 			add_history(input);
-		tokens = tokenize_input(input, data);
+		tokenize_input(input, data);
 		input = NULL;
 	}
 	free_env_data(data);

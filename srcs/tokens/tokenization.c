@@ -46,7 +46,7 @@ void	tokenization(t_token **tokens, char *copy, int i, int start)
 	quote_error(quote, tokens);
 }
 
-t_token	*tokenize_input(char *input, t_env_data *ev)
+void	tokenize_input(char *input, t_env_data *ev)
 {
 	t_token	*tokens;
 	char	*copy;
@@ -67,10 +67,10 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 		ev->last_exit = i[2];
 		if (tokens)
 			token_clear(&tokens);
-		return (NULL);
+		return ;
 	}
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);
 	init_execution(parse_tokens(convert_tokens_to_args(&tokens)), ev);
-	return (tokens);
+	return ;
 }

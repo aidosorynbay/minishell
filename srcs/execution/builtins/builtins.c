@@ -21,7 +21,7 @@ static void	execute_builtin_child(t_cmd *cmd, t_env_data *ev, int fd[4],
 	free_fds(fd, prev_fd);
 }
 
-static int	handle_builtin(t_cmd *cmd, t_env_data *ev, int *fd, t_cmd *head)
+static int	handle_builtin(t_cmd *cmd, t_env_data *ev, int *fd)
 {
 	pid_t	pid;
 	int		status;
@@ -38,7 +38,7 @@ static int	handle_builtin(t_cmd *cmd, t_env_data *ev, int *fd, t_cmd *head)
 		{
 			execute_builtin_child(cmd, ev, fd, &fd[4]);
 			last_exit = ev->last_exit;
-			free_cmd_data(head, ev);
+			free_cmd_data(ev->cmd_list, ev);
 			exit(last_exit);
 		}
 		while (waitpid(-1, &status, 0) > 0)
@@ -56,14 +56,12 @@ static void	handle_command_execution(t_cmd *cmd, t_env_data *ev, int fd[6],
 	pid_t	pid;
 
 	if (cmd->cmd_type == TOKEN_BUILTIN)
-		handle_builtin(cmd, ev, fd, cmd);
+		handle_builtin(cmd, ev, fd);
 	else
 	{
 		pid = fork();
 		if (pid == 0)
-		{
 			execute_child_process(cmd, ev, fd, envp);
-		}
 		else if (pid == -1)
 		{
 			perror("fork error");
@@ -113,13 +111,12 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	t_cmd	*cmd;
 	char	**envp;
 	int		fd[6];
-	t_cmd	*head;
 
-	if (process_all_heredocs(cmd_list))
-		return (ev->last_exit = 1, (void)0);
 	init_fd(fd);
 	cmd = cmd_list;
-	head = cmd_list;
+	ev->cmd_list = cmd_list;
+	if (process_all_heredocs(cmd_list, ev, fd))
+		return (ev->last_exit = 1, (void)0);
 	envp = env_list_to_envp(ev->env_list);
 	if (cmd)
 		cmd->envp = envp;
