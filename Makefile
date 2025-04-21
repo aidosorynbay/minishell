@@ -46,6 +46,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(BUILTINS_DIR)/redirections.c \
 		  $(TOKENS_DIR)/trimming.c \
 		  $(BUILTINS_DIR)/export.c \
+		  $(BUILTINS_DIR)/export_utils.c \
 		  $(ENVIRONMENT_DIR)/env_init.c \
 		  $(ENVIRONMENT_DIR)/expand.c \
 		  $(ENVIRONMENT_DIR)/expand_utils.c

@@ -12,106 +12,89 @@
 
 #include "minishell.h"
 
-char	*get_env_value(t_env *env_list, char *key)
+static void	add_to_env_lists(t_env_data *env_list, char *key, char *value)
+{
+	if (value)
+	{
+		add_env_node(&env_list->env_list, key, value, 1);
+		add_env_node(&env_list->env_export_list, key, value, 1);
+	}
+	else
+	{
+		add_env_node(&env_list->env_list, key, "", 1);
+		add_env_node(&env_list->env_export_list, key, "", 1);
+	}
+}
+
+static void	print_exported_variables(t_env *env_export_list)
 {
 	t_env	*tmp;
 
-	tmp = env_list;
+	tmp = env_export_list;
 	while (tmp)
 	{
-		if (ft_strcmp(tmp->key, key) == 0)
-			return (tmp->value);
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(tmp->key, 1);
+		if (tmp->has_value)
+		{
+			ft_putstr_fd("=\"", 1);
+			if (tmp->value)
+				ft_putstr_fd(tmp->value, 1);
+			ft_putstr_fd("\"", 1);
+		}
+		ft_putstr_fd("\n", 1);
 		tmp = tmp->next;
 	}
-	return (NULL);
 }
 
-int	is_valid_identifier(const char *str)
+static void	print_error(char *args, int *e_code)
 {
-	int	i;
+	ft_putstr_fd("minishell: export: `", 2);
+	ft_putstr_fd(args, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+	*e_code = 1;
+}
 
-	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
-		return (0);
-	i = 1;
-	while (str[i])
+static void	process_export_argument(t_env_data *env_list, char *arg,
+		int *e_code)
+{
+	char	**split;
+
+	split = ft_split(arg, '=');
+	if (!split || !split[0] || !is_valid_identifier(split[0]))
 	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
+		print_error(arg, e_code);
 	}
-	return (1);
+	else if (ft_strchr(arg, '='))
+	{
+		if (split[1])
+			add_to_env_lists(env_list, split[0], split[1]);
+		else
+			add_to_env_lists(env_list, split[0], NULL);
+	}
+	else
+	{
+		if (!get_env_value(env_list->env_export_list, split[0]))
+			add_env_node(&env_list->env_export_list, split[0], NULL, 0);
+	}
+	free_args(split);
 }
 
 int	ft_export(t_env_data *env_list, char **args)
 {
-	int		i;
-	int		j;
-	char	**split;
-	t_env	*tmp;
-	int		exit_code;
+	int	i;
+	int	e_code;
 
-	exit_code = 0;
+	e_code = 0;
 	if (!args || !args[0])
-	{
-		perror("minishell: export: not a valid identifier");
-		return (1);
-	}
+		return (perror("minishell: export: not a valid identifier"), (1));
 	if (!args[1])
-	{
-		tmp = env_list->env_export_list;
-		while (tmp)
-		{
-			ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(tmp->key, 1);
-			if (tmp->has_value)
-			{
-				ft_putstr_fd("=\"", 1);
-				if (tmp->value)
-					ft_putstr_fd(tmp->value, 1);
-				ft_putstr_fd("\"", 1);
-			}
-			ft_putstr_fd("\n", 1);
-			tmp = tmp->next;
-		}
-		return (exit_code);
-	}
+		return (print_exported_variables(env_list->env_export_list), (e_code));
 	i = 1;
 	while (args[i])
 	{
-		split = ft_split(args[i], '=');
-		if (!split || !split[0] || !is_valid_identifier(split[0]))
-		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-			exit_code = 1;
-		}
-		else if (ft_strchr(args[i], '='))
-		{
-			if (split[1])
-			{
-				add_env_node(&env_list->env_list, split[0], split[1], 1);
-				add_env_node(&env_list->env_export_list, split[0], split[1], 1);
-			}
-			else
-			{
-				add_env_node(&env_list->env_list, split[0], "", 1);
-				add_env_node(&env_list->env_export_list, split[0], "", 1);
-			}
-		}
-		else
-		{
-			if (!get_env_value(env_list->env_export_list, split[0]))
-				add_env_node(&env_list->env_export_list, split[0], NULL, 0);
-		}
-		j = 0;
-		while (split && split[j])
-		{
-			free(split[j]);
-			j++;
-		}
-		free(split);
+		process_export_argument(env_list, args[i], &e_code);
 		i++;
 	}
-	return (exit_code);
+	return (e_code);
 }

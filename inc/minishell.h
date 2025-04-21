@@ -121,6 +121,7 @@ char	**convert_tokens_to_args(t_token **tokens);
 //utils
 void	clear_screen(void);
 int		check_file_existence(t_token **tokens);
+int		is_valid_identifier(const char *str);
 
 //execution
 t_cmd	*parse_tokens(char **av);
