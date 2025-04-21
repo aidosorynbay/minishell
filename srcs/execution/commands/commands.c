@@ -6,7 +6,7 @@
 /*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/21 19:12:34 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:32:18 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,17 @@ static char	*handle_absolute_or_relative_path(t_cmd *cmd, t_env_data *ev)
 
 	if (access(cmd->args_for_cmd[0], F_OK) == -1)
 	{
-		fprintf(stderr, "minishell: %s: No such file or directory\n",
-			cmd->args_for_cmd[0]);
+		ft_putstr_fd("minishell:", 2);
+		ft_putstr_fd(cmd->args_for_cmd[0], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
 		free_cmd_data(cmd, ev);
 		exit(127);
 	}
 	if (access(cmd->args_for_cmd[0], X_OK) == -1)
 	{
-		fprintf(stderr, "minishell: %s: Permission denied\n",
-			cmd->args_for_cmd[0]);
+		ft_putstr_fd("minishell:", 2);
+		ft_putstr_fd(cmd->args_for_cmd[0], 2);
+		ft_putstr_fd(": Permission denied\n", 2);
 		free_cmd_data(cmd, ev);
 		exit(126);
 	}
@@ -82,17 +84,18 @@ static char	*handle_absolute_or_relative_path(t_cmd *cmd, t_env_data *ev)
 static char	*handle_command_path(t_cmd *cmd, t_env_data *ev, char **environ)
 {
 	char	*cmd_path;
-
+	
 	if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./",
-			2) == 0)
+		2) == 0)
 		cmd_path = handle_absolute_or_relative_path(cmd, ev);
 	else
 	{
 		cmd_path = find_command_path(cmd->args_for_cmd[0], environ);
 		if (!cmd_path)
 		{
-			fprintf(stderr, "minishell: %s: command not found\n",
-				cmd->args_for_cmd[0]);
+			ft_putstr_fd("minishell:", 2);
+			ft_putstr_fd(cmd->args_for_cmd[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
 			free_cmd_data(cmd, ev);
 			exit(127);
 		}
@@ -108,7 +111,9 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 	if (!cmd || !cmd->args_for_cmd || !cmd->args_for_cmd[0]
 		|| !cmd->args_for_cmd[0][0])
 	{
-		fprintf(stderr, "minishell: command not found\n");
+		ft_putstr_fd("minishell:", 2);
+		ft_putstr_fd(cmd->args_for_cmd[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		free_cmd_data(cmd, ev);
 		exit(127);
 	}

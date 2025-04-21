@@ -6,7 +6,7 @@
 /*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:56:00 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/02/22 10:56:02 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:33:24 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	**convert_tokens_to_args(t_token **tokens)
 	tmp = *tokens;
 	while (i[0] < i[1])
 	{
-		args[i[0]] = strdup(tmp->value);
+		args[i[0]] = ft_strdup(tmp->value);
 		i[0]++;
 		tmp = tmp->next;
 	}
