@@ -1,0 +1,19 @@
+builtins.c: OK!
+builtins_utils.c: OK!
+builtins_utils2.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):	[97mMissing or invalid 42 header[0m
+builtins_utils3.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):	[97mMissing or invalid 42 header[0m
+builtins_utils4.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):	[97mMissing or invalid 42 header[0m
+cd.c: OK!
+echo.c: OK!
+env.c: OK!
+exit.c: OK!
+export.c: OK!
+export_utils.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):	[97mMissing or invalid 42 header[0m
+heredoc.c: OK!
+pwd.c: OK!
+redirections.c: OK!
+unset.c: OK!
