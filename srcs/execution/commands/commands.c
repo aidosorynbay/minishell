@@ -6,52 +6,11 @@
 /*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/21 18:46:45 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:12:34 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <sys/stat.h>
-
-// extern char	**environ;
-
-static char	*get_next_path(char *path, int *index)
-{
-	int		start;
-	int		len;
-	char	*token;
-
-	while (path[*index] == ':')
-		(*index)++;
-	if (path[*index] == '\0')
-		return (NULL);
-	start = *index;
-	len = find_char(path + start, ":");
-	*index += len;
-	token = malloc(len + 1);
-	if (!token)
-		return (NULL);
-	ft_strncpy(token, path + start, len);
-	token[len] = '\0';
-	return (token);
-}
-
-static char	*build_command_path(const char *dir, const char *cmd)
-{
-	int		dir_len;
-	int		cmd_len;
-	char	*full_path;
-
-	cmd_len = ft_strlen(cmd);
-	dir_len = ft_strlen(dir);
-	full_path = malloc(dir_len + cmd_len + 2);
-	if (!full_path)
-		return (NULL);
-	ft_strcpy(full_path, dir);
-	full_path[dir_len] = '/';
-	ft_strcpy(full_path + dir_len + 1, cmd);
-	return (full_path);
-}
 
 static char	*find_executable_in_path(const char *cmd, char *path)
 {
@@ -139,14 +98,6 @@ static char	*handle_command_path(t_cmd *cmd, t_env_data *ev, char **environ)
 		}
 	}
 	return (cmd_path);
-}
-
-static void	free_exit(char *cmd_path, t_env_data *ev, t_cmd *cmd)
-{
-	fprintf(stderr, "minishell: %s: Is a directory\n", cmd_path);
-	free_cmd_data(cmd, ev);
-	free(cmd_path);
-	exit(126);
 }
 
 void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)

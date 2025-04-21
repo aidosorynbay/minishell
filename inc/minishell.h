@@ -14,6 +14,7 @@
 # include <sys/wait.h>
 # include <errno.h> // can we have this????
 # include <signal.h>
+# include <sys/stat.h>
 
 extern int	g_exit_code;
 
@@ -146,6 +147,9 @@ char	*find_command_path(char *cmd, char **envp);
 int		find_char(char *str, char *charset);
 char	**env_list_to_envp(t_env *env_list);
 int		count_arg(t_env *tmp);
+void	free_exit(char *cmd_path, t_env_data *ev, t_cmd *cmd);
+char	*build_command_path(const char *dir, const char *cmd);
+char	*get_next_path(char *path, int *index);
 
 //environment
 t_env_data	*env_init(char **envp);
