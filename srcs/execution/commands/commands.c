@@ -6,7 +6,7 @@
 /*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 18:36:58 by aorynbay          #+#    #+#             */
-/*   Updated: 2025/04/21 19:32:18 by mohkhan          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:39:15 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static char	*handle_absolute_or_relative_path(t_cmd *cmd, t_env_data *ev)
 static char	*handle_command_path(t_cmd *cmd, t_env_data *ev, char **environ)
 {
 	char	*cmd_path;
-	
+
 	if (cmd->args_for_cmd[0][0] == '/' || ft_strncmp(cmd->args_for_cmd[0], "./",
 		2) == 0)
 		cmd_path = handle_absolute_or_relative_path(cmd, ev);
@@ -129,6 +129,5 @@ void	execute_command(t_cmd *cmd, char **environ, t_env_data *ev)
 		else
 			exit(127);
 	}
-	free(cmd_path);
-	return ;
+	return (free(cmd_path), (void)0);
 }
