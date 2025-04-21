@@ -130,20 +130,3 @@ char	**ft_split(char const *s, char c)
 	result = allocate_chars(result, s, c);
 	return (result);
 }
-
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	char str[] = "      split       this for   me  !       ";
-// 	char sep = ' ';
-// 	char **arr;
-
-// 	arr = ft_split(str, sep);
-// 	int i = 0;
-// 	while (arr[i] != NULL)
-// 	{
-// 		printf("|%s|", arr[i]);
-// 		i++;
-// 	}
-// 	printf("|%s|", arr[i]);
-// }

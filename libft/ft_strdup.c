@@ -31,11 +31,3 @@ char	*ft_strdup(const char *s1)
 	result[i] = s1[i];
 	return (result);
 }
-
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	char str1[] = "word";
-// 	char *str2 = ft_strdup(str1);
-// 	puts(str2);
-// }

@@ -20,12 +20,3 @@ int	ft_isalpha(int c)
 	}
 	return (0);
 }
-
-// #include <stdio.h>
-// #include <ctype.h>
-// int	main(void)
-// {
-// 	int c = 'a';
-// 	printf("%i\n", ft_isalpha(c));
-// 	printf("%i\n", isalpha(c));
-// }

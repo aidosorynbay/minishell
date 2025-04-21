@@ -106,11 +106,3 @@ char	*ft_strtrim(char const *s1, char const *set)
 	result = ft_no_set_str(result, s1, set);
 	return (result);
 }
-
-// int main(void)
-// {
-//     char str1[] = "ayo remove thesea"; // yo remove thes
-// 	// printf("%zu\n", ft_strlen(str1));
-//     char str2[] = "aeo";
-//     printf("|%s|\n", ft_strtrim(str1, str2));
-// }

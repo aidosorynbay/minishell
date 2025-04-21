@@ -20,12 +20,3 @@ int	ft_isprint(int c)
 	}
 	return (0);
 }
-
-// #include <stdio.h>
-// #include <ctype.h>
-// int	main(void)
-// {
-// 	int c = '\n';
-// 	printf("%i\n", ft_isprint(c));
-// 	printf("%i\n", isprint(c));
-// }

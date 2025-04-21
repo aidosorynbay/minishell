@@ -3,60 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:55:20 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/18 15:25:18 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/21 12:44:56 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-int ft_exit(t_env_data *ev, t_cmd *cmd, int fd[4])
+void	check_numeric_args(t_cmd *cmd, t_env_data *ev, int fd[4])
 {
-    int exit_code;
-    int i;
+	int	i;
 
-    exit_code = 0;
-    // Print exit message
-    ft_putstr_fd("exit\n", 2);
+	i = 0;
+	while (cmd->args_for_cmd[1][i])
+	{
+		if (!ft_isdigit(cmd->args_for_cmd[1][i]) && !(i == 0
+				&& (cmd->args_for_cmd[1][i] == '-'
+					|| cmd->args_for_cmd[1][i] == '+')))
+		{
+			ft_putstr_fd("minishell: exit: ", 2);
+			ft_putstr_fd(cmd->args_for_cmd[1], 2);
+			ft_putstr_fd(": numeric argument required\n", 2);
+			free_env_data(ev);
+			free_cmd(cmd, fd);
+			exit(255);
+		}
+		i++;
+	}
+}
 
-    // No arguments: exit with code 0
-    if (!cmd->args_for_cmd[1])
-    {
-        free_env_data(ev);
-        free_cmd(cmd, fd);
-        exit(exit_code);
-    }
+int	ft_exit(t_env_data *ev, t_cmd *cmd, int fd[4])
+{
+	int	exit_code;
 
-    // Check if the first argument is numeric
-    i = 0;
-    while (cmd->args_for_cmd[1][i])
-    {
-        if (!ft_isdigit(cmd->args_for_cmd[1][i]) && !(i == 0 && (cmd->args_for_cmd[1][i] == '-' || cmd->args_for_cmd[1][i] == '+')))
-        {
-            ft_putstr_fd("minishell: exit: ", 2);
-            ft_putstr_fd(cmd->args_for_cmd[1], 2);
-            ft_putstr_fd(": numeric argument required\n", 2);
-            free_env_data(ev);
-            free_cmd(cmd, fd);
-            exit(255); // Exit with code 255 for invalid numeric argument
-        }
-        i++;
-    }
-
-    // Convert the first argument to an integer
-    exit_code = ft_atoi(cmd->args_for_cmd[1]);
-
-    // Check for multiple arguments
-    if (cmd->args_for_cmd[2])
-    {
-        ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-        return (1); // Return 1 but do not exit the shell
-    }
-    free_env_data(ev);
-    free_cmd(cmd, fd);
-    // Exit with the parsed exit code
-    exit(exit_code);
+	exit_code = 0;
+	ft_putstr_fd("exit\n", 2);
+	if (!cmd->args_for_cmd[1])
+	{
+		free_env_data(ev);
+		free_cmd(cmd, fd);
+		exit(exit_code);
+	}
+	check_numeric_args(cmd, ev, fd);
+	exit_code = ft_atoi(cmd->args_for_cmd[1]);
+	if (cmd->args_for_cmd[2])
+	{
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+		return (1);
+	}
+	free_env_data(ev);
+	free_cmd(cmd, fd);
+	exit(exit_code);
 }

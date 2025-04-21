@@ -23,12 +23,3 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char*))
 		i++;
 	}
 }
-
-// #include <unistd.h>
-// #include <string.h>
-
-// int main()
-// {
-// 	write (1, "25\n", strlen("25\n"));
-// 	return (0);
-// }

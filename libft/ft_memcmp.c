@@ -31,13 +31,3 @@ int	ft_memcmp(const void *s1, const void *s2, size_t n)
 	}
 	return (0);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char s1[] = "b";
-// 	char s2[] = "";
-// 	printf("%i\n", ft_memcmp(s1, s2, 1));
-// 	printf("%i\n", memcmp(s1, s2, 1));
-// }

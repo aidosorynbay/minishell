@@ -40,20 +40,3 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 	}
 	return (dst);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char *str1 = NULL;
-//     char *str2 = NULL;
-
-// 	ft_memmove(str1, str2, 5);
-// 	printf("%s\n", str1);
-
-// 	char *strr1 = NULL;
-//     char *strr2 = NULL;
-
-// 	memmove(strr1, strr2, 5);
-// 	printf("%s\n", strr1);
-// }

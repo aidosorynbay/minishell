@@ -28,24 +28,3 @@ void	ft_bzero(void *s, size_t n)
 		str[i++] = '\0';
 	}
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	unsigned char str[] = "uehfasdjfyoyo";
-// 	int n = 76;
-// 	ft_bzero(str + 3, 7);
-// 	ft_bzero(&n, (0));
-// 	printf("%i\n", n);
-// 	printf("|%c|\n", str[9]);
-// 	printf("%s\n", str);
-
-// 	unsigned char str1[] = "uehfasdjfyoyo";
-// 	int n1 = 76;
-// 	bzero(str1 + 3, 7);
-// 	bzero(&n1, (0));
-// 	printf("%i\n", n1);
-// 	printf("|%c|\n", str1[9]);
-// 	printf("%s\n", str1);
-// }

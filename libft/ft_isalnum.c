@@ -22,12 +22,3 @@ int	ft_isalnum(int c)
 	}
 	return (0);
 }
-
-// #include <stdio.h>
-// #include <ctype.h>
-// int	main(void)
-// {
-// 	int c = 'D';
-// 	printf("%i\n", ft_isalnum(c));
-// 	printf("%i\n", isalnum(c));
-// }

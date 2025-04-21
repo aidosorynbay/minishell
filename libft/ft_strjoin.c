@@ -37,11 +37,3 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	result[i] = '\0';
 	return (result);
 }
-
-// #include <stdio.h>
-// int main(void)
-// {
-//     char str1[] = "";
-//     char str2[] = "";
-//     printf("|%s|\n", ft_strjoin(str1, str2));
-// }

@@ -31,16 +31,3 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	dst[j + i] = '\0';
 	return (j + ft_strlen(src));
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char str1[] = "Hellonyguyyoo";
-// 	char str2[] = "World";
-
-// 	size_t res = strlcat(str1, str2, 10);
-// 	printf("%zu\n", res);
-// 	size_t result = ft_strlcat(str1, str2, 10);
-// 	printf("%zu\n", result);
-// }

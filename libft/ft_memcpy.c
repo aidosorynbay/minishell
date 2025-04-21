@@ -28,20 +28,3 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	}
 	return (dst);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char *str1 = NULL;
-//     char *str2 = NULL;
-
-// 	memcpy(str1, str2, 2);
-// 	printf("%s\n", str1);
-
-// 	char *strr1 = NULL;
-//     char *strr2 = NULL;
-
-// 	ft_memcpy(strr1, strr2, 2);
-// 	printf("%s\n", strr1);
-// }

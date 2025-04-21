@@ -36,13 +36,3 @@ char	*ft_strrchr(const char *s, int c)
 		return (str + len);
 	}
 }
-
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	char str[] = "https://www.tutorialspoint.com";
-// 	char ch = '\0';
-// 	char *res = ft_strrchr(str, ch);
-
-// 	printf("|%s|\n", res);
-// }

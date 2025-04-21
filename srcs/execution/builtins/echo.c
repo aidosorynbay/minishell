@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+       +#+        */
+/*   By: mohkhan <mohkhan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 10:55:11 by mohkhan           #+#    #+#             */
-/*   Updated: 2025/04/12 03:56:02 by aorynbay         ###   ########.fr       */
+/*   Updated: 2025/04/21 12:41:19 by mohkhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_echo(char **args)
+int	ft_echo(char **args)
 {
-	int i;
-	int newline;
+	int	i;
+	int	newline;
 
 	i = 1;
 	newline = 1;
 	if (!args)
 		return (0);
-	while (args[i] && ft_strcmp(args[i], "-n") == 0) 
+	while (args[i] && ft_strcmp(args[i], "-n") == 0)
 	{
 		newline = 0;
 		i++;
@@ -37,4 +37,3 @@ int ft_echo(char **args)
 		ft_putstr_fd("\n", 1);
 	return (0);
 }
-

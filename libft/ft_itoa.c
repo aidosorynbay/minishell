@@ -96,10 +96,3 @@ char	*ft_itoa(int n)
 	result = int_to_str(result, n, count);
 	return (result);
 }
-
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	int n = -1234;
-// 	printf("|%s|\n", ft_itoa(n));
-// }

@@ -34,19 +34,3 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	}
 	return (src_len);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char str1[10] = "aida";
-// 	char str2[] = "yooo";
-
-// 	size_t result = ft_strlcpy(str1, str2, 6);
-// 	printf("%zu\n", result);
-// 	printf("%s\n", str1);
-
-// 	// size_t res = strlcpy(str1, str2, 10);
-// 	// printf("%zu\n", res);
-// 	// printf("%s\n", str1);
-// }

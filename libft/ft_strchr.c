@@ -25,13 +25,3 @@ char	*ft_strchr(const char *s, int c)
 		return (str + i);
 	return (NULL);
 }
-
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	char str[] = "https://www.tutorialspoint.com";
-// 	char ch = '\0';
-// 	char *res = ft_strchr(str, ch);
-
-// 	printf("|%s|\n", res);
-// }

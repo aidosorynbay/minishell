@@ -25,14 +25,3 @@ void	*ft_memset(void *b, int c, size_t len)
 	}
 	return (b);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	unsigned char str[] = "GeeksForGeeks is for programming geeks.";
-// 	ft_memset(str + 13, '.', 8 * sizeof(char));
-// 	printf("%s\n", str);
-// 	memset(str + 1, 'a', 3 * sizeof(char));
-// 	printf("%s\n", str);
-// }

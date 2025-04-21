@@ -38,13 +38,3 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	}
 	return (0);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char str1[] = "yoobitbityoohello";
-// 	char str2[] = "bitbit";
-// 	printf("%s\n", strnstr(str1, str2, -2));
-// 	printf("%s\n", ft_strnstr(str1, str2, -2));
-// }

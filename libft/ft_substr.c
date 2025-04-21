@@ -38,10 +38,3 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	result[i] = '\0';
 	return (result);
 }
-
-// #include <stdio.h>
-// int main(void)
-// {
-//     char str[] = "hello";
-//     printf("%s\n", ft_substr(str, 8, 7));
-// }

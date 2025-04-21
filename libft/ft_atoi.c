@@ -38,11 +38,3 @@ int	ft_atoi(const char *str)
 	}
 	return (result * sign);
 }
-
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	char str[] = "9223372036854775806";
-// 	printf("%i\n", atoi(str));
-// 	printf("%i\n", ft_atoi(str));
-// }
