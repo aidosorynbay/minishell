@@ -12,67 +12,55 @@
 
 #include "minishell.h"
 
-void	ft_strcat(char *dst, const char *src)
+int	count_arg(t_env *tmp)
 {
-	while (*dst)
-		dst++;
-	while (*src)
-		*dst++ = *src++;
-	*dst = '\0';
+	int	count;
+
+	count = 0;
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	return (count);
 }
 
-int	find_char(char *str, char *charset)
+char	*get_next_path(char *path, int *index)
 {
-	int	i;
-	int	j;
+	int		start;
+	int		len;
+	char	*token;
 
-	i = 0;
-	while (str[i])
-	{
-		j = 0;
-		while (charset[j])
-		{
-			if (str[i] == charset[j])
-				return (i);
-			j++;
-		}
-		i++;
-	}
-	return (i);
+	while (path[*index] == ':')
+		(*index)++;
+	if (path[*index] == '\0')
+		return (NULL);
+	start = *index;
+	len = find_char(path + start, ":");
+	*index += len;
+	token = malloc(len + 1);
+	if (!token)
+		return (NULL);
+	ft_strncpy(token, path + start, len);
+	token[len] = '\0';
+	return (token);
 }
 
-void	ft_strcpy(char *dst, const char *src)
+char	*build_command_path(const char *dir, const char *cmd)
 {
-	while (*src)
-		*dst++ = *src++;
-	*dst = '\0';
-}
+	int		dir_len;
+	int		cmd_len;
+	char	*full_path;
 
-void	ft_strncpy(char *dst, const char *src, size_t len)
-{
-	int	rest;
-
-	if (ft_strlen(src) < len)
-	{
-		rest = len - ft_strlen(src);
-		while (*src)
-		{
-			*dst++ = *src++;
-		}
-		while (rest)
-		{
-			*dst++ = '\0';
-			rest--;
-		}
-	}
-	else
-	{
-		while (len)
-		{
-			*dst++ = *src++;
-			len--;
-		}
-	}
+	cmd_len = ft_strlen(cmd);
+	dir_len = ft_strlen(dir);
+	full_path = malloc(dir_len + cmd_len + 2);
+	if (!full_path)
+		return (NULL);
+	ft_strcpy(full_path, dir);
+	full_path[dir_len] = '/';
+	ft_strcpy(full_path + dir_len + 1, cmd);
+	return (full_path);
 }
 
 char	**env_list_to_envp(t_env *env_list)
