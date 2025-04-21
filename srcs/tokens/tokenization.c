@@ -46,44 +46,6 @@ void	tokenization(t_token **tokens, char *copy, int i, int start)
 	quote_error(quote, tokens);
 }
 
-void	print_tokens(t_token *tokens)
-{
-	int	i;
-
-	i = 0;
-	while (tokens != NULL)
-	{
-		fprintf(stderr, "value: {%s}\n", tokens->value);
-		if (tokens->type == 0)
-			fprintf(stderr, "type: |TOKEN_CMD|\n\n");
-		else if (tokens->type == 1)
-			fprintf(stderr, "type: |TOKEN_BUILTIN|\n\n");
-		else if (tokens->type == 2)
-			fprintf(stderr, "type: |TOKEN_ARG|\n\n");
-		else if (tokens->type == 3)
-			fprintf(stderr, "type: |TOKEN_PIPE|\n\n");
-		else if (tokens->type == 4)
-			fprintf(stderr, "type: |TOKEN_REDIRECT_IN|\n\n");
-		else if (tokens->type == 5)
-			fprintf(stderr, "type: |TOKEN_REDIRECT_OUT|\n\n");
-		else if (tokens->type == 6)
-			fprintf(stderr, "type: |TOKEN_REDIRECT_APPEND|\n\n");
-		else if (tokens->type == 7)
-			fprintf(stderr, "type: |TOKEN_HEREDOC|\n\n");
-		else if (tokens->type == 8)
-			fprintf(stderr, "type: |TOKEN_FILE|\n\n");
-		else if (tokens->type == 11)
-			fprintf(stderr, "|UNKNOWN TYPE|\n\n");
-		else if (tokens->type == 9)
-			fprintf(stderr, "type: |TOKEN_BUILTIN_FLAG|\n\n");
-        else if (tokens->type == 10)
-			fprintf(stderr, "type: |TOKEN_EOF|\n\n");
-		tokens = tokens->next;
-		i++;
-	}
-	fprintf(stderr, "%d\n", i);
-}
-
 t_token	*tokenize_input(char *input, t_env_data *ev)
 {
 	t_token	*tokens;
@@ -107,7 +69,7 @@ t_token	*tokenize_input(char *input, t_env_data *ev)
 		ev->last_exit = status;
 		if (tokens)
 			token_clear(&tokens);
-		return NULL;
+		return (NULL);
 	}
 	unknown_assign(&tokens);
 	assign_token_type(&tokens);

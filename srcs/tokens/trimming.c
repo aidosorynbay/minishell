@@ -2,11 +2,11 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   trimming.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
+/*                                                    +:+ +:+
 	+:+     */
-/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+      
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+
 	+#+        */
-/*                                                +#+#+#+#+#+  
+/*                                                +#+#+#+#+#+
 	+#+           */
 /*   Created: 2025/02/20 08:39:22 by aorynbay          #+#    #+#             */
 /*   Updated: 2025/02/20 08:39:22 by aorynbay         ###   ########.fr       */
@@ -17,8 +17,8 @@
 
 static void	assign_new_value(t_token *tmp, char *trimmed_value, int *quote_loc)
 {
-	int	i;
 	int	j;
+	int	i;
 
 	i = 0;
 	j = 0;
@@ -77,20 +77,21 @@ static int	*find_quotes(char *str)
 
 void	trim_quotes(t_token **tokens)
 {
-    t_token	*tmp;
-    int		*quote_loc;
+	t_token	*tmp;
+	int		*quote_loc;
+	int		new_len;
+	char	*trimmed_value;
 
-    tmp = *tokens;
-    while (tmp)
-    {
-        quote_loc = find_quotes(tmp->value);
-        if (!quote_loc)
-            exit(EXIT_FAILURE);
-
+	tmp = *tokens;
+	while (tmp)
+	{
+		quote_loc = find_quotes(tmp->value);
+		if (!quote_loc)
+			exit(EXIT_FAILURE);
 		if (quote_loc[0] >= 0 && quote_loc[1] > quote_loc[0])
 		{
-			int new_len = ft_strlen(tmp->value) - 2; // length without the quotes
-			char *trimmed_value = malloc(sizeof(char) * (new_len + 1));
+			new_len = ft_strlen(tmp->value) - 2;
+			trimmed_value = malloc(sizeof(char) * (new_len + 1));
 			if (!trimmed_value)
 			{
 				free(quote_loc);
@@ -98,7 +99,7 @@ void	trim_quotes(t_token **tokens)
 			}
 			assign_new_value(tmp, trimmed_value, quote_loc);
 		}
-        free(quote_loc);
-        tmp = tmp->next;
-    }
+		free(quote_loc);
+		tmp = tmp->next;
+	}
 }

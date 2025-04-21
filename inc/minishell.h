@@ -83,7 +83,6 @@ typedef struct s_env_data
 t_token	*tokenize_input(char *input, t_env_data *ev);
 void	tokenization(t_token **tokens, char *input, int i, int start);
 void	create_token(t_token *curr, char *str, int len);
-void	print_tokens(t_token *tokens);
 // token_utils
 void	token_add_back(t_token **lst, t_token *new);
 char	*two_char_op(char *str, int i);
@@ -101,6 +100,7 @@ int 	check_syntax(t_token **tokens);
 int		checker(t_token *tmp, t_token **tokens);
 int		check_here_doc(t_token *tmp, t_token **tokens);
 int		check_lesser(t_token *tmp, t_token **tokens);
+int		check_redirection(t_token *tmp, t_token **tokens);
 // int		checker_pipe(t_token *tmp, t_token **tokens);
 int		error_syntaxcheck(t_token **tokens);
 
@@ -145,6 +145,7 @@ void	ft_strcat(char *dst, const char *src);
 char	*find_command_path(char *cmd, char **envp);
 int		find_char(char *str, char *charset);
 char	**env_list_to_envp(t_env *env_list);
+int		count_arg(t_env *tmp);
 
 //environment
 t_env_data	*env_init(char **envp);
@@ -153,6 +154,12 @@ char		*get_env_value(t_env *env_list, char *key);
 void		expand_variables(t_token **tokens, t_env_data *env_data);
 char		*expand_variable(char *str, t_env_data *env_data);
 char		*ft_strjoin_chr(char *s, char c);
+
+// expand_utils
+
+char	*strjoin_char_and_free(char *s, char c);
+char	*strjoin_and_free(char *s1, char *s2);
+char	*get_value(t_env *env_list, char *key);
 
 
 //heredoc.c

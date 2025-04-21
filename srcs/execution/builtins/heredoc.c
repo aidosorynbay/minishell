@@ -1,16 +1,16 @@
 #include "minishell.h"
 
-void handle_heredoc(char *heredoc_path)
+void	handle_heredoc(char *heredoc_path)
 {
-	int fd;
+	int	fd;
 
-    if (heredoc_path)
+	if (heredoc_path)
 	{
 		fd = open(heredoc_path, O_RDONLY);
 		if (fd == -1)
 		{
 			perror("open crashed");
-			return;
+			return ;
 		}
 		if (dup2(fd, STDIN_FILENO) == -1)
 		{
@@ -19,14 +19,13 @@ void handle_heredoc(char *heredoc_path)
 		}
 		close(fd);
 	}
-
 }
 
-int process_all_heredocs(t_cmd *cmd_list)
+int	process_all_heredocs(t_cmd *cmd_list)
 {
-	t_cmd *cmd;
-	int i;
-	char *heredoc_file;
+	t_cmd	*cmd;
+	int		i;
+	char	*heredoc_file;
 
 	cmd = cmd_list;
 	while (cmd)
@@ -51,68 +50,68 @@ int process_all_heredocs(t_cmd *cmd_list)
 	return (0);
 }
 
-int create_heredoc(char *limiter, char **heredoc_path)
+static int	read_heredoc_path(int pipe_fd[2], char **heredoc_path)
 {
-    int pipe_fd[2];
-    pid_t pid;
-    int status;
+	char	buffer[256];
+	ssize_t	n;
 
-    if (pipe(pipe_fd) == -1)
-        return (perror("pipe"), -1);
+	waitpid(-1, NULL, 0);
+	close(pipe_fd[1]);
+	n = read(pipe_fd[0], buffer, sizeof(buffer));
+	if (n <= 0)
+	{
+		close(pipe_fd[0]);
+		return (1);
+	}
+	buffer[n] = '\0';
+	*heredoc_path = ft_strdup(buffer);
+	close(pipe_fd[0]);
+	return (0);
+}
 
-    pid = fork();
-    if (pid == -1)
-        return (perror("fork"), -1);
+static void	write_heredoc_to_file(int pipe_fd[2], char *limiter)
+{
+	char	*filename;
+	int		fd;
+	char	*line;
 
-    if (pid == 0)
-    {
-        signal(SIGINT, SIG_DFL);
-        close(pipe_fd[0]);
+	filename = "/tmp/.minishell_heredoc_tmp";
+	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd < 0)
+		exit(1);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, limiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		ft_putendl_fd(line, fd);
+		free(line);
+	}
+	close(fd);
+	write(pipe_fd[1], filename, strlen(filename) + 1);
+	close(pipe_fd[1]);
+}
 
-        char *filename = "/tmp/.minishell_heredoc_tmp";
-        int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-        if (fd < 0)
-            exit(1);
+int	create_heredoc(char *limiter, char **heredoc_path)
+{
+	int		pipe_fd[2];
+	pid_t	pid;
 
-        char *line;
-        while (1)
-        {
-            line = readline("> ");
-            if (!line || ft_strcmp(line, limiter) == 0)
-            {
-                free(line);
-                break;
-            }
-            write(fd, line, ft_strlen(line));
-            write(fd, "\n", 1);
-            free(line);
-        }
-        close(fd);
-        write(pipe_fd[1], filename, strlen(filename) + 1);
-        close(pipe_fd[1]);
-        exit(0);
-    }
-    else
-    {
-        // Parent process
-        close(pipe_fd[1]); // Close write end
-
-        waitpid(pid, &status, 0);
-        if (WIFSIGNALED(status) || WEXITSTATUS(status) != 0)
-        {
-            close(pipe_fd[0]);
-            return (1); // heredoc was interrupted
-        }
-
-        char buffer[256];
-        ssize_t n = read(pipe_fd[0], buffer, sizeof(buffer));
-        if (n <= 0)
-        {
-            close(pipe_fd[0]);
-            return (1);
-        }
-        *heredoc_path = ft_strdup(buffer);
-        close(pipe_fd[0]);
-        return (0);
-    }
+	if (pipe(pipe_fd) == -1)
+		return (perror("pipe"), -1);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), -1);
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		close(pipe_fd[0]);
+		write_heredoc_to_file(pipe_fd, limiter);
+		exit(0);
+	}
+	else
+		return (read_heredoc_path(pipe_fd, heredoc_path));
 }

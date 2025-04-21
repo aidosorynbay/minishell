@@ -11,32 +11,34 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char **convert_tokens_to_args(t_token **tokens)
+/*
+i[2]   -> i[0] = i; i[1] = count;
+*/
+char	**convert_tokens_to_args(t_token **tokens)
 {
-    int count;
-    int i;
-    t_token *tmp;
+	t_token	*tmp;
+	char	**args;
+	int		i[2];
 
-    tmp = *tokens;
-    count = 0;
-    i = 0;
-    while (tmp)
-    {
-        count++;
-        tmp = tmp->next;
-    }
-    char **args = (char **)malloc((count + 1) * sizeof(char *));
-    if (!args)
-        return NULL;
-    tmp = *tokens;
-    while(i < count)
-    {
-        args[i] = strdup(tmp->value);
-        i++;
-        tmp = tmp->next;
-    }
-    args[count] = NULL;
-    token_clear(tokens);
-    return args;
+	tmp = *tokens;
+	i[1] = 0;
+	i[0] = 0;
+	while (tmp)
+	{
+		i[1]++;
+		tmp = tmp->next;
+	}
+	args = (char **)malloc((i[1] + 1) * sizeof(char *));
+	if (!args)
+		return (NULL);
+	tmp = *tokens;
+	while (i[0] < i[1])
+	{
+		args[i[0]] = strdup(tmp->value);
+		i[0]++;
+		tmp = tmp->next;
+	}
+	args[i[1]] = NULL;
+	token_clear(tokens);
+	return (args);
 }

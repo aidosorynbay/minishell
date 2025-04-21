@@ -32,6 +32,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(EXECUTION_DIR)/token_parser.c \
 		  $(COMMANDS_DIR)/commands.c \
 		  $(COMMANDS_DIR)/commands_utils.c \
+		  $(COMMANDS_DIR)/commands_utils_2.c \
 		  $(BUILTINS_DIR)/builtins.c \
 		  $(BUILTINS_DIR)/cd.c \
 		  $(BUILTINS_DIR)/echo.c \
@@ -45,6 +46,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 		  $(BUILTINS_DIR)/export.c \
 		  $(ENVIRONMENT_DIR)/env_init.c \
 		  $(ENVIRONMENT_DIR)/expand.c \
+		  $(ENVIRONMENT_DIR)/expand_utils.c
 
 OBJS        = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 

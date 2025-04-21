@@ -2,11 +2,11 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   syntax_check.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
+/*                                                    +:+ +:+
 	+:+     */
-/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+      
+/*   By: aorynbay <@student.42abudhabi.ae>          +#+  +:+
 	+#+        */
-/*                                                +#+#+#+#+#+  
+/*                                                +#+#+#+#+#+
 	+#+           */
 /*   Created: 2025/01/07 16:59:21 by aorynbay          #+#    #+#             */
 /*   Updated: 2025/01/07 17:05:17 by aorynbay         ###   ########.fr       */
@@ -54,17 +54,22 @@ static int	check_append(t_token *tmp, t_token **tokens)
 	return (0);
 }
 
-static int	check_redirection(t_token *tmp, t_token **tokens)
+static int	handle_syntax_token(t_token *tmp, t_token **tokens, int i)
 {
-	if (tmp->next == NULL)
-	{
-		perror("exit: 258 syntax error near unexpected token `>'");
-		token_clear(tokens);
-		return (258);
-	}
-	else if (checker(tmp, tokens) == 258)
-		return (258);
-	return (0);
+	int	flag;
+
+	flag = 0;
+	if (ft_strcmp(tmp->value, "<<") == 0)
+		flag = check_here_doc(tmp, tokens);
+	else if (ft_strcmp(tmp->value, "|") == 0)
+		flag = check_pipes(tmp, tokens, i);
+	else if (ft_strcmp(tmp->value, ">>") == 0)
+		flag = check_append(tmp, tokens);
+	else if (ft_strcmp(tmp->value, ">") == 0)
+		flag = check_redirection(tmp, tokens);
+	else if (ft_strcmp(tmp->value, "<") == 0)
+		flag = check_lesser(tmp, tokens);
+	return (flag);
 }
 
 int	check_syntax(t_token **tokens)
@@ -80,16 +85,7 @@ int	check_syntax(t_token **tokens)
 	{
 		if (ft_strcmp(tmp->value, "clear") == 0)
 			return (clear_screen(), 0);
-		else if (ft_strcmp(tmp->value, "<<") == 0)
-			flag = check_here_doc(tmp, tokens);
-		else if (ft_strcmp(tmp->value, "|") == 0)
-			flag = check_pipes(tmp, tokens, i);
-		else if (ft_strcmp(tmp->value, ">>") == 0)
-			flag = check_append(tmp, tokens);
-		else if (ft_strcmp(tmp->value, ">") == 0)
-			flag = check_redirection(tmp, tokens);
-		else if (ft_strcmp(tmp->value, "<") == 0)
-			flag = check_lesser(tmp, tokens);
+		flag = handle_syntax_token(tmp, tokens, i);
 		if (flag != 0)
 			return (flag);
 		tmp = tmp->next;

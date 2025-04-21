@@ -12,12 +12,10 @@
 
 #include "minishell.h"
 
-void	add_env_node(t_env **env_list, char *key, char *value, int has_value)
+static void	assign_key(char *key, t_env *current, char *value, int has_value)
 {
-	t_env	*new;
-	t_env	*current;
-
-	current = *env_list;
+	if (current == NULL)
+		return ;
 	while (current)
 	{
 		if (ft_strcmp(current->key, key) == 0)
@@ -32,12 +30,21 @@ void	add_env_node(t_env **env_list, char *key, char *value, int has_value)
 		}
 		current = current->next;
 	}
+}
+
+void	add_env_node(t_env **env_list, char *key, char *value, int has_value)
+{
+	t_env	*new;
+	t_env	*current;
+
+	current = *env_list;
+	assign_key(key, current, value, has_value);
 	new = malloc(sizeof(t_env));
 	if (!new)
 		return ;
 	new->key = ft_strdup(key);
 	if (value)
-    	new->value = ft_strdup(value);
+		new->value = ft_strdup(value);
 	else
 		new->value = NULL;
 	new->has_value = has_value;
@@ -45,12 +52,28 @@ void	add_env_node(t_env **env_list, char *key, char *value, int has_value)
 	*env_list = new;
 }
 
-t_env_data *env_init(char **envp)
+static void	add_env_variables(t_env_data *env_data, char **splits)
 {
-	t_env_data *env_data;
-	int i;
-	char **splits;
-	int	j;
+	if (splits[0] != NULL)
+	{
+		if (splits[1] != NULL)
+		{
+			add_env_node(&env_data->env_list, splits[0], splits[1], 1);
+			add_env_node(&env_data->env_export_list, splits[0], splits[1], 1);
+		}
+		else
+		{
+			add_env_node(&env_data->env_list, splits[0], "", 1);
+			add_env_node(&env_data->env_export_list, splits[0], "", 1);
+		}
+	}
+}
+
+t_env_data	*env_init(char **envp)
+{
+	t_env_data	*env_data;
+	char		**splits;
+	int			i[2];
 
 	env_data = malloc(sizeof(t_env_data));
 	if (env_data == NULL)
@@ -58,34 +81,19 @@ t_env_data *env_init(char **envp)
 	env_data->env_list = NULL;
 	env_data->env_export_list = NULL;
 	env_data->last_exit = 0;
-	i = 0;
-	while (envp[i] != NULL)
+	i[0] = 0;
+	while (envp[i[0]] != NULL)
 	{
-		splits = ft_split(envp[i], '='); // Split "KEY=VALUE"
+		splits = ft_split(envp[i[0]], '=');
 		if (splits != NULL)
 		{
-			if (splits[0] != NULL)
-			{
-				if (splits[1] != NULL)
-				{
-					add_env_node(&env_data->env_list, splits[0], splits[1], 1);
-					add_env_node(&env_data->env_export_list, splits[0], splits[1], 1);
-				}
-				else
-				{
-					add_env_node(&env_data->env_list, splits[0], "", 1);
-					add_env_node(&env_data->env_export_list, splits[0], "", 1);
-				}
-			}
-			j = 0;
-			while (splits[j] != NULL)
-			{
-				free(splits[j]);
-				j++;
-			}
+			add_env_variables(env_data, splits);
+			i[1] = 0;
+			while (splits[i[1]] != NULL)
+				free(splits[i[1]++]);
 			free(splits);
 		}
-		i++;
+		i[0]++;
 	}
 	return (env_data);
 }

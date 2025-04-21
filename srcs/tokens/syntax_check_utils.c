@@ -58,3 +58,16 @@ int	check_lesser(t_token *tmp, t_token **tokens)
 		return (258);
 	return (0);
 }
+
+int	check_redirection(t_token *tmp, t_token **tokens)
+{
+	if (tmp->next == NULL)
+	{
+		perror("exit: 258 syntax error near unexpected token `>'");
+		token_clear(tokens);
+		return (258);
+	}
+	else if (checker(tmp, tokens) == 258)
+		return (258);
+	return (0);
+}
