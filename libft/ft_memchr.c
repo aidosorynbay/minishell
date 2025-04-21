@@ -29,18 +29,3 @@ void	*ft_memchr(const void *s, int c, size_t n)
 	}
 	return (NULL);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-// int	main(void)
-// {
-// 	char str1[] = "https://www.tutorialspoint.com";
-// 	char ch1 = '.';
-// 	char *res = ft_memchr(str1, ch1, 30);
-// 	printf("%s\n", res);
-
-// 	char str2[] = "https://www.tutorialspoint.com";
-// 	char ch2 = '.';
-// 	char *res1 = (char *)memchr(str2, ch2, 30);
-// 	printf("%s\n", res1);
-// }
