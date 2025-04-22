@@ -25,9 +25,7 @@ void	allocate_args_for_cmd(t_cmd *cmd)
 		}
 	}
 	else
-	{
 		cmd->args_for_cmd = NULL;
-	}
 }
 
 void	init_fd(int fd[6])

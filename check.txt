@@ -1,1 +1,1 @@
-protect all functions: write, read, etc.
+update export/env

@@ -115,6 +115,7 @@ void	init_execution(t_cmd *cmd_list, t_env_data *ev)
 	init_fd(fd);
 	cmd = cmd_list;
 	ev->cmd_list = cmd_list;
+	ev->last_builtin = 0;
 	if (process_all_heredocs(cmd_list, ev, fd))
 		return (ev->last_exit = 1, (void)0);
 	envp = env_list_to_envp(ev->env_list);

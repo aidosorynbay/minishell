@@ -91,6 +91,7 @@ typedef struct s_env_data
 	t_env	*env_export_list;	// for export
 	int		last_exit;	// Store last exit status ($?)
 	t_cmd	*cmd_list;	// List of commands
+	int		last_builtin;
 }	t_env_data;
 
 // tokenization

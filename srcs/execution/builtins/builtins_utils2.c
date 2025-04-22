@@ -27,11 +27,11 @@ void	restore_and_cleanup(int fd[6], char **envp, t_cmd *cmd_list)
 
 void	update_exit_status(int status, t_env_data *ev)
 {
-	if (WIFEXITED(status))
+	if (WIFEXITED(status) && ev->last_builtin == 0)
 		ev->last_exit = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
+	else if (WIFSIGNALED(status) && ev->last_builtin == 0)
 		ev->last_exit = 128 + WTERMSIG(status);
-	else if (g_exit_code == 1)
+	else
 		ev->last_exit = g_exit_code;
 }
 
